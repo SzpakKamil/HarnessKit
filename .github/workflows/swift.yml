@@ -86,6 +86,25 @@ jobs:
     - name: Run tests
       run: swift test -v
 
+  build-macos:
+    name: Build macOS (Latest Swift)
+    runs-on: macos-15
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build for macOS
+      run: |
+        xcodebuild -scheme HarnessKit -destination 'platform=macOS,arch=arm64' build
+
+    - name: Run UI Tests (HarvestTester)
+      run: |
+        xcodebuild -project HarvestTester/HarvestTester.xcodeproj \
+          -scheme HarvestTester \
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' \
+          CODE_SIGNING_ALLOWED=NO \
+          test
+
   build-ios:
     name: Build iOS (Latest Swift)
     runs-on: macos-15
@@ -134,14 +153,6 @@ jobs:
     - name: Build for watchOS
       run: |
         xcodebuild -scheme HarnessKit -destination 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=26.2,arch=arm64' build
-
-    - name: Run UI Tests (HarvestTester)
-      run: |
-        xcodebuild -project HarvestTester/HarvestTester.xcodeproj \
-          -scheme HarvestTester \
-          -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' \
-          CODE_SIGNING_ALLOWED=NO \
-          test
 
   build-visionos:
     name: Build visionOS (Latest Swift)
