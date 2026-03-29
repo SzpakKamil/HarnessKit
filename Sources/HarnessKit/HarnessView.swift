@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 public struct HarnessView<Project: PathProject>: View {
     public init() {}
 
@@ -36,6 +37,7 @@ public struct HarnessView<Project: PathProject>: View {
     }
 }
 
+@MainActor
 struct HarnessFolderView: View {
     let folder: any PathFolder.Type
 
