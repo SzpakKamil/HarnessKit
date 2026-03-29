@@ -1,3 +1,4 @@
+#if canImport(Testing)
 import Testing
 import SwiftUI
 @testable import HarnessKit
@@ -92,3 +93,4 @@ struct HarnessKitTests {
         }
     }
 }
+#endif

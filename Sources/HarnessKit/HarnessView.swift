@@ -11,17 +11,28 @@ public struct HarnessView<Project: PathProject>: View {
     public init() {}
 
     public var body: some View {
-        NavigationStack {
-            List {
-                ForEach(Project.folders.indices, id: \.self) { index in
-                    let folder = Project.folders[index]
-                    NavigationLink(folder.name) {
-                        HarnessFolderView(folder: folder)
-                    }
+        if #available(iOS 16, macOS 13, tvOS 16, *) {
+            NavigationStack {
+                projectList
+            }
+        } else {
+            NavigationView {
+                projectList
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var projectList: some View {
+        List {
+            ForEach(Project.folders.indices, id: \.self) { index in
+                let folder = Project.folders[index]
+                NavigationLink(folder.name) {
+                    HarnessFolderView(folder: folder)
                 }
             }
-            .navigationTitle(Project.name)
         }
+        .navigationTitle(Project.name)
     }
 }
 
@@ -29,6 +40,11 @@ struct HarnessFolderView: View {
     let folder: any PathFolder.Type
 
     var body: some View {
+        folderList
+    }
+
+    @ViewBuilder
+    private var folderList: some View {
         List {
             ForEach(folder.folders.indices, id: \.self) { index in
                 let subfolder = folder.folders[index]

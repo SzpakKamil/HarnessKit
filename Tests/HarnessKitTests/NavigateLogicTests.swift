@@ -1,3 +1,4 @@
+#if canImport(Testing)
 import Testing
 @testable import HarnessKit
 
@@ -159,3 +160,4 @@ struct NavigateLogicTests {
         }
     }
 }
+#endif

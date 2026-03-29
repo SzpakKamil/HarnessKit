@@ -1,11 +1,11 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 5.9
 
 import PackageDescription
 
 let package = Package(
     name: "HarnessKit",
     platforms: [
-        .iOS(.v17), .tvOS(.v17), .visionOS(.v1), .macOS(.v14), .watchOS(.v10)
+        .iOS(.v14), .tvOS(.v14), .visionOS(.v1), .macOS(.v11), .watchOS(.v10)
     ],
     products: [
         .library(

@@ -1,6 +1,6 @@
 # HarnessKit
-![Swift Version](https://img.shields.io/badge/Swift-6.0%2B-teal.svg)
-![Platforms](https://img.shields.io/badge/Platforms-iOS%2017.0+%20|%20iPadOS%2017.0+%20|%20macOS%2014.0+%20|%20watchOS%2010.0+%20|%20tvOS%2017.0+%20|%20visionOS%201.0+-15437D.svg)
+![Swift Version](https://img.shields.io/badge/Swift-5.9%2B-teal.svg)
+![Platforms](https://img.shields.io/badge/Platforms-iOS%2014.0+%20|%20iPadOS%2014.0+%20|%20macOS%2011.0+%20|%20watchOS%2010.0+%20|%20tvOS%2014.0+%20|%20visionOS%201.0+-15437D.svg)
 ![License](https://img.shields.io/badge/License-MIT-C8ECFE.svg)
 
 A structured navigation harness for SwiftUI demo apps and component previews. Define a tree of views using `PathProject` and `PathFolder`, render it with `HarnessView`, then navigate to any screen in UI tests with a single call.
@@ -149,8 +149,8 @@ targets: [
 
 ## Requirements
 
-* **Platforms**: iOS 17.0+, macOS 14.0+, tvOS 17.0+, watchOS 10.0+, visionOS 1.0+
-* **Tools**: Swift 6.0+, Xcode 16.0+
+* **Platforms**: iOS 14.0+, macOS 11.0+, tvOS 14.0+, watchOS 10.0+, visionOS 1.0+
+* **Tools**: Swift 5.9+, Xcode 15.0+
 
 ## License
 
