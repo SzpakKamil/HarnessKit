@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -51,16 +51,8 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		D544D1AC2F7986AE0048F48A /* HarvestTester */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = HarvestTester;
-			sourceTree = "<group>";
-		};
-		D5C30A822F7986EC002EBE81 /* UITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = UITests;
-			sourceTree = "<group>";
-		};
+		D544D1AC2F7986AE0048F48A /* HarvestTester */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = HarvestTester; sourceTree = "<group>"; };
+		D5C30A822F7986EC002EBE81 /* UITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = UITests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,6 +175,7 @@
 				};
 			};
 			buildConfigurationList = D544D1A52F7986AE0048F48A /* Build configuration list for PBXProject "HarvestTester" */;
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -194,7 +187,6 @@
 			packageReferences = (
 				D544D1B82F7986BE0048F48A /* XCLocalSwiftPackageReference "../../HarnessKit" */,
 			);
-			preferredProjectObjectVersion = 77;
 			productRefGroup = D544D1AB2F7986AE0048F48A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
