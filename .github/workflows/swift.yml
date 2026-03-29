@@ -37,6 +37,7 @@ jobs:
         xcodebuild -project HarvestTester/HarvestTester.xcodeproj \
           -scheme HarvestTester \
           -destination 'platform=iOS Simulator,name=iPhone 15 Pro,arch=arm64' \
+          CODE_SIGNING_ALLOWED=NO \
           test
 
   build-macos-14:
@@ -62,6 +63,7 @@ jobs:
         xcodebuild -project HarvestTester/HarvestTester.xcodeproj \
           -scheme HarvestTester \
           -destination 'platform=iOS Simulator,name=iPhone 15 Pro,arch=arm64' \
+          CODE_SIGNING_ALLOWED=NO \
           test
 
   build-macos-15:
@@ -87,6 +89,7 @@ jobs:
         xcodebuild -project HarvestTester/HarvestTester.xcodeproj \
           -scheme HarvestTester \
           -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' \
+          CODE_SIGNING_ALLOWED=NO \
           test
 
   build-macos-26:
@@ -112,6 +115,7 @@ jobs:
         xcodebuild -project HarvestTester/HarvestTester.xcodeproj \
           -scheme HarvestTester \
           -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' \
+          CODE_SIGNING_ALLOWED=NO \
           test
 
   build-ios:
@@ -130,6 +134,7 @@ jobs:
         xcodebuild -project HarvestTester/HarvestTester.xcodeproj \
           -scheme HarvestTester \
           -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' \
+          CODE_SIGNING_ALLOWED=NO \
           test
 
   build-tvos:
@@ -148,6 +153,7 @@ jobs:
         xcodebuild -project HarvestTester/HarvestTester.xcodeproj \
           -scheme HarvestTester \
           -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' \
+          CODE_SIGNING_ALLOWED=NO \
           test
 
   build-watchos:
@@ -166,6 +172,7 @@ jobs:
         xcodebuild -project HarvestTester/HarvestTester.xcodeproj \
           -scheme HarvestTester \
           -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' \
+          CODE_SIGNING_ALLOWED=NO \
           test
 
   build-visionos:
@@ -184,4 +191,5 @@ jobs:
         xcodebuild -project HarvestTester/HarvestTester.xcodeproj \
           -scheme HarvestTester \
           -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' \
+          CODE_SIGNING_ALLOWED=NO \
           test
