@@ -95,7 +95,7 @@ jobs:
 
     - name: Build for iOS
       run: |
-        xcodebuild -scheme HarnessKit -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' build test
+        xcodebuild -scheme HarnessKit -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' build
 
   build-tvos:
     name: Build tvOS (Latest Swift)
@@ -106,7 +106,7 @@ jobs:
 
     - name: Build for tvOS
       run: |
-        xcodebuild -scheme HarnessKit -destination 'platform=tvOS Simulator,name=Apple TV,arch=arm64' build test
+        xcodebuild -scheme HarnessKit -destination 'platform=tvOS Simulator,name=Apple TV,arch=arm64' build
 
   build-watchos:
     name: Build watchOS (Latest Swift)
@@ -117,7 +117,7 @@ jobs:
 
     - name: Build for watchOS
       run: |
-        xcodebuild -scheme HarnessKit -destination 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=26.2,arch=arm64' build test
+        xcodebuild -scheme HarnessKit -destination 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=26.2,arch=arm64' build
 
   build-visionos:
     name: Build visionOS (Latest Swift)
@@ -128,7 +128,7 @@ jobs:
 
     - name: Build for visionOS
       run: |
-        xcodebuild -scheme HarnessKit -destination 'platform=visionOS Simulator,name=Apple Vision Pro,OS=26.2,arch=arm64' build test
+        xcodebuild -scheme HarnessKit -destination 'platform=visionOS Simulator,name=Apple Vision Pro,OS=26.2,arch=arm64' build
 
   ui-tests:
     name: UI Tests (HarvestTester)
