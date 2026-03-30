@@ -2,7 +2,7 @@ import XCTest
 
 #if os(iOS) || os(watchOS)
 @MainActor
-func smallSwipeUp(on element: XCUIElement, distanceRatio: CGFloat = 0.2, hold: TimeInterval = 0.01) {
+public func smallSwipeUp(on element: XCUIElement, distanceRatio: CGFloat = 0.2, hold: TimeInterval = 0.01) {
 #if os(watchOS)
     XCUIDevice.shared.rotateDigitalCrown(delta: 0.2, velocity: 0.24)
     sleep(1)
@@ -25,7 +25,7 @@ func smallSwipeUp(app: XCUIApplication, distanceRatio: CGFloat = 0.2, hold: Time
 }
 
 @MainActor
-func tapButtonWithScrolling(app: XCUIApplication, titleOrIdentifier: String, maxSwipes: Int = 40) {
+public func tapButtonWithScrolling(app: XCUIApplication, titleOrIdentifier: String, maxSwipes: Int = 40) {
     var button = app.buttons[titleOrIdentifier]
     if button.exists && button.isHittable {
         button.tap()
@@ -75,7 +75,7 @@ func tapButtonWithScrolling(app: XCUIApplication, titleOrIdentifier: String, max
 
 #if os(macOS)
 @MainActor
-func clickButtonWithScrolling(app: XCUIApplication, titleOrIdentifier: String, maxScrolls: Int = 20) {
+public func clickButtonWithScrolling(app: XCUIApplication, titleOrIdentifier: String, maxScrolls: Int = 20) {
     var button = app.buttons[titleOrIdentifier]
     if button.exists && button.isHittable {
         button.click()

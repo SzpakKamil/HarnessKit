@@ -15,7 +15,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D539BDCC2F7A63F30030D33E"
+               BlueprintIdentifier = "D57237032F7AA5740048D2E0"
                BuildableName = "HarvestWatchTester.app"
                BlueprintName = "HarvestWatchTester"
                ReferencedContainer = "container:HarvestTester.xcodeproj">
@@ -72,7 +72,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D539BDCC2F7A63F30030D33E"
+            BlueprintIdentifier = "D57237032F7AA5740048D2E0"
             BuildableName = "HarvestWatchTester.app"
             BlueprintName = "HarvestWatchTester"
             ReferencedContainer = "container:HarvestTester.xcodeproj">
@@ -89,7 +89,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D539BDCC2F7A63F30030D33E"
+            BlueprintIdentifier = "D57237032F7AA5740048D2E0"
             BuildableName = "HarvestWatchTester.app"
             BlueprintName = "HarvestWatchTester"
             ReferencedContainer = "container:HarvestTester.xcodeproj">
