@@ -11,6 +11,7 @@ import SwiftUI
 public struct HarnessView<Project: PathProject>: View {
     public init() {}
 
+    @_documentation(visibility: internal)
     public var body: some View {
         if #available(iOS 16, macOS 13, tvOS 16, *) {
             NavigationStack {

@@ -1,1 +1,0 @@
-// Moved to HarnessKitTesting target.

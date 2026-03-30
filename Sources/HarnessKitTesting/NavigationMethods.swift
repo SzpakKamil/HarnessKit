@@ -25,7 +25,7 @@ func smallSwipeUp(app: XCUIApplication, distanceRatio: CGFloat = 0.2, hold: Time
 }
 
 @MainActor
-public func tapButtonWithScrolling(app: XCUIApplication, titleOrIdentifier: String, maxSwipes: Int = 40) {
+func tapButtonWithScrolling(app: XCUIApplication, titleOrIdentifier: String, maxSwipes: Int = 40) {
     var button = app.buttons[titleOrIdentifier]
     if button.exists && button.isHittable {
         button.tap()
@@ -75,7 +75,7 @@ public func tapButtonWithScrolling(app: XCUIApplication, titleOrIdentifier: Stri
 
 #if os(macOS)
 @MainActor
-public func clickButtonWithScrolling(app: XCUIApplication, titleOrIdentifier: String, maxScrolls: Int = 20) {
+func clickButtonWithScrolling(app: XCUIApplication, titleOrIdentifier: String, maxScrolls: Int = 20) {
     var button = app.buttons[titleOrIdentifier]
     if button.exists && button.isHittable {
         button.click()

@@ -15,36 +15,50 @@ public protocol PathFolder: CaseIterable, Sendable {
 }
 
 extension PathFolder {
+    @_documentation(visibility: internal)
+    public static var folders: [any PathFolder.Type] { [] }
+    @_documentation(visibility: internal)
     public static var options: [any PathFolder] { Array(allCases) }
+    @_documentation(visibility: internal)
     public var description: String { "" }
+    @_documentation(visibility: internal)
     public var view: AnyView? { nil }
 }
 
 extension PathFolder where ParentSection: PathProject {
-    public static var path: Int {
+    internal static var path: Int {
         ParentSection.folders.firstIndex(where: { ObjectIdentifier($0) == ObjectIdentifier(Self.self) }) ?? 0
     }
+    @_documentation(visibility: internal)
     public static var pathIds: [Int] { ParentSection.pathIds + [path] }
+    @_documentation(visibility: internal)
     public static var nameComponents: [String] { ParentSection.nameComponents + [name] }
+    @_documentation(visibility: internal)
     public static var namePath: String { nameComponents.joined(separator: "/") }
 }
 
 extension PathFolder where ParentSection: PathFolder {
-    public static var path: Int {
+    internal static var path: Int {
         ParentSection.folders.firstIndex(where: { ObjectIdentifier($0) == ObjectIdentifier(Self.self) }) ?? 0
     }
+    @_documentation(visibility: internal)
     public static var pathIds: [Int] { ParentSection.pathIds + [path] }
+    @_documentation(visibility: internal)
     public static var nameComponents: [String] { ParentSection.nameComponents + [name] }
+    @_documentation(visibility: internal)
     public static var namePath: String { nameComponents.joined(separator: "/") }
 }
 
 extension PathFolder where Self: RawRepresentable, RawValue == Int {
+    @_documentation(visibility: internal)
     public var pathIds: [Int] { Self.pathIds + [self.rawValue] }
 
     private var caseName: String {
         Mirror(reflecting: self).children.first?.label ?? String(describing: self)
     }
 
+    @_documentation(visibility: internal)
     public var nameComponents: [String] { Self.nameComponents + [caseName] }
+    @_documentation(visibility: internal)
     public var namePath: String { nameComponents.joined(separator: "/") }
 }

@@ -1,6 +1,5 @@
 import Foundation
 
-/// Root of a view path hierarchy. Has no parent and contributes no id/name components.
 @MainActor
 public protocol PathProject: Sendable {
     static var name: String { get }
@@ -11,7 +10,12 @@ public protocol PathProject: Sendable {
 }
 
 extension PathProject {
+    @_documentation(visibility: internal)
+    public static var folders: [any PathFolder.Type] { [] }
+    @_documentation(visibility: internal)
     public static var pathIds: [Int] { [] }
+    @_documentation(visibility: internal)
     public static var nameComponents: [String] { [] }
+    @_documentation(visibility: internal)
     public static var namePath: String { nameComponents.joined(separator: "/") }
 }
