@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D539BDDF2F7A64080030D33E /* HarvestWatchTester.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = D539BDCD2F7A63F30030D33E /* HarvestWatchTester.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D544D1BA2F7986BE0048F48A /* HarnessKit in Frameworks */ = {isa = PBXBuildFile; productRef = D544D1B92F7986BE0048F48A /* HarnessKit */; };
+		D57236DF2F7A7DE60048D2E0 /* HarnessKit in Frameworks */ = {isa = PBXBuildFile; productRef = D57236DE2F7A7DE60048D2E0 /* HarnessKit */; };
 		D5C28C422F7990E200440101 /* HarnessKitTesting in Frameworks */ = {isa = PBXBuildFile; productRef = D5C28C412F7990E200440101 /* HarnessKitTesting */; };
 		D5C28C442F7990F800440101 /* HarnessKit in Frameworks */ = {isa = PBXBuildFile; productRef = D5C28C432F7990F800440101 /* HarnessKit */; };
 /* End PBXBuildFile section */
@@ -92,6 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D57236DF2F7A7DE60048D2E0 /* HarnessKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,6 +161,7 @@
 			);
 			name = HarvestWatchTester;
 			packageProductDependencies = (
+				D57236DE2F7A7DE60048D2E0 /* HarnessKit */,
 			);
 			productName = "HarvestUITester Watch App";
 			productReference = D539BDCD2F7A63F30030D33E /* HarvestWatchTester.app */;
@@ -722,6 +725,11 @@
 /* Begin XCSwiftPackageProductDependency section */
 		D544D1B92F7986BE0048F48A /* HarnessKit */ = {
 			isa = XCSwiftPackageProductDependency;
+			productName = HarnessKit;
+		};
+		D57236DE2F7A7DE60048D2E0 /* HarnessKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D544D1B82F7986BE0048F48A /* XCLocalSwiftPackageReference "../../HarnessKit" */;
 			productName = HarnessKit;
 		};
 		D5C28C412F7990E200440101 /* HarnessKitTesting */ = {
