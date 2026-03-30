@@ -50,3 +50,4 @@ All members must be accessed on the main actor.
 - ``HarnessKit/HarnessView``
 - ``HarnessKit/PathProject``
 - ``HarnessKit/PathFolder``
+- ``HarnessKit/HarnessPreview``

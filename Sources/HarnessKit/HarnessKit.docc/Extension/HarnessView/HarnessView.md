@@ -93,7 +93,3 @@ struct HarnessApp: App {
 
 - ``init()``
 
-### Related Types
-
-- ``PathProject``
-- ``PathFolder``

@@ -45,3 +45,6 @@ Link `HarnessKitTesting` to your UI test target only. Do not add it to the main 
 
 - ``HarnessKit/PathFolder/navigate(app:)-1ajjy``
 - ``HarnessKit/PathFolder/navigate(app:)-kwcb``
+- ``HarnessKit/PathFolder/advancePreview(app:)``
+- ``HarnessKit/PathFolder/advancePreview(app:steps:)``
+- ``HarnessKit/PathFolder/iteratePreview(app:variantCount:action:)``

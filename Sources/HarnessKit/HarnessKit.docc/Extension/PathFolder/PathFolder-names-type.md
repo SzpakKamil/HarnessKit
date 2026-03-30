@@ -11,7 +11,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -73,8 +72,3 @@ let names = PathFolder.names(forType: ButtonsFolder.self)
 ## Return Value
 
 Returns an array of `String` components (e.g., `["Shapes", "BasicShapes"]`). Each string matches the label shown in the navigation list at that level.
-
-## See Also
-
-- ``HarnessKit/PathFolder/names(for:)``
-- ``HarnessKit/PathFolder/nameComponents``

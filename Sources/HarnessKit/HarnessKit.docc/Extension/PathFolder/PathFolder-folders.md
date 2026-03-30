@@ -16,7 +16,6 @@ The ordered list of sub-folder types nested inside this folder.
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -77,9 +76,3 @@ enum ButtonsFolder: Int, PathFolder {
     }
 }
 ```
-
-## See Also
-
-- ``HarnessKit/PathFolder``
-- ``HarnessKit/PathProject/folders``
-- ``HarnessKit/HarnessView``

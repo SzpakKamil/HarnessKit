@@ -11,7 +11,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -98,9 +97,3 @@ To correctly implement a project name within a full hierarchy, define your root 
 | Name | Type | Description |
 | :--- | :--- | :--- |
 | `name` | `String` | The string displayed in the navigation bar at the project root. |
-
-## Topics
-
-### Root Configuration
-- ``PathProject/folders``
-- ``HarnessView``

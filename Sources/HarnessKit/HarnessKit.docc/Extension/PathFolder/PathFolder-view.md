@@ -14,7 +14,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -83,13 +82,3 @@ enum ButtonsFolder: Int, PathFolder {
 | **Inferred Type** | `Content` (conforming to `View`) |
 | **Default Value** | `EmptyView()` |
 | **Execution Context** | `@MainActor` |
-
-## Topics
-
-### Navigation Content
-- ``HarnessKit/PathFolder/description``
-- ``HarnessKit/PathFolder/Content``
-
-### Hierarchy
-- ``HarnessKit/PathProject``
-- ``HarnessKit/PathFolder/ParentSection``

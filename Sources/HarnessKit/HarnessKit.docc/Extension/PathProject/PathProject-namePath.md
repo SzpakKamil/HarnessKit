@@ -15,7 +15,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 

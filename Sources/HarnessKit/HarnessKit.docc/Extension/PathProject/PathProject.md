@@ -100,19 +100,11 @@ enum ButtonsFolder: Int, PathFolder {
 ## Topics
 
 ### Configuration
-@Links(visualStyle: list) {
-    - ``name``
-    - ``folders``
-}
+- ``name``
+- ``folders``
 
 ### Internal Path Properties
-@Links(visualStyle: list) {
-    - ``pathIds``
-    - ``nameComponents``
-    - ``namePath``
-}
+- ``pathIds``
+- ``nameComponents``
+- ``namePath``
 
-### Supporting Views
-@Links(visualStyle: list) {
-    - ``HarnessView``
-}

@@ -16,6 +16,11 @@ Selects the scroll target using a priority chain:
 3. `app.scrollViews.firstMatch`
 4. `app.windows.firstMatch` (fallback)
 
-- Parameter app: The `XCUIApplication` to scroll.
+- Parameter element: The element to find
 - Parameter distanceRatio: Swipe distance fraction. Default 0.2.
 - Parameter hold: Press duration before drag. Default 0.01 s.
+
+### Details
+
+- **watchOS**: Rotates the Digital Crown instead of swiping.
+- **iOS**: Anchors the swipe start at the center-bottom area (70% from top) and drags upward.

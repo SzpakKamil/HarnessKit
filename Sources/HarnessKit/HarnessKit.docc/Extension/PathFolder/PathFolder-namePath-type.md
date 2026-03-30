@@ -14,7 +14,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -88,14 +87,3 @@ let path = ButtonsFolder.namePath(forType: ButtonsFolder.self)
 
 - **Type**: `String`
 - **Structure**: A slash-joined path (e.g., `"Components/Buttons"`).
-
-## Topics
-
-### Resolving Type Paths
-
-- ``HarnessKit/PathFolder/names(forType:)``
-- ``HarnessKit/PathFolder/ids(forType:)``
-
-### Resolving Instance Paths
-
-- ``HarnessKit/PathFolder/namePath(for:)``

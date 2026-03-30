@@ -14,7 +14,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -77,14 +76,3 @@ enum ButtonsFolder: PathFolder {
     }
 }
 ```
-
-## Topics
-
-### Structural Properties
-- ``HarnessKit/PathFolder/folders``
-- ``HarnessKit/PathFolder/options``
-- ``HarnessKit/PathFolder/ParentSection``
-
-### Computed Paths
-- ``HarnessKit/PathFolder/namePath``
-- ``HarnessKit/PathFolder/nameComponents``

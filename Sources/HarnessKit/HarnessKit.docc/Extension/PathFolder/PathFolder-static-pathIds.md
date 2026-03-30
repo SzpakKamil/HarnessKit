@@ -15,7 +15,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -98,14 +97,3 @@ The following example demonstrates a full Project -> Folder -> Case hierarchy an
 | `namePath` | `String` | A slash-separated string representation of the full name path. |
 
 > Tip: To get the path for a specific enum *case* (instance), use the instance property version of ``HarnessKit/PathFolder/pathIds``.
-
-## Topics
-
-### Related Path Symbols
-- ``HarnessKit/PathProject/pathIds``
-- ``HarnessKit/PathFolder/nameComponents``
-- ``HarnessKit/PathFolder/namePath``
-
-### Resolution Helpers
-- ``HarnessKit/PathFolder/ids(forType:)``
-- ``HarnessKit/PathFolder/names(forType:)``

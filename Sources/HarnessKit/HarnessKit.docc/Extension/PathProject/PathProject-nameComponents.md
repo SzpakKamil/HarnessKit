@@ -14,7 +14,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -29,7 +28,7 @@ For a type conforming to ``PathProject``, this property always returns an empty 
 *   **String Paths**: The ``PathProject/namePath`` property is derived by joining these components with a forward slash (`/`).
 
 ### Thread Safety
-All members of ``PathProject`` are isolated to the `@MainActor`. Ensure that access to this property occurs on the main thread to comply with ``Sendable`` requirements and framework concurrency guarantees.
+All members of ``PathProject`` are isolated to the `@MainActor`. Ensure that access to this property occurs on the main thread to comply with `Sendable` requirements and framework concurrency guarantees.
 
 ## Details
 
@@ -83,14 +82,3 @@ enum ButtonsFolder: PathFolder {
 // ButtonsFolder.nameComponents                 // ["Buttons"]
 // ButtonsFolder.primary.nameComponents          // ["Buttons", "Primary Action"]
 ```
-
-## Topics
-
-### Navigation Metadata
-- ``PathProject/name``
-- ``PathProject/namePath``
-- ``PathProject/pathIds``
-
-### Related Symbols
-- ``PathFolder/nameComponents``
-- ``PathResolver``

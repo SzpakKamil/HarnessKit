@@ -14,7 +14,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -81,9 +80,3 @@ let path = ButtonsFolder.ids(for: .destructive)
 ## Return Value
 
 An array of `Int` containing the ordered path indices from the project root to the specified case.
-
-## See Also
-
-- ``HarnessKit/PathFolder/names(for:)``
-- ``HarnessKit/PathFolder/namePath(for:)``
-- ``HarnessKit/PathFolder/ids(forType:)``

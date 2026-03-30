@@ -1,3 +1,11 @@
+//
+//  PathResolver.swift
+//  HarnessKit
+//
+//  Created by Kamil Szpak on 29/03/2026.
+//
+
+
 import Foundation
 
 extension PathFolder {

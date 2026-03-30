@@ -15,7 +15,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -25,7 +24,7 @@ The ordered display-name components from the project root to this folder type.
 
 This static property provides a breadcrumb-style array of strings representing the navigation path to a specific folder. Each element in the array corresponds to the `name` property of a type in the hierarchy, starting from the folder directly under the root project.
 
-HarnessKit uses these name components to identify and navigate to a folder within the application's view hierarchy. During UI testing, the `navigate(app:)` method from the ``HarnessKitTesting`` module iterates through this array to tap or click each navigation level by its display name.
+HarnessKit uses these name components to identify and navigate to a folder within the application's view hierarchy. During UI testing, the `navigate(app:)` method from the `HarnessKitTesting` module iterates through this array to tap or click each navigation level by its display name.
 
 ### Path Construction
 
@@ -90,9 +89,3 @@ enum ButtonsFolder: Int, PathFolder {
 ```
 
 > Note: For folders conforming to `RawRepresentable`, an instance-level `nameComponents` property also exists, which appends the specific case's name to this static array (e.g., `["Components", "Buttons", "primary"]`).
-
-## See Also
-
-- ``HarnessKit/PathFolder/namePath``
-- ``HarnessKit/PathFolder/pathIds``
-- ``HarnessKit/PathProject/nameComponents``

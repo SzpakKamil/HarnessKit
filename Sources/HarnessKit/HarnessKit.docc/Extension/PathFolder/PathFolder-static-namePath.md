@@ -13,7 +13,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -21,12 +20,12 @@ A slash-joined string representation of the full display name path from the proj
 
 ## Overview
 
-The `namePath` property provides a human-readable identifier for a specific folder level within a ``PathProject`` hierarchy. It is constructed by joining all elements in ``PathFolder/nameComponents-7scze`` (static) with a forward slash (`/`) separator.
+The `namePath` property provides a human-readable identifier for a specific folder level within a ``PathProject`` hierarchy. It is constructed by joining all elements in ``PathFolder/nameComponents`` (static) with a forward slash (`/`) separator.
 
 This property is particularly useful for:
 - **Debugging**: Quickly identifying a folder's position in a deep hierarchy.
 - **Accessibility**: Serving as a base for stable `accessibilityIdentifier` values in UI tests.
-- **Internal Routing**: Assisting ``PathResolver`` in mapping string-based paths back to concrete types.
+- **Internal Routing**: Assisting `PathResolver` in mapping string-based paths back to concrete types.
 
 ### Hierarchy Resolution
 
@@ -76,14 +75,3 @@ enum ButtonsFolder: Int, PathFolder {
 | Property | Type | Description |
 | :--- | :--- | :--- |
 | `namePath` | `String` | The complete breadcrumb path of folder names, e.g., "Settings/Privacy/Permissions". |
-
-## Topics
-
-### Path Components
-- ``PathFolder/name``
-- ``PathFolder/nameComponents-7scze``
-- ``PathFolder/pathIds-96oav``
-
-### Related Symbols
-- ``PathProject/namePath``
-- ``PathResolver/namePath(forType:)``

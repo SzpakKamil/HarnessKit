@@ -12,7 +12,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -86,10 +85,3 @@ enum ButtonsFolder: Int, PathFolder {
 | **Type** | `[Int]` | An array of zero-based integer indices. |
 | **Default** | `[]` | Provided by the `PathProject` protocol extension. |
 | **Visibility** | `internal` | The default implementation is hidden from generated docs via `@_documentation(visibility: internal)`. |
-
-## Topics
-
-### Navigation Path
-- ``HarnessKit/PathFolder/pathIds``
-- ``HarnessKit/PathProject/nameComponents``
-- ``HarnessKit/PathProject/namePath``

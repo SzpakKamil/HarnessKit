@@ -14,7 +14,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -22,7 +21,7 @@ Navigates to a specific folder case or leaf view in a running `XCUIApplication`.
 
 ## Overview
 
-This method provides automated navigation to a specific component preview or leaf level in your harness. It is available for any enum conforming to ``PathFolder`` and `RawRepresentable` where `RawValue == Int`.
+This method provides automated navigation to a specific component preview or leaf level in your harness. It is available for any enum conforming to `PathFolder` and `RawRepresentable` where `RawValue == Int`.
 
 ### Navigation Strategy
 
@@ -115,7 +114,3 @@ final class HarnessUITests: XCTestCase {
     }
 }
 ```
-
-## See Also
-- ``PathFolder``
-- ``PathProject``

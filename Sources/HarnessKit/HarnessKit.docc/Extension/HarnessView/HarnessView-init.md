@@ -16,7 +16,6 @@ Initializes a root harness view using a defined `PathProject` hierarchy.
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 

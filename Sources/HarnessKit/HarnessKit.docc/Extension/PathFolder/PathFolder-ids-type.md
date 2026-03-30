@@ -14,7 +14,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -74,10 +73,3 @@ let folderPath = ButtonsFolder.ids(forType: ButtonsFolder.self)
 
 - **Type**: `[Int]`
 - **Description**: An ordered array of zero-based indices. The first element corresponds to the index in the ``HarnessKit/PathProject/folders`` array, and subsequent elements represent nested folder indices.
-
-## Topics
-
-### Path Resolution
-- ``HarnessKit/PathFolder/ids(for:)``
-- ``HarnessKit/PathFolder/names(forType:)``
-- ``HarnessKit/PathFolder/namePath(forType:)``

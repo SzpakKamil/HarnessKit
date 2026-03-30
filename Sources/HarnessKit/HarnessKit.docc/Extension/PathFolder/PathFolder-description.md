@@ -14,7 +14,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -97,11 +96,3 @@ struct AppRoot: View {
     }
 }
 ```
-
-## Topics
-
-### Navigation Components
-- ``HarnessKit/PathFolder/view``
-- ``HarnessKit/PathFolder``
-- ``HarnessKit/PathProject``
-- ``HarnessKit/HarnessView``

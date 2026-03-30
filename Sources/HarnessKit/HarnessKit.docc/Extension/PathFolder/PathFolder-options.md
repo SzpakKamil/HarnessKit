@@ -14,7 +14,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -22,7 +21,7 @@ All navigable case instances of this folder, in declaration order.
 
 ## Overview
 
-The `options` property defines the set of enum cases that will be rendered as navigable rows within a ``HarnessFolderView``. By default, this property returns all cases of the conforming enum via its `CaseIterable` conformance.
+The `options` property defines the set of enum cases that will be rendered as navigable rows within a `HarnessFolderView`. By default, this property returns all cases of the conforming enum via its `CaseIterable` conformance.
 
 ### Customizing Visibility
 
@@ -92,8 +91,3 @@ enum ButtonsFolder: Int, PathFolder {
     }
 }
 ```
-
-## See Also
-
-- ``HarnessKit/PathFolder/folders``
-- ``HarnessKit/PathFolder/view``

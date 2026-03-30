@@ -1,4 +1,4 @@
-# ``HarnessKitTesting/PathFolder/navigate(app:)-kwcb``
+# ``HarnessKit/PathFolder/navigate(app:)-kwcb``
 
 Navigates to the folder-level list view in a running `XCUIApplication`.
 
@@ -15,13 +15,12 @@ Navigates to the folder-level list view in a running `XCUIApplication`.
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
 ## Overview
 
-This overload of `navigate(app:)` is used to reach a specific navigation level—a folder's list of options—within a HarnessKit hierarchy. It is specifically designed for types conforming to ``HarnessKit/PathFolder`` that do not provide `Int` raw values.
+This overload of `navigate(app:)` is used to reach a specific navigation level—a folder's list of options—within a HarnessKit hierarchy. It is specifically designed for types conforming to `PathFolder` that do not provide `Int` raw values.
 
 Unlike the `RawRepresentable` overload, this method stops navigation at the folder list itself and does not attempt to select a specific case. This is ideal for UI tests that need to verify the contents of a folder or perform actions within a specific navigation section.
 
@@ -101,10 +100,3 @@ final class ShowcaseUITests: XCTestCase {
     }
 }
 ```
-
-## Topics
-
-### Related Symbols
-- ``HarnessKit/PathFolder``
-- ``HarnessKit/PathProject``
-- ``HarnessKit/PathFolder/names(forType:)``

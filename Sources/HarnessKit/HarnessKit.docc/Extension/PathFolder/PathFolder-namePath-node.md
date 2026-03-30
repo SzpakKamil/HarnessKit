@@ -14,7 +14,6 @@
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -85,11 +84,3 @@ let path = ComponentsFolder.namePath(for: .buttons)
 ## Returns
 
 A `String` containing the slash-separated display names of each navigation level, starting from the folder's name and ending with the case's identifier.
-
-## Topics
-
-### Path Resolvers
-- ``names(for:)``
-- ``ids(for:)``
-- ``namePath(forType:)``
-- ``names(forType:)``

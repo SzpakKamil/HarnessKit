@@ -9,7 +9,6 @@ Finds a button by label or accessibility identifier and clicks it, scrolling the
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 

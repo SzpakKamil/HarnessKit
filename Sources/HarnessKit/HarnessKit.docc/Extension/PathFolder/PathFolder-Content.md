@@ -16,7 +16,6 @@ The SwiftUI `View` type returned by the ``HarnessKit/PathFolder/view`` property.
 }
 
 @Options {
-    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
@@ -95,9 +94,3 @@ struct MyHarnessApp: App {
     }
 }
 ```
-
-## See Also
-
-- ``HarnessKit/PathFolder/view``
-- ``HarnessKit/PathFolder``
-- ``HarnessKit/PathProject``
