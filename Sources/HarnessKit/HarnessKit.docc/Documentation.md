@@ -37,6 +37,8 @@ All members must be accessed on the main actor.
     - <doc:HarnessUsage>
 }
 
+`HarnessPreview` cycles through component variants on tap — use it inside any `PathFolder.view` to avoid writing `@State` boilerplate. Pair it with `advancePreview(app:)` and `iteratePreview(app:variantCount:action:)` from `HarnessKitTesting` to drive variants in UI tests.
+
 ## Topics
 
 ### Essentials

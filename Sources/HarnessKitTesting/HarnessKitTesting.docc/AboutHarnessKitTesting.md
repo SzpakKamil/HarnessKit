@@ -83,6 +83,25 @@ final class ButtonTests: XCTestCase {
 }
 ```
 
+## Variant Preview Testing
+
+When a folder case uses `HarnessPreview` in its `view`, `HarnessKitTesting` provides two methods to drive it from a test.
+
+`advancePreview(app:)` steps forward by one variant. `advancePreview(app:steps:)` steps forward by a given count. Both wrap around automatically.
+
+`iteratePreview(app:variantCount:action:)` navigates to the case and then calls a closure once per variant, advancing between each call:
+
+```swift
+ButtonsFolder.toggle.iteratePreview(app: app, variantCount: 2) { index in
+    let attachment = XCTAttachment(screenshot: app.screenshot())
+    attachment.name = "Variant \(index)"
+    attachment.lifetime = .keepAlways
+    add(attachment)
+}
+```
+
+On tvOS, each advance sends a Play/Pause remote press followed by a one-second sleep. On all other platforms it taps the element identified by the `"HarnessPreview"` accessibility identifier.
+
 ## Stable Identifiers
 
 `PathFolder.namePath(for:)` returns a slash-joined path string like `"Buttons/primary"`. Assign it as an `accessibilityIdentifier` on destination views and assert against it to avoid coupling tests to display text.

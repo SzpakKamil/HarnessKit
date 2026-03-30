@@ -109,6 +109,32 @@ struct DemoApp: App {
 
 ``HarnessView`` builds a `NavigationStack` on iOS 16+, macOS 13+, and tvOS 16+, and falls back to `NavigationView` on earlier platforms. The root list shows each folder by name. Selecting a folder drills into its sub-folders and cases. Selecting a case presents the associated view.
 
+## Variant Cycling
+
+Use ``HarnessPreview`` inside a folder's `view` property to cycle through multiple states of a component. It owns the index state internally — no `@State` or platform guards needed.
+
+Pass any array of values and a `@ViewBuilder` closure:
+
+```swift
+var view: some View {
+    HarnessPreview([Style.compact, .regular, .expanded]) { style in
+        MyComponent(style: style)
+    }
+}
+```
+
+For two-state `Bool` toggles, use the shorthand that starts at `false` and advances to `true`:
+
+```swift
+var view: some View {
+    HarnessPreview { isOn in
+        Toggle("Feature", isOn: .constant(isOn))
+    }
+}
+```
+
+Tapping advances the variant on iOS, watchOS, and visionOS. On macOS 14+ the down-arrow key also advances. On tvOS the Play/Pause remote button advances.
+
 ## Path Resolution
 
 Every node carries a path built from its position in the hierarchy. Use the static ``PathFolder`` resolver methods to read these paths for debugging, deep linking, or accessibility identifiers.
@@ -136,6 +162,8 @@ Assign `namePath` as an `accessibilityIdentifier` on destination views to give U
 
 Import `HarnessKitTesting` in your UI test target and call `navigate(app:)` on any folder case. The library taps, scrolls, clicks, or sends remote presses depending on the platform.
 
+To advance a ``HarnessPreview`` from a test, call `advancePreview(app:)` after navigating. To visit every variant in sequence, use `iteratePreview(app:variantCount:action:)`:
+
 ```swift
 import XCTest
 import HarnessKitTesting
@@ -148,6 +176,18 @@ final class ButtonTests: XCTestCase {
         ButtonsFolder.primary.navigate(app: app)
 
         XCTAssertTrue(app.buttons["Primary"].exists)
+    }
+
+    func testAllVariants() {
+        let app = XCUIApplication()
+        app.launch()
+
+        ButtonsFolder.primary.iteratePreview(app: app, variantCount: 3) { index in
+            let attachment = XCTAttachment(screenshot: app.screenshot())
+            attachment.name = "Variant \(index)"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
     }
 }
 ```

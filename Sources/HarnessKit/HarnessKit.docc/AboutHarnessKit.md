@@ -108,6 +108,17 @@ enum ButtonsFolder: Int, PathFolder {
 }
 ```
 
+When a case needs to show multiple states of a component, wrap the `view` body in ``HarnessPreview``. It cycles through variants on tap, so no `@State` is needed in the folder:
+
+```swift
+@ViewBuilder
+var view: some View {
+    HarnessPreview { isOn in
+        MyToggleComponent(isOn: isOn)
+    }
+}
+```
+
 ## Rendering the Harness
 
 The ``HarnessView`` is the entry point for your SwiftUI app. It takes your project type as a generic parameter and renders the entire navigation tree automatically.
@@ -142,11 +153,29 @@ final class DesignSystemUITests: XCTestCase {
     func testPrimaryButton() {
         let app = XCUIApplication()
         app.launch()
-        
+
         // Full hierarchy: Project -> ComponentsFolder -> ButtonsFolder -> .primary
         ButtonsFolder.primary.navigate(app: app)
-        
+
         XCTAssertTrue(app.buttons["Primary"].exists)
+    }
+}
+```
+
+### Variant Testing
+
+When a case uses ``HarnessPreview``, `HarnessKitTesting` provides `advancePreview(app:)` to step forward one variant and `iteratePreview(app:variantCount:action:)` to visit all variants in sequence:
+
+```swift
+func testAllButtonStyles() {
+    let app = XCUIApplication()
+    app.launch()
+
+    ButtonsFolder.primary.iteratePreview(app: app, variantCount: 3) { index in
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "Style \(index)"
+        attachment.lifetime = .keepAlways
+        add(attachment)
     }
 }
 ```

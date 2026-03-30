@@ -102,6 +102,30 @@ struct HarnessApp: App {
 
 ``HarnessView`` uses `NavigationStack` on iOS 16+, macOS 13+, and tvOS 16+, and falls back to `NavigationView` on earlier platforms.
 
+## Variant Cycling
+
+Wrap a folder's `view` in ``HarnessPreview`` to cycle through multiple component states without writing `@State` boilerplate. Tap (or press the appropriate key or remote button) to advance to the next variant:
+
+```swift
+@ViewBuilder
+var view: some View {
+    HarnessPreview { isOn in
+        MyToggleComponent(isOn: isOn)
+    }
+}
+```
+
+Pass an explicit array for three or more states:
+
+```swift
+@ViewBuilder
+var view: some View {
+    HarnessPreview([Style.compact, .regular, .expanded]) { style in
+        MyComponent(style: style)
+    }
+}
+```
+
 ## Automated UI Testing
 
 Import `HarnessKitTesting` in your UI test target and call `navigate(app:)` on any folder case:

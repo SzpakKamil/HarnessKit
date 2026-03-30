@@ -106,6 +106,24 @@ final class ButtonTests: XCTestCase {
 }
 ```
 
+## Testing Variant Previews
+
+When a folder case's `view` uses `HarnessPreview`, use `advancePreview(app:)` to step forward one variant after navigating, or `iteratePreview(app:variantCount:action:)` to visit all variants in sequence:
+
+```swift
+func testToggleVariants() {
+    let app = XCUIApplication()
+    app.launch()
+
+    ButtonsFolder.primary.iteratePreview(app: app, variantCount: 2) { index in
+        // index 0 = false, index 1 = true
+        XCTAssertTrue(app.otherElements["HarnessPreview"].exists)
+    }
+}
+```
+
+`variantCount` must match the number of elements in the array passed to `HarnessPreview`. The `iteratePreview` call handles navigation and advancement automatically.
+
 ## Troubleshooting
 
 - **Linking error**: Confirm `HarnessKitTesting` is linked to the UI test target, not the app target.
