@@ -64,11 +64,12 @@ enum ButtonsFolder: PathFolder {
         }
     }
 
-    var view: AnyView? {
+    @ViewBuilder
+    var view: some View {
         switch self {
-        case .primary:     AnyView(PrimaryButtonPreview())
-        case .secondary:   AnyView(SecondaryButtonPreview())
-        case .destructive: AnyView(DestructiveButtonPreview())
+        case .primary:     PrimaryButtonPreview()
+        case .secondary:   SecondaryButtonPreview()
+        case .destructive: DestructiveButtonPreview()
         }
     }
 }

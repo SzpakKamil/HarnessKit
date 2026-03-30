@@ -38,11 +38,9 @@ enum BasicShapes: Int, PathFolder, CaseIterable {
     static let folders: [any PathFolder.Type] = [AdvancedShapes.self]
 
     var description: String { String(describing: self) }
-    var view: AnyView? {
-        AnyView(
-            Text(String(describing: self))
-                .accessibilityIdentifier(namePath)
-        )
+    var view: some View {
+        Text(String(describing: self))
+            .accessibilityIdentifier(namePath)
     }
 }
 
@@ -56,11 +54,9 @@ enum AdvancedShapes: Int, PathFolder, CaseIterable {
     static let folders: [any PathFolder.Type] = []
 
     var description: String { String(describing: self) }
-    var view: AnyView? {
-        AnyView(
-            Text(String(describing: self))
-                .accessibilityIdentifier(namePath)
-        )
+    var view: some View {
+        Text(String(describing: self))
+            .accessibilityIdentifier(namePath)
     }
 }
 
@@ -74,11 +70,9 @@ enum PrimaryColors: Int, PathFolder, CaseIterable {
     static let folders: [any PathFolder.Type] = []
 
     var description: String { String(describing: self) }
-    var view: AnyView? {
-        AnyView(
-            Text(String(describing: self))
-                .accessibilityIdentifier(namePath)
-        )
+    var view: some View {
+        Text(String(describing: self))
+            .accessibilityIdentifier(namePath)
     }
 }
 

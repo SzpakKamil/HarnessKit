@@ -10,8 +10,9 @@ public protocol PathFolder: CaseIterable, Sendable {
     static var namePath: String { get }
     static var folders: [any PathFolder.Type] { get }
     static var options: [any PathFolder] { get }
+    associatedtype Content: View
     var description: String { get }
-    var view: AnyView? { get }
+    @ViewBuilder var view: Content { get }
 }
 
 extension PathFolder {
@@ -22,7 +23,7 @@ extension PathFolder {
     @_documentation(visibility: internal)
     public var description: String { "" }
     @_documentation(visibility: internal)
-    public var view: AnyView? { nil }
+    public var view: some View { EmptyView() }
 }
 
 extension PathFolder where ParentSection: PathProject {

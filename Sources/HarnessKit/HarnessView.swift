@@ -39,6 +39,11 @@ public struct HarnessView<Project: PathProject>: View {
 }
 
 @MainActor
+private func makeView(_ option: some PathFolder) -> AnyView {
+    AnyView(option.view)
+}
+
+@MainActor
 struct HarnessFolderView: View {
     let folder: any PathFolder.Type
 
@@ -58,7 +63,7 @@ struct HarnessFolderView: View {
             ForEach(folder.options.indices, id: \.self) { index in
                 let option = folder.options[index]
                 NavigationLink(option.description) {
-                    option.view
+                    makeView(option)
                 }
             }
         }
