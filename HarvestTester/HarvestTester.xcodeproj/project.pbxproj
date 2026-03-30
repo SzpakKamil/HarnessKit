@@ -7,12 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D539BDDF2F7A64080030D33E /* HarvestWatchTester.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = D539BDCD2F7A63F30030D33E /* HarvestWatchTester.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D544D1BA2F7986BE0048F48A /* HarnessKit in Frameworks */ = {isa = PBXBuildFile; productRef = D544D1B92F7986BE0048F48A /* HarnessKit */; };
 		D5C28C422F7990E200440101 /* HarnessKitTesting in Frameworks */ = {isa = PBXBuildFile; productRef = D5C28C412F7990E200440101 /* HarnessKitTesting */; };
 		D5C28C442F7990F800440101 /* HarnessKit in Frameworks */ = {isa = PBXBuildFile; productRef = D5C28C432F7990F800440101 /* HarnessKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		D539BDE02F7A64080030D33E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D544D1A22F7986AE0048F48A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D539BDCC2F7A63F30030D33E;
+			remoteInfo = "HarvestUITester Watch App";
+		};
 		D5C30A872F7986EC002EBE81 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D544D1A22F7986AE0048F48A /* Project object */;
@@ -23,6 +31,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		D539BDE22F7A64090030D33E /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				D539BDDF2F7A64080030D33E /* HarvestWatchTester.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D5C30A902F79891B002EBE81 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -46,16 +65,36 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D539BDCD2F7A63F30030D33E /* HarvestWatchTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HarvestWatchTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D544D1AA2F7986AE0048F48A /* HarvestTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HarvestTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5C30A812F7986EC002EBE81 /* UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D539BDE52F7A64680030D33E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				ContentView.swift,
+				HarvestTesterApp.swift,
+			);
+			target = D539BDCC2F7A63F30030D33E /* HarvestWatchTester */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		D544D1AC2F7986AE0048F48A /* HarvestTester */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = HarvestTester; sourceTree = "<group>"; };
+		D544D1AC2F7986AE0048F48A /* HarvestTester */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D539BDE52F7A64680030D33E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = HarvestTester; sourceTree = "<group>"; };
 		D5C30A822F7986EC002EBE81 /* UITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = UITests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		D539BDCA2F7A63F30030D33E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D544D1A72F7986AE0048F48A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -91,6 +130,7 @@
 			children = (
 				D544D1AA2F7986AE0048F48A /* HarvestTester.app */,
 				D5C30A812F7986EC002EBE81 /* UITests.xctest */,
+				D539BDCD2F7A63F30030D33E /* HarvestWatchTester.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -105,6 +145,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		D539BDCC2F7A63F30030D33E /* HarvestWatchTester */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D539BDDD2F7A63F40030D33E /* Build configuration list for PBXNativeTarget "HarvestWatchTester" */;
+			buildPhases = (
+				D539BDC92F7A63F30030D33E /* Sources */,
+				D539BDCA2F7A63F30030D33E /* Frameworks */,
+				D539BDCB2F7A63F30030D33E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HarvestWatchTester;
+			packageProductDependencies = (
+			);
+			productName = "HarvestUITester Watch App";
+			productReference = D539BDCD2F7A63F30030D33E /* HarvestWatchTester.app */;
+			productType = "com.apple.product-type.application";
+		};
 		D544D1A92F7986AE0048F48A /* HarvestTester */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D544D1B52F7986AF0048F48A /* Build configuration list for PBXNativeTarget "HarvestTester" */;
@@ -113,10 +172,12 @@
 				D544D1A72F7986AE0048F48A /* Frameworks */,
 				D544D1A82F7986AE0048F48A /* Resources */,
 				D5C30A982F7989BA002EBE81 /* Embed PlugIns */,
+				D539BDE22F7A64090030D33E /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D539BDE12F7A64080030D33E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				D544D1AC2F7986AE0048F48A /* HarvestTester */,
@@ -165,6 +226,9 @@
 				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2640;
 				TargetAttributes = {
+					D539BDCC2F7A63F30030D33E = {
+						CreatedOnToolsVersion = 26.4;
+					};
 					D544D1A92F7986AE0048F48A = {
 						CreatedOnToolsVersion = 26.4;
 					};
@@ -193,11 +257,19 @@
 			targets = (
 				D544D1A92F7986AE0048F48A /* HarvestTester */,
 				D5C30A802F7986EC002EBE81 /* UITests */,
+				D539BDCC2F7A63F30030D33E /* HarvestWatchTester */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		D539BDCB2F7A63F30030D33E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D544D1A82F7986AE0048F48A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -215,6 +287,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		D539BDC92F7A63F30030D33E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D544D1A62F7986AE0048F48A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -232,6 +311,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		D539BDE12F7A64080030D33E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = ios;
+			target = D539BDCC2F7A63F30030D33E /* HarvestWatchTester */;
+			targetProxy = D539BDE02F7A64080030D33E /* PBXContainerItemProxy */;
+		};
 		D5C30A882F7986EC002EBE81 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D544D1A92F7986AE0048F48A /* HarvestTester */;
@@ -240,6 +325,71 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		D539BDDB2F7A63F40030D33E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = HarvestUITester;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.HarvestTester.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.4;
+			};
+			name = Debug;
+		};
+		D539BDDC2F7A63F40030D33E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = HarvestUITester;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.HarvestTester.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 26.4;
+			};
+			name = Release;
+		};
 		D544D1B32F7986AF0048F48A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -464,7 +614,7 @@
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -472,9 +622,10 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3,7";
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,7";
 				TEST_TARGET_NAME = HarvestTester;
 				TVOS_DEPLOYMENT_TARGET = 14.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10;
 				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Debug;
@@ -493,7 +644,7 @@
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -501,10 +652,11 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3,7";
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,7";
 				TEST_TARGET_NAME = HarvestTester;
 				TVOS_DEPLOYMENT_TARGET = 14.0;
 				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 10;
 				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Release;
@@ -512,6 +664,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		D539BDDD2F7A63F40030D33E /* Build configuration list for PBXNativeTarget "HarvestWatchTester" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D539BDDB2F7A63F40030D33E /* Debug */,
+				D539BDDC2F7A63F40030D33E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D544D1A52F7986AE0048F48A /* Build configuration list for PBXProject "HarvestTester" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
