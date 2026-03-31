@@ -9,7 +9,8 @@ import Foundation
 import SwiftUI
 
 @MainActor
-public protocol PathFolder: PathProject, CaseIterable {
+public protocol PathFolder: CaseIterable {
+    static var name: String { get }
     associatedtype ParentSection: PathProject
     static var options: [any PathFolder] { get }
     associatedtype Content: View
