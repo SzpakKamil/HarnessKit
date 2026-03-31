@@ -81,6 +81,40 @@ struct HarnessKitTests {
         }
     }
 
+    // MARK: - PathProject + PathFolder dual conformance
+
+    @MainActor
+    enum MockRootProject: PathProject {
+        static let name = "RootProject"
+        static let folders: [any PathFolder.Type] = [MockSubProject.self]
+    }
+
+    @MainActor
+    enum MockSubProject: PathFolder {
+        typealias ParentSection = MockRootProject
+        static let name = "SubProject"
+        static let folders: [any PathFolder.Type] = [MockSubFolder.self]
+    }
+
+    @MainActor
+    enum MockSubFolder: PathFolder {
+        typealias ParentSection = MockSubProject
+        static let name = "SubFolder"
+        static let folders: [any PathFolder.Type] = []
+    }
+
+    @Test func testSubProjectAsFolder() async throws {
+        await MainActor.run {
+            #expect(MockRootProject.pathIds == [])
+            #expect(MockSubProject.pathIds == [0])
+            #expect(MockSubProject.nameComponents == ["SubProject"])
+            #expect(MockSubProject.namePath == "SubProject")
+            #expect(MockSubFolder.pathIds == [0, 0])
+            #expect(MockSubFolder.nameComponents == ["SubProject", "SubFolder"])
+            #expect(MockSubFolder.namePath == "SubProject/SubFolder")
+        }
+    }
+
     @Test func testResolverMethods() async throws {
         await MainActor.run {
             #expect(MockEnum.ids(for: MockEnum.first) == [0, 0, 0, 0])

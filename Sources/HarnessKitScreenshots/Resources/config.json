@@ -1,0 +1,21 @@
+{
+  "phoneBezel": [
+    { "minVersion": "16.0", "maxVersion": "26.0", "bezelID": "iPhone16Black" },
+    { "minVersion": "26.0", "bezelID": "iPhone17Black" }
+  ],
+  "phoneOrientation": "Portrait",
+  "padBezel": [
+    { "minVersion": "16.0", "bezelID": "iPadMiniA17ProStarlight" }
+  ],
+  "padOrientation": "Landscape",
+  "watchBezel": [
+    { "minVersion": "11.0", "bezelID": "AppleWatchS1146mmAluminumJetBlackSportBandBlack" }
+  ],
+  "macBezel": [
+    { "minVersion": "15.0", "bezelID": "MacbookPro16M4Silver" }
+  ],
+  "tvBezel": [
+    { "minVersion": "18.0", "bezelID": "AppleTVFrame" }
+  ],
+  "resolution": "default"
+}

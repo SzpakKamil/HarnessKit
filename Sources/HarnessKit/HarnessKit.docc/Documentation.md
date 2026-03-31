@@ -53,3 +53,8 @@ All members must be accessed on the main actor.
 - ``HarnessKit/PathProject``
 - ``HarnessKit/PathFolder``
 - ``HarnessKit/HarnessPreview``
+
+### Window Management
+
+- ``HarnessKit/WindowSizeMode``
+- ``SwiftUICore/View/windowSize(_:)``

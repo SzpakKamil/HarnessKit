@@ -37,7 +37,7 @@ XCTAssertTrue(app.staticTexts["Variant 3 Label"].exists)
 | Platform | Interaction per Step |
 | :--- | :--- |
 | iOS, watchOS, visionOS | Tap `otherElements["HarnessPreview"]` |
-| macOS | Click `otherElements["HarnessPreview"]` |
+| macOS | Click `otherElements["HarnessPreview"]` (tap, scroll down, or down-arrow all advance in the app) |
 | tvOS | `XCUIRemote.shared.press(.playPause)` + `sleep(1)` |
 
 > Note: This method is isolated to the `@MainActor`. It is safe to call directly from `XCTestCase` methods in modern Swift.

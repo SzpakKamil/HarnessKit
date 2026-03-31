@@ -42,4 +42,26 @@ extension PathFolder {
             }
         }
     }
+
+    @MainActor
+    public func iteratePreview<V>(
+        app: XCUIApplication,
+        variants: [V],
+        indexedAction action: (Int, V) -> Void
+    ) {
+        iteratePreview(app: app, variantCount: variants.count) { index in
+            action(index, variants[index])
+        }
+    }
+
+    @MainActor
+    public func iteratePreview<V>(
+        app: XCUIApplication,
+        variants: [V],
+        action: (V) -> Void
+    ) {
+        iteratePreview(app: app, variantCount: variants.count) { index in
+            action(variants[index])
+        }
+    }
 }

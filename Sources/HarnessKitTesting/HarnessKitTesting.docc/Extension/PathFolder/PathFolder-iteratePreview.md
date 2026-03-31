@@ -59,3 +59,5 @@ ButtonsFolder.toggle.iteratePreview(app: app, variantCount: 2) { index in
 
 - ``advancePreview(app:)``
 - ``advancePreview(app:steps:)``
+- ``iteratePreview(app:variants:indexedAction:)``
+- ``iteratePreview(app:variants:action:)``

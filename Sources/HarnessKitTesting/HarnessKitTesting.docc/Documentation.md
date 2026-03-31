@@ -50,3 +50,11 @@ Link `HarnessKitTesting` to your UI test target only. Do not add it to the main 
 - ``HarnessKit/PathFolder/advancePreview(app:)``
 - ``HarnessKit/PathFolder/advancePreview(app:steps:)``
 - ``HarnessKit/PathFolder/iteratePreview(app:variantCount:action:)``
+- ``HarnessKit/PathFolder/iteratePreview(app:variants:indexedAction:)``
+- ``HarnessKit/PathFolder/iteratePreview(app:variants:action:)``
+
+### Helper Methods
+
+- ``HarnessKitTesting/clickButtonWithScrolling(app:titleOrIdentifier:maxScrolls:)``
+- ``HarnessKitTesting/smallSwipeUp(on:distanceRatio:hold:)``
+- ``HarnessKitTesting/tapButtonWithScrolling(app:titleOrIdentifier:maxSwipes:)``

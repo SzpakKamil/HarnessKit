@@ -16,6 +16,14 @@ let package = Package(
             name: "HarnessKitTesting",
             targets: ["HarnessKitTesting"]
         ),
+        .library(
+            name: "HarnessKitScreenshots",
+            targets: ["HarnessKitScreenshots"]
+        ),
+        .library(
+            name: "HarnessKitTransform",
+            targets: ["HarnessKitTransformTarget"]
+        ),
     ],
     targets: [
         .target(
@@ -24,6 +32,27 @@ let package = Package(
         .target(
             name: "HarnessKitTesting",
             dependencies: ["HarnessKit"]
+        ),
+        .target(
+            name: "HarnessKitScreenshots",
+            path: "Sources/HarnessKitScreenshots",
+            resources: [.process("Resources")]
+        ),
+        .target(
+            name: "HarnessKitTransformTarget",
+            dependencies: [
+                .target(
+                    name: "HarnessKitTransform",
+                    condition: .when(platforms: [.macOS])
+                )
+            ],
+            path: "SwiftPM-PlatformExclude/HarnessKitTransformWrap"
+        ),
+        .target(
+            name: "HarnessKitTransform",
+            dependencies: ["HarnessKitScreenshots"],
+            path: "Sources/HarnessKitTransform",
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "HarnessKitTests",

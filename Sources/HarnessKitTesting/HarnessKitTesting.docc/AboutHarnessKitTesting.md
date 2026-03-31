@@ -100,6 +100,25 @@ ButtonsFolder.toggle.iteratePreview(app: app, variantCount: 2) { index in
 }
 ```
 
+When you already have the variants array, the typed overloads are safer and more expressive. `iteratePreview(app:variants:action:)` passes the variant value directly; `iteratePreview(app:variants:indexedAction:)` also includes the zero-based index:
+
+```swift
+let styles: [CardStyle] = [.compact, .regular, .expanded]
+
+// Value only
+ButtonsFolder.card.iteratePreview(app: app, variants: styles) { style in
+    XCTAssertTrue(app.staticTexts[style.title].exists)
+}
+
+// Value + index
+ButtonsFolder.card.iteratePreview(app: app, variants: styles) { index, style in
+    let attachment = XCTAttachment(screenshot: app.screenshot())
+    attachment.name = "\(index): \(style)"
+    attachment.lifetime = .keepAlways
+    add(attachment)
+}
+```
+
 On tvOS, each advance sends a Play/Pause remote press followed by a one-second sleep. On all other platforms it taps the element identified by the `"HarnessPreview"` accessibility identifier.
 
 ## Stable Identifiers

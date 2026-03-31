@@ -56,8 +56,8 @@ var view: some View {
 | Platform | Trigger |
 | :--- | :--- |
 | iOS, watchOS, visionOS | Tap anywhere in the view |
-| macOS 14+ | Tap or down-arrow key |
-| macOS 11–13 | Tap only |
+| macOS 14+ | Tap, scroll down, or down-arrow key |
+| macOS 11–13 | Tap or scroll down |
 | tvOS | Play/Pause remote button |
 
 ### HarnessKitTesting Integration

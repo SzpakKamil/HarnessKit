@@ -61,12 +61,14 @@ public struct HarnessPreview<Variant, Content: View>: View {
                     return .handled
                 }
                 .onTapGesture { advance() }
+                .modifier(_ScrollWheelModifier(onScroll: advance))
                 .navigationBarBackButtonHidden(true)
                 .accessibilityIdentifier("HarnessPreview")
         } else {
             content(variant)
                 .contentShape(Rectangle())
                 .onTapGesture { advance() }
+                .modifier(_ScrollWheelModifier(onScroll: advance))
                 .accessibilityIdentifier("HarnessPreview")
         }
     }
@@ -83,3 +85,31 @@ extension HarnessPreview where Variant == Bool {
         self.init([false, true], content: content)
     }
 }
+
+#if os(macOS)
+private struct _ScrollWheelModifier: ViewModifier {
+    let onScroll: () -> Void
+    func body(content: Content) -> some View {
+        content.background(_ScrollWheelRepresentable(onScroll: onScroll))
+    }
+}
+
+private struct _ScrollWheelRepresentable: NSViewRepresentable {
+    let onScroll: () -> Void
+    func makeNSView(context: Context) -> _ScrollWheelNSView {
+        let view = _ScrollWheelNSView()
+        view.onScroll = onScroll
+        return view
+    }
+    func updateNSView(_ nsView: _ScrollWheelNSView, context: Context) {
+        nsView.onScroll = onScroll
+    }
+}
+
+private class _ScrollWheelNSView: NSView {
+    var onScroll: (() -> Void)?
+    override func scrollWheel(with event: NSEvent) {
+        if event.deltaY > 0 { onScroll?() }
+    }
+}
+#endif
