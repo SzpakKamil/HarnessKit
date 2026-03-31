@@ -7,6 +7,7 @@
 
 
 import Foundation
+import SwiftUI
 
 @MainActor
 public protocol PathProject: Sendable {
@@ -23,7 +24,7 @@ extension PathProject {
     @_documentation(visibility: internal)
     public static var pathIds: [Int] { [] }
     @_documentation(visibility: internal)
-    public static var nameComponents: [String] { [name] }
+    public static var nameComponents: [String] { [] }
     @_documentation(visibility: internal)
     public static var namePath: String { nameComponents.joined(separator: "/") }
 }

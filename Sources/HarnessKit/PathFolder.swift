@@ -22,9 +22,19 @@ extension PathFolder {
         ParentSection.folders.firstIndex(where: { ObjectIdentifier($0) == ObjectIdentifier(Self.self) }) ?? 0
     }
     @_documentation(visibility: internal)
-    public static var pathIds: [Int] { ParentSection.pathIds + [path] }
+    public static var pathIds: [Int] {
+        if let parentAsFolder = ParentSection.self as? any PathFolder.Type {
+            return parentAsFolder.pathIds + [path]
+        }
+        return ParentSection.pathIds + [path]
+    }
     @_documentation(visibility: internal)
-    public static var nameComponents: [String] { ParentSection.nameComponents + [name] }
+    public static var nameComponents: [String] {
+        if let parentAsFolder = ParentSection.self as? any PathFolder.Type {
+            return parentAsFolder.nameComponents + [name]
+        }
+        return ParentSection.nameComponents + [name]
+    }
     @_documentation(visibility: internal)
     public static var namePath: String { nameComponents.joined(separator: "/") }
     @_documentation(visibility: internal)
