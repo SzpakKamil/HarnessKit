@@ -23,7 +23,7 @@ extension PathProject {
     @_documentation(visibility: internal)
     public static var pathIds: [Int] { [] }
     @_documentation(visibility: internal)
-    public static var nameComponents: [String] { [] }
+    public static var nameComponents: [String] { [name] }
     @_documentation(visibility: internal)
     public static var namePath: String { nameComponents.joined(separator: "/") }
 }
