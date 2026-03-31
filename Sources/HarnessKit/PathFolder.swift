@@ -32,7 +32,7 @@ extension PathFolder {
     @_documentation(visibility: internal)
     public static var options: [any PathFolder] { Array(allCases) }
     @_documentation(visibility: internal)
-    public var description: String { "" }
+    public var description: String { caseName }
     @_documentation(visibility: internal)
     public var view: some View { EmptyView() }
 
