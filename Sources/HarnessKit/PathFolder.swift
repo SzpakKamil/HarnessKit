@@ -13,6 +13,7 @@ public protocol PathFolder: CaseIterable {
     static var name: String { get }
     associatedtype ParentSection: PathProject
     static var options: [any PathFolder] { get }
+    static var folders: [any PathFolder.Type] { get }
     associatedtype Content: View
     var description: String { get }
     @ViewBuilder var view: Content { get }
@@ -38,8 +39,6 @@ extension PathFolder {
     }
     @_documentation(visibility: internal)
     public static var namePath: String { nameComponents.joined(separator: "/") }
-    @_documentation(visibility: internal)
-    public static var folders: [any PathFolder.Type] { [] }
     @_documentation(visibility: internal)
     public static var options: [any PathFolder] { Array(allCases) }
     @_documentation(visibility: internal)
