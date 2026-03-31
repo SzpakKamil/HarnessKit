@@ -35,15 +35,15 @@ extension PathFolder {
     public var description: String { "" }
     @_documentation(visibility: internal)
     public var view: some View { EmptyView() }
+
+    internal var caseName: String {
+        Mirror(reflecting: self).children.first?.label ?? String(describing: self)
+    }
 }
 
 extension PathFolder where Self: RawRepresentable, RawValue == Int {
     @_documentation(visibility: internal)
     public var pathIds: [Int] { Self.pathIds + [self.rawValue] }
-
-    private var caseName: String {
-        Mirror(reflecting: self).children.first?.label ?? String(describing: self)
-    }
 
     @_documentation(visibility: internal)
     public var nameComponents: [String] { Self.nameComponents + [caseName] }

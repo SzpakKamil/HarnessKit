@@ -65,6 +65,7 @@ struct HarnessFolderView: View {
                 NavigationLink(option.description) {
                     makeView(option)
                 }
+                .accessibilityIdentifier(option.caseName)
             }
         }
         .navigationTitle(folder.name)

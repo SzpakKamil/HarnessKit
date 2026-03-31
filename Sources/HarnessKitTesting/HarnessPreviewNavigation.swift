@@ -23,7 +23,7 @@ extension PathFolder {
 #elseif os(macOS)
             app.otherElements["HarnessPreview"].firstMatch.click()
 #else
-            app.otherElements["HarnessPreview"].firstMatch.tap()
+            app.staticTexts["HarnessPreview"].firstMatch.tap()
 #endif
         }
     }
