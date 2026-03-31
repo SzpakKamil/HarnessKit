@@ -21,7 +21,7 @@ extension PathFolder {
             XCUIRemote.shared.press(.playPause)
             sleep(1)
 #elseif os(macOS)
-            app.otherElements["HarnessPreview"].firstMatch.click()
+            app.descendants(matching: .any).matching(identifier: "HarnessPreview").firstMatch.click()
 #else
             app.descendants(matching: .any).matching(identifier: "HarnessPreview").firstMatch.tap()
 #endif
