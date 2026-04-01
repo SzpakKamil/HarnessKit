@@ -29,7 +29,7 @@ public func captureScreenshot(
 ) {
     #if os(iOS)
     if let orientation = screenshot.orientation{
-        setOrientation(to: orientation.uiKitValue)
+        setOrientation(to: orientation)
     }
     #endif
     #if !os(visionOS) && !os(watchOS)

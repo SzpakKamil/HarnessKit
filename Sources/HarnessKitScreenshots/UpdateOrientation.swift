@@ -20,9 +20,9 @@ public func updateOrientation() {
 }
 
 @MainActor
-public func setOrientation(to orientation: UIDeviceOrientation) {
+public func setOrientation(to orientation: ScreenOrientation) {
     #if os(iOS)
-    XCUIDevice.shared.orientation = orientation
+    XCUIDevice.shared.orientation = orientation.uiKitValue
     sleep(2)
     #endif
 }
