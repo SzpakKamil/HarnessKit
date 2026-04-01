@@ -21,6 +21,10 @@ let package = Package(
             targets: ["HarnessKitScreenshots"]
         ),
         .library(
+            name: "HarnessKitScreenshotTesting",
+            targets: ["HarnessKitScreenshotTesting"]
+        ),
+        .library(
             name: "HarnessKitTransform",
             targets: ["HarnessKitTransformTarget"]
         ),
@@ -37,6 +41,11 @@ let package = Package(
             name: "HarnessKitScreenshots",
             path: "Sources/HarnessKitScreenshots",
             resources: [.process("Resources")]
+        ),
+        .target(
+            name: "HarnessKitScreenshotTesting",
+            dependencies: ["HarnessKitScreenshots"],
+            path: "Sources/HarnessKitScreenshotTesting"
         ),
         .target(
             name: "HarnessKitTransformTarget",

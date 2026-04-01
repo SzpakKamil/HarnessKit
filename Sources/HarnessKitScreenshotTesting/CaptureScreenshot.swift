@@ -1,9 +1,10 @@
 //
 //  CaptureScreenshot.swift
-//  HarnessKitScreenshots
+//  HarnessKitScreenshotTesting
 //
 
 import Foundation
+import HarnessKitScreenshots
 #if canImport(XCTest)
 import XCTest
 
