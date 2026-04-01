@@ -23,9 +23,6 @@ public struct VersionedBezel: Codable, Equatable, Sendable {
     }
 }
 
-/// Per-platform screenshot configuration.
-/// Each platform uses a `[VersionedBezel]` array so that different device models
-/// can be selected based on the OS version used during testing.
 public struct ScreenshotConfig: Codable, Equatable {
     public var phoneBezel: [VersionedBezel]
     public var phoneOrientation: ScreenOrientation
@@ -57,9 +54,6 @@ public struct ScreenshotConfig: Codable, Equatable {
     }
 
     // MARK: - Factory
-
-    /// Loads the config from `config.json` in the module bundle.
-    /// Falls back to hardcoded defaults if the file is missing or malformed.
     @MainActor
     public static func load() -> ScreenshotConfig {
         guard let url = Bundle.module.url(forResource: "config", withExtension: "json") else {
@@ -100,11 +94,6 @@ public struct ScreenshotConfig: Codable, Equatable {
     }
 
     // MARK: - Version-Aware Bezel Resolution
-
-    /// Returns the bezel ID for the given screenshot, matching its `osVersion`
-    /// against the versioned bezel array for its target OS.
-    /// Falls back to the last entry in the array if no version matches or
-    /// `osVersion` is nil.
     public func bezelID(for screenshot: Screenshot) -> String? {
         let candidates: [VersionedBezel]
         switch screenshot.os {

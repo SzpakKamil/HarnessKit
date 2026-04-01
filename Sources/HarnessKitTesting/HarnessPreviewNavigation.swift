@@ -8,7 +8,7 @@
 import XCTest
 import HarnessKit
 
-extension PathFolder {
+extension PathFolder where Self: RawRepresentable, RawValue == Int  {
     @MainActor
     public func advancePreview(app: XCUIApplication) {
         advancePreview(app: app, steps: 1)
@@ -34,7 +34,7 @@ extension PathFolder {
         variantCount: Int,
         action: (Int) -> Void
     ) {
-        navigate(app: app)
+        self.navigate(app: app)
         for index in 0..<variantCount {
             action(index)
             if index < variantCount - 1 {

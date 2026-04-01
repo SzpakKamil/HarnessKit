@@ -19,6 +19,7 @@ import XCTest
 ///   - sleepSeconds: Seconds to wait after applying the appearance before capturing.
 ///   - customActions: Additional setup actions to run before capturing.
 ///   - add: Closure that attaches an `XCTAttachment` to the current test.
+@MainActor
 public func captureScreenshot(
     screenshot: Screenshot,
     app: XCUIApplication,
@@ -26,6 +27,11 @@ public func captureScreenshot(
     customActions: () -> Void = { },
     add: (XCTAttachment) -> Void
 ) {
+    #if os(iOS)
+    if let orientation = screenshot.orientation{
+        setOrientation(to: orientation.uiKitValue)
+    }
+    #endif
     #if !os(visionOS) && !os(watchOS)
     if #available(macOS 12.0, iOS 15.0, *) {
         let mappedTheme: XCUIDevice.Appearance = screenshot.appearance == .light ? .light : .dark
