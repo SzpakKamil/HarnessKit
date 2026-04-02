@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 @MainActor
 public struct HarnessPreview<Variant, Content: View>: View {
@@ -13,6 +14,7 @@ public struct HarnessPreview<Variant, Content: View>: View {
     private let variants: [Variant]
     private let content: (Variant) -> Content
     @State private var currentIndex: Int = 0
+    @State private var lastAdvanceTime: Date = .distantPast
 
     public init(
         _ variants: [Variant],
@@ -78,6 +80,11 @@ public struct HarnessPreview<Variant, Content: View>: View {
 
     private func advance() {
         guard !variants.isEmpty else { return }
+        
+        let now = Date()
+        guard now.timeIntervalSince(lastAdvanceTime) >= 2.0 else { return }
+        
+        lastAdvanceTime = now
         currentIndex = (currentIndex + 1) % variants.count
     }
 }

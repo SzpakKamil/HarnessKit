@@ -8,7 +8,8 @@ import Foundation
 /// Specifies which bezel to use for a specific OS version range.
 /// The transform pipeline picks the first entry whose version range includes
 /// the screenshot's `osVersion`. Falls back to the last entry if no match.
-public struct VersionedBezel: Codable, Equatable, Sendable {
+public struct VersionedBezel: Equatable, Sendable, Identifiable {
+    public var id: UUID
     /// Inclusive lower bound, e.g. "16.0"
     public var minVersion: String
     /// Exclusive upper bound. `nil` means no upper limit.
@@ -16,10 +17,33 @@ public struct VersionedBezel: Codable, Equatable, Sendable {
     /// Bezel ID string, resolved to a concrete `BezelDescriptor` by HarnessKitTransform.
     public var bezelID: String
 
-    public init(minVersion: String, maxVersion: String? = nil, bezelID: String) {
+    public init(id: UUID = UUID(), minVersion: String, maxVersion: String? = nil, bezelID: String) {
+        self.id = id
         self.minVersion = minVersion
         self.maxVersion = maxVersion
         self.bezelID = bezelID
+    }
+}
+
+extension VersionedBezel: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case id, minVersion, maxVersion, bezelID
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = (try? c.decode(UUID.self, forKey: .id)) ?? UUID()
+        minVersion = try c.decode(String.self, forKey: .minVersion)
+        maxVersion = try? c.decode(String.self, forKey: .maxVersion)
+        bezelID = try c.decode(String.self, forKey: .bezelID)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encode(minVersion, forKey: .minVersion)
+        try c.encodeIfPresent(maxVersion, forKey: .maxVersion)
+        try c.encode(bezelID, forKey: .bezelID)
     }
 }
 
@@ -114,7 +138,10 @@ public struct ScreenshotConfig: Codable, Equatable {
         guard !candidates.isEmpty else { return nil }
 
         if let version = screenshot.osVersion {
-            for entry in candidates {
+            let sorted = candidates.sorted {
+                $0.minVersion.compare($1.minVersion, options: .numeric) == .orderedDescending
+            }
+            for entry in sorted {
                 let meetsMin = _versionCompare(version, isGreaterThanOrEqualTo: entry.minVersion)
                 let meetsMax: Bool
                 if let max = entry.maxVersion {
@@ -128,7 +155,9 @@ public struct ScreenshotConfig: Codable, Equatable {
             }
         }
 
-        return candidates.last?.bezelID
+        return candidates.sorted {
+            $0.minVersion.compare($1.minVersion, options: .numeric) == .orderedDescending
+        }.first?.bezelID
     }
 }
 

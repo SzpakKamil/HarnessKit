@@ -18,7 +18,10 @@ public func resolveBezel<B: BezelDescriptor>(
     var targetID: String?
 
     if let version = screenshot.osVersion {
-        for entry in candidates {
+        let sorted = candidates.sorted {
+            $0.minVersion.compare($1.minVersion, options: .numeric) == .orderedDescending
+        }
+        for entry in sorted {
             let meetsMin = version.compare(entry.minVersion, options: .numeric) != .orderedAscending
             let meetsMax: Bool
             if let max = entry.maxVersion {
@@ -33,7 +36,9 @@ public func resolveBezel<B: BezelDescriptor>(
         }
     }
 
-    let resolvedID = targetID ?? candidates.last?.bezelID
+    let resolvedID = targetID ?? candidates.sorted {
+        $0.minVersion.compare($1.minVersion, options: .numeric) == .orderedDescending
+    }.first?.bezelID
     guard let id = resolvedID else { return nil }
     return try? B.bezel(for: id)
 }

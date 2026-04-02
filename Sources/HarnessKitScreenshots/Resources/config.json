@@ -1,21 +1,45 @@
 {
-  "phoneBezel": [
-    { "minVersion": "16.0", "maxVersion": "26.0", "bezelID": "iPhone16Black" },
-    { "minVersion": "26.0", "bezelID": "iPhone17Black" }
+  "macBezel" : [
+    {
+      "bezelID" : "MacbookPro16M4Silver",
+      "id" : "D009295B-0436-4860-93A0-E4FF1D8AC14D",
+      "minVersion" : "15.0"
+    }
   ],
-  "phoneOrientation": "Portrait",
-  "padBezel": [
-    { "minVersion": "16.0", "bezelID": "iPadMiniA17ProStarlight" }
+  "padBezel" : [
+    {
+      "bezelID" : "iPadMiniA17ProStarlight",
+      "id" : "9AB2342C-C315-4B7D-A581-4181CB49F795",
+      "minVersion" : "16.0"
+    }
   ],
-  "padOrientation": "Landscape",
-  "watchBezel": [
-    { "minVersion": "11.0", "bezelID": "AppleWatchS1146mmAluminumJetBlackSportBandBlack" }
+  "padOrientation" : "Landscape",
+  "phoneBezel" : [
+    {
+      "bezelID" : "iPhone17Black",
+      "id" : "B255AD45-6655-4A28-9950-65FD52C12B52",
+      "minVersion" : "26.0"
+    },
+    {
+      "bezelID" : "iPhone16Black",
+      "id" : "090800B3-8DBB-4125-8562-4B9AE887BF6C",
+      "minVersion" : "16.0"
+    }
   ],
-  "macBezel": [
-    { "minVersion": "15.0", "bezelID": "MacbookPro16M4Silver" }
+  "phoneOrientation" : "Portrait",
+  "resolution" : "default",
+  "tvBezel" : [
+    {
+      "bezelID" : "AppleTVFrame",
+      "id" : "8285BF28-1573-40DC-A4C2-5273C5AA3D24",
+      "minVersion" : "18.0"
+    }
   ],
-  "tvBezel": [
-    { "minVersion": "18.0", "bezelID": "AppleTVFrame" }
-  ],
-  "resolution": "default"
+  "watchBezel" : [
+    {
+      "bezelID" : "AppleWatchS1146mmAluminumJetBlackSportBandBlack",
+      "id" : "1CC8A48C-A391-49C1-996D-7862905345D4",
+      "minVersion" : "11.0"
+    }
+  ]
 }

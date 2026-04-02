@@ -28,14 +28,31 @@ public func captureScreenshot(
     customActions: () -> Void = { },
     add: (XCTAttachment) -> Void
 ) {
+    let resolvedScreenshot: Screenshot
+    if screenshot.osVersion == nil {
+        let major = ProcessInfo.processInfo.operatingSystemVersion.majorVersion
+        resolvedScreenshot = Screenshot(
+            id: screenshot.id,
+            appearance: screenshot.appearance,
+            os: screenshot.os,
+            orientation: screenshot.orientation,
+            crop: screenshot.crop,
+            backgroundHex: screenshot.backgroundHex,
+            addBezel: screenshot.addBezel,
+            osVersion: "\(major).0"
+        )
+    } else {
+        resolvedScreenshot = screenshot
+    }
+
     #if os(iOS)
-    if let orientation = screenshot.orientation{
+    if let orientation = resolvedScreenshot.orientation{
         setOrientation(to: orientation)
     }
     #endif
     #if !os(visionOS) && !os(watchOS)
     if #available(macOS 12.0, iOS 15.0, *) {
-        let mappedTheme: XCUIDevice.Appearance = screenshot.appearance == .light ? .light : .dark
+        let mappedTheme: XCUIDevice.Appearance = resolvedScreenshot.appearance == .light ? .light : .dark
         XCUIDevice.shared.appearance = mappedTheme
     }
     sleep(sleepSeconds)
@@ -48,37 +65,37 @@ public func captureScreenshot(
         if let roundedData = _roundedPNG(from: windowShot, cornerRadius: 35) {
             let attachment = XCTAttachment(
                 uniformTypeIdentifier: "public.png",
-                name: screenshot.screenshotName(),
+                name: resolvedScreenshot.screenshotName(),
                 payload: roundedData
             )
             attachment.lifetime = .keepAlways
             add(attachment)
         } else {
             let attachment = XCTAttachment(screenshot: windowShot)
-            attachment.name = screenshot.screenshotName()
+            attachment.name = resolvedScreenshot.screenshotName()
             attachment.lifetime = .keepAlways
             add(attachment)
         }
     } else {
         let scr = XCUIScreen.main.screenshot()
         let attachment = XCTAttachment(screenshot: scr)
-        attachment.name = screenshot.screenshotName()
+        attachment.name = resolvedScreenshot.screenshotName()
         attachment.lifetime = .keepAlways
         add(attachment)
     }
     #elseif os(watchOS)
     sleep(1)
-    if screenshot.appearance != .dark {
+    if resolvedScreenshot.appearance != .dark {
         let scr = XCUIScreen.main.screenshot()
         let attachment = XCTAttachment(screenshot: scr)
-        attachment.name = screenshot.screenshotName()
+        attachment.name = resolvedScreenshot.screenshotName()
         attachment.lifetime = .keepAlways
         add(attachment)
     }
     #else
     let scr = XCUIScreen.main.screenshot()
     let attachment = XCTAttachment(screenshot: scr)
-    attachment.name = screenshot.screenshotName()
+    attachment.name = resolvedScreenshot.screenshotName()
     attachment.lifetime = .keepAlways
     add(attachment)
     #endif

@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 @MainActor
-public protocol PathProject: Sendable {
+public protocol PathProject: Sendable, PathComponent {
     static var name: String { get }
     static var pathIds: [Int] { get }
     static var nameComponents: [String] { get }
