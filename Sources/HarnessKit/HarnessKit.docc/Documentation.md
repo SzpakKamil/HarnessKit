@@ -25,19 +25,28 @@ A structured navigation harness for SwiftUI demo apps and component previews.
 
 `HarnessKit` organizes SwiftUI component previews into a type-safe, navigable tree. Conform a root type to `PathProject`, group related views into `PathFolder` enums, and render everything with `HarnessView`. Pair with `HarnessKitTesting` to navigate to any screen in a UI test with one method call.
 
-All members must be accessed on the main actor.
-
 @Image(source: "HarnessKit-Banner", alt: "HarnessKit banner showing a structured list navigation.")
+
+The full package ships six libraries that compose into a complete screenshot pipeline:
+
+| Library | Role |
+|---|---|
+| `HarnessKit` | Navigation harness — `PathProject`, `PathFolder`, `HarnessView`, `HarnessPreview` |
+| `HarnessKitTesting` | UI-test helpers — `navigate(app:)`, `iteratePreview(app:variantCount:action:)` |
+| `HarnessKitScreenshots` | Screenshot metadata types — `Screenshot`, `ScreenshotConfig`, `VersionedBezel` |
+| `HarnessKitScreenshotTesting` | Screenshot capture — `captureScreenshot(...)`, `resetTheme(to:)` |
+| `HarnessKitTransform` | macOS image pipeline — `transformScreenshot(...)`, `HarnessKitCatalogue` |
+
+Add `HarnessKit` to the app target, `HarnessKitTesting` and `HarnessKitScreenshotTesting` to the UI test target, and `HarnessKitTransform` to the macOS transformer app.
 
 ## Getting Started
 
 @Links(visualStyle: detailedGrid) {
     - <doc:AboutHarnessKit>
     - <doc:SetUp>
+    - <doc:ChoosingATarget>
     - <doc:HarnessUsage>
 }
-
-`HarnessPreview` cycles through component variants on tap — use it inside any `PathFolder.view` to avoid writing `@State` boilerplate. Pair it with `advancePreview(app:)` and `iteratePreview(app:variantCount:action:)` from `HarnessKitTesting` to drive variants in UI tests.
 
 ## Topics
 
@@ -45,6 +54,7 @@ All members must be accessed on the main actor.
 
 - <doc:AboutHarnessKit>
 - <doc:SetUp>
+- <doc:ChoosingATarget>
 - <doc:HarnessUsage>
 
 ### Core Types
@@ -52,6 +62,7 @@ All members must be accessed on the main actor.
 - ``HarnessKit/HarnessView``
 - ``HarnessKit/PathProject``
 - ``HarnessKit/PathFolder``
+- ``HarnessKit/PathComponent``
 - ``HarnessKit/HarnessPreview``
 
 ### Window Management

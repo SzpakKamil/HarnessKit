@@ -24,7 +24,6 @@ The display name used as the navigation title for this folder's list.
 The `name` property defines the human-readable string that identifies a ``PathFolder`` within the harness. This value serves two primary purposes in the user interface:
 
 1.  **Navigation Title**: When a user navigates into a folder, this string is applied as the `.navigationTitle` of the destination list.
-2.  **Breadcrumbs**: It contributes to the generated ``nameComponents`` and ``namePath``, which are used for path resolution and UI testing.
 
 Provide a short, human-readable string. HarnessView uses this value to ensure that the user always has clear context of their current location within the project's hierarchy.
 

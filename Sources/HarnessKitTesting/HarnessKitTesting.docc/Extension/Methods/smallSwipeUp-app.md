@@ -1,6 +1,6 @@
 # ``HarnessKitTesting/smallSwipeUp(on:distanceRatio:hold:)``
 
-Performs a short upward swipe on the best available scrollable element in the app.
+Performs a short upward swipe on a scrollable element.
 
 @Metadata {
     @SupportedLanguage(swift)
@@ -10,17 +10,49 @@ Performs a short upward swipe on the best available scrollable element in the ap
     @DocumentationExtension(mergeBehavior: override)
 }
 
-Selects the scroll target using a priority chain:
-1. `app.tables.firstMatch`
-2. `app.collectionViews.firstMatch`
-3. `app.scrollViews.firstMatch`
-4. `app.windows.firstMatch` (fallback)
+@Options {
+    @AutomaticArticleSubheading(disabled)
+}
 
-- Parameter element: The element to find
-- Parameter distanceRatio: Swipe distance fraction. Default 0.2.
-- Parameter hold: Press duration before drag. Default 0.01 s.
+## Overview
 
-### Details
+This low-level helper performs a short press-then-drag gesture on a given `XCUIElement`, simulating a small upward scroll. It is used internally by ``tapButtonWithScrolling(app:titleOrIdentifier:maxSwipes:)`` to reveal off-screen buttons one step at a time.
 
-- **watchOS**: Rotates the Digital Crown instead of swiping.
-- **iOS**: Anchors the swipe start at the center-bottom area (70% from top) and drags upward.
+### Platform Behaviour
+
+| Platform | Mechanism |
+| :--- | :--- |
+| iOS / iPadOS | Anchors the swipe start at 70% from the top of the element, then drags upward by `distanceRatio` of the element height. |
+| watchOS | Rotates the Digital Crown (`XCUIDevice.shared.rotateDigitalCrown`) instead of swiping, followed by a 1-second sleep. |
+
+### Swipe Geometry
+
+The swipe originates at the center-bottom area of the element (normalized offset `dx: 0.5, dy: 0.7`). The `distanceRatio` controls how far upward the drag travels, clamped between `0.02` and `0.9` to prevent zero-length or full-screen drags.
+
+The short `hold` duration (default 0.01 seconds) prevents XCTest from interpreting the gesture as a long press.
+
+## Parameters
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `element` | `XCUIElement` | The scrollable element to swipe on (typically a table, collection view, or scroll view). |
+| `distanceRatio` | `CGFloat` | Swipe distance as a fraction of the element height. Default `0.2` (20%). Clamped to `0.02...0.9`. |
+| `hold` | `TimeInterval` | Press duration before the drag begins. Default `0.01` seconds. |
+
+## Example
+
+```swift
+import XCTest
+import HarnessKitTesting
+
+// Scroll a table down by 30% of its height
+let table = app.tables.firstMatch
+smallSwipeUp(on: table, distanceRatio: 0.3)
+```
+
+## Topics
+
+### Navigation Helpers
+
+- <doc:HarnessKitTesting/tapButtonWithScrolling(app:titleOrIdentifier:maxSwipes:)>
+- <doc:HarnessKitTesting/clickButtonWithScrolling(app:titleOrIdentifier:maxScrolls:)>

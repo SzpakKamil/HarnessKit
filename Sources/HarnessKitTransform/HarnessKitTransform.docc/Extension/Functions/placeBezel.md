@@ -1,35 +1,41 @@
-# ``HarnessKitTransform/placeBezel(image:bezel:verticalOffset:screenshotOnTop:)``
+# ``HarnessKitTransform/placeBezel(image:bezel:verticalOffset:horizontalOffset:screenshotOnTop:scaleUpToFill:nativeScreenSize:)``
 
 @Metadata {
     @SupportedLanguage(swift)
     @Available(macOS, introduced: "11.0")
     @DocumentationExtension(mergeBehavior: override)
 }
-
 @Options {
+    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
-Composites a screenshot and a device bezel PNG into a single image.
+Places the screenshot inside the bezel frame image.
 
 ## Overview
 
-`placeBezel` fits the screenshot inside the bezel canvas using aspect-fit scaling, shifts it vertically by `verticalOffset` points, then composites the two layers. The `screenshotOnTop` parameter controls draw order:
+Composites the screenshot and bezel onto a canvas whose size matches the bezel's pixel dimensions (via ``pixelSize(of:)``). The screenshot is aspect-fit into the bezel area, then offset by fractional vertical and horizontal values.
 
-- `false` — screenshot is drawn first, bezel on top. Use this for phones, iPads, Apple Watch, and Apple TV where the bezel frame sits in front of the screen.
-- `true` — bezel is drawn first, screenshot on top. Use this for Mac laptops and iMacs where the screen content sits above the display cutout in the bezel image.
+Layout uses pixel dimensions for DPI-independent sizing, while drawing uses `NSImage.size` for AppKit's coordinate system.
 
-The output canvas matches the bezel PNG dimensions.
+When `screenshotOnTop` is `false` (the default), the screenshot is drawn first and the bezel overlays it. When `true`, the bezel is drawn first and the screenshot overlays the frame — useful for bezels with transparent screen areas.
 
-## Parameters
+When `scaleUpToFill` is `false` and a `nativeScreenSize` is provided, the screenshot is placed at its natural pixel density relative to the device screen. If no native size is available, the screenshot falls back to 50% of the aspect-fit size for placeholder display.
+
+### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :--- |
-| `image` | `NSImage` | The scaled screenshot (output of `scaleToBezel`). |
-| `bezel` | `NSImage` | The bezel border image from `BezelDescriptor.borderImage`. |
-| `verticalOffset` | `CGFloat` | Points to shift the screenshot vertically inside the bezel. Use `bezelCase.verticalOffset`. |
-| `screenshotOnTop` | `Bool` | When `true` the screenshot is drawn above the bezel layer. Default: `false`. |
+| `image` | `NSImage` | The prepared screenshot. |
+| `bezel` | `NSImage` | The device bezel frame image. |
+| `verticalOffset` | `CGFloat` | Fraction of bezel height to shift the screenshot vertically. |
+| `horizontalOffset` | `CGFloat` | Fraction of bezel width to shift the screenshot horizontally. |
+| `screenshotOnTop` | `Bool` | Whether the screenshot draws above the bezel. |
+| `scaleUpToFill` | `Bool` | Whether to scale the screenshot to fill the bezel. |
+| `nativeScreenSize` | `NSSize?` | Native screen resolution for natural-density placement. |
 
-## Returns
+## See Also
 
-The composited `NSImage` at the bezel's natural size.
+- ``scaleToBezel(image:factor:)``
+- ``applyOrientation(image:orientation:)``
+- ``pixelSize(of:)``

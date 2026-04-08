@@ -5,30 +5,30 @@
     @Available(macOS, introduced: "11.0")
     @DocumentationExtension(mergeBehavior: override)
 }
-
 @Options {
+    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
-Applies a normalized pan-and-zoom crop to an image.
+Crops the image using a normalized zoom-and-pan rectangle.
 
 ## Overview
 
-`cropImage` reads the normalized `CropRect` values, computes the source rectangle inside `image`, and stretches it back to fill the original canvas. The output is always the same dimensions as the input — cropping never changes the canvas size.
+Applies a `CropRect` that defines a viewport into the image. The crop parameters work as a zoom and pan system centered on the image:
 
-Pass the default `CropRect(x: 0, y: 0, width: 1, height: 1)` to leave the image unchanged.
+- `width` and `height` control zoom level (e.g. `2.0` = 2x zoom, `1.0` = no zoom).
+- `x` and `y` pan the viewport within the zoomed image, where `0` is centered and `1` / `-1` shift to the edges.
 
-## Parameters
+An identity crop (`width: 1, height: 1, x: 0, y: 0`) returns the image unchanged. The output image retains the original canvas dimensions.
+
+### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :--- |
 | `image` | `NSImage` | The image to crop. |
-| `crop` | `CropRect` | Normalized pan-and-zoom descriptor from `Screenshot.crop`. |
-
-## Returns
-
-The cropped `NSImage` at the same size as the input.
+| `crop` | `CropRect` | Normalized crop rectangle with zoom and pan values. |
 
 ## See Also
 
-- ``CropRect``
+- ``addBackground(image:background:backgroundImageCache:)``
+- ``adjustResolution(image:resolution:)``

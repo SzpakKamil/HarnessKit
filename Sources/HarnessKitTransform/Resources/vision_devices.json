@@ -1,0 +1,16 @@
+{
+  "devices": [
+    {
+      "allowsScreenshot": false,
+      "colors": ["Default"],
+      "id": "AppleVisionProDecoration",
+      "model": "Apple Vision Pro (Decoration)",
+      "runDestination": "Apple Vision Pro",
+      "scale": 1.0,
+      "verticalOffset": 0,
+      "screenCornerRadius": 0,
+      "minOSVersion": "1.0",
+      "maxOSVersion": null
+    }
+  ]
+}

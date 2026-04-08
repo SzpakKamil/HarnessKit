@@ -5,43 +5,30 @@
     @Available(macOS, introduced: "11.0")
     @DocumentationExtension(mergeBehavior: override)
 }
-
 @Options {
+    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
-Runs the full platform-specific transform pipeline and returns the composed image.
+Processes a screenshot through the platform-specific pipeline and returns the resulting image.
 
 ## Overview
 
-`processScreenshot` dispatches to the correct platform processor based on `screenshot.os` and returns the resulting `NSImage`. It does not save anything — call `saveResults(image:name:to:)` when you are ready to write to disk.
+Routes the raw screenshot to the correct platform handler based on `Screenshot.os` — macOS, iOS, iPadOS, watchOS, tvOS, or visionOS. Each platform handler builds a ``BezelPipelineParams`` value from the `Screenshot` and `ScreenshotConfig` metadata and calls ``applyBezelPipeline(image:params:)`` to produce the final image.
 
-Use this function when you need to inspect or further modify the image before saving — for example, to preview it in a SwiftUI view or add a text overlay.
+This function does not save the result to disk. Call ``saveResults(image:screenshot:to:)`` afterwards if persistence is needed, or use ``transformScreenshot(image:screenshot:config:outputDirectory:)`` for a single call that does both.
 
-## Parameters
+### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :--- |
-| `image` | `NSImage` | The raw screenshot captured during testing. |
-| `screenshot` | `Screenshot` | Metadata driving the pipeline. |
-| `config` | `ScreenshotConfig` | Versioned bezel and resolution config. |
+| `image` | `NSImage` | The raw screenshot image captured during testing. |
+| `screenshot` | `Screenshot` | Metadata describing the screenshot (OS, device, appearance, etc.). |
+| `config` | `ScreenshotConfig` | Versioned bezel and resolution configuration. |
 
-## Returns
-
-The fully composed `NSImage` ready for display or export.
-
-## Throws
-
-`TransformError` if a required bezel is missing.
-
-## Example
-
-```swift
-let result = try processScreenshot(image: rawImage, screenshot: screenshot, config: config)
-// preview result in the UI, then save:
-try saveResults(image: result, name: screenshot.prettyName(), to: outputDir)
-```
+> Throws: ``TransformError`` if a required bezel is missing.
 
 ## See Also
 
 - ``transformScreenshot(image:screenshot:config:outputDirectory:)``
+- ``applyBezelPipeline(image:params:)``

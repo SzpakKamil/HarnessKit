@@ -7,8 +7,7 @@ import SwiftUI
 import Foundation
 
 public enum TargetOS: String, Identifiable, Sendable, Codable, Hashable, CaseIterable, Equatable {
-    case macOSTahoe = "macOSTahoe"
-    case macOSSequoia = "macOSSequoia"
+    case macOS = "macOS"
     case iOS = "iOS"
     case iPadOS = "iPadOS"
     case watchOS = "watchOS"
@@ -20,11 +19,7 @@ public enum TargetOS: String, Identifiable, Sendable, Codable, Hashable, CaseIte
     }
 
     public var isMacOS: Bool {
-        return id.contains("macOS")
-    }
-
-    public static var newestMacOS: TargetOS {
-        return .macOSTahoe
+        return self == .macOS
     }
 
     public static var currentOS: TargetOS {
@@ -35,7 +30,7 @@ public enum TargetOS: String, Identifiable, Sendable, Codable, Hashable, CaseIte
         #elseif os(tvOS)
         return .tvOS
         #elseif os(macOS)
-        return newestMacOS
+        return .macOS
         #else
         return .visionOS
         #endif

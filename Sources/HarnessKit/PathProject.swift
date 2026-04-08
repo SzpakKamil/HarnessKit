@@ -16,6 +16,7 @@ public protocol PathProject: Sendable, PathComponent {
     static var nameComponents: [String] { get }
     static var namePath: String { get }
     static var folders: [any PathFolder.Type] { get }
+    static var options: [any PathFolder] { get }
 }
 
 extension PathProject {

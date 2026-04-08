@@ -97,6 +97,29 @@ enum ButtonsFolder: Int, PathFolder {
 }
 ```
 
+### Using Third-Party Folder Types
+
+When a `PathFolder` type comes from another package — one your project does not own — Swift requires a retroactive conformance to declare that type as a valid `PathFolder` in your tree. Write the extension in your own module:
+
+```swift
+// In your app module — NOT inside the library that defines ExternalProject.
+extension ExternalProject: @retroactive PathFolder {
+    public typealias ParentSection = MyProject
+}
+```
+
+Then add it to your project's `folders` array as usual:
+
+```swift
+enum MyProject: PathProject {
+    static let name = "My App"
+    static let folders: [any PathFolder.Type] = [
+        ExternalProject.self,
+        MyOtherFolder.self
+    ]
+}
+```
+
 ## Topics
 
 ### Configuration

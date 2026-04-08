@@ -1,0 +1,493 @@
+{
+  "devices" : [
+    {
+      "colors" : [
+        "Default"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone11",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "13.0",
+      "model" : "iPhone 11",
+      "nativeHeight" : 1792,
+      "nativeWidth" : 828,
+      "runDestination" : "iPhone 11",
+      "scale" : 0.93000000000000005,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Default"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone11Pro",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "13.0",
+      "model" : "iPhone 11 Pro",
+      "nativeHeight" : 2436,
+      "nativeWidth" : 1125,
+      "runDestination" : "iPhone 11 Pro",
+      "scale" : 0.9415,
+      "screenCornerRadius" : 0.12,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Default"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone11ProMax",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "13.0",
+      "model" : "iPhone 11 Pro Max",
+      "nativeHeight" : 2688,
+      "nativeWidth" : 1242,
+      "runDestination" : "iPhone 11 Pro Max",
+      "scale" : 0.94650000000000001,
+      "screenCornerRadius" : 0.098000000000000004,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "White"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone12",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "14.1",
+      "model" : "iPhone 12",
+      "nativeHeight" : 2532,
+      "nativeWidth" : 1170,
+      "runDestination" : "iPhone 12",
+      "scale" : 0.95450000000000002,
+      "screenCornerRadius" : 0.11999999999999994,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "White"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone12Mini",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "14.1",
+      "model" : "iPhone 12 mini",
+      "nativeHeight" : 2340,
+      "nativeWidth" : 1080,
+      "runDestination" : "iPhone 12 mini",
+      "scale" : 0.95200000000000007,
+      "screenCornerRadius" : 0.11099999999999993,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Silver"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone12Pro",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "14.1",
+      "model" : "iPhone 12 Pro",
+      "nativeHeight" : 2532,
+      "nativeWidth" : 1170,
+      "runDestination" : "iPhone 12 Pro",
+      "scale" : 0.95450000000000002,
+      "screenCornerRadius" : 0.12,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Silver"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone12ProMax",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "14.1",
+      "model" : "iPhone 12 Pro Max",
+      "nativeHeight" : 2778,
+      "nativeWidth" : 1284,
+      "runDestination" : "iPhone 12 Pro Max",
+      "scale" : 0.95800000000000007,
+      "screenCornerRadius" : 0.12,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Midnight",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone13",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "15.0",
+      "model" : "iPhone 13",
+      "nativeHeight" : 2532,
+      "nativeWidth" : 1170,
+      "runDestination" : "iPhone 13",
+      "scale" : 0.95350000000000001,
+      "screenCornerRadius" : 0.09799999999999999,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Midnight",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone13Mini",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "15.0",
+      "model" : "iPhone 13 mini",
+      "nativeHeight" : 2340,
+      "nativeWidth" : 1080,
+      "runDestination" : "iPhone 13 mini",
+      "scale" : 0.95150000000000001,
+      "screenCornerRadius" : 0.121,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Graphite",
+        "Silver"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone13Pro",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "15.0",
+      "model" : "iPhone 13 Pro",
+      "nativeHeight" : 2532,
+      "nativeWidth" : 1170,
+      "runDestination" : "iPhone 13 Pro",
+      "scale" : 0.95450000000000002,
+      "screenCornerRadius" : 0.12599999999999995,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Graphite",
+        "Silver"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone13ProMax",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "15.0",
+      "model" : "iPhone 13 Pro Max",
+      "nativeHeight" : 2778,
+      "nativeWidth" : 1284,
+      "runDestination" : "iPhone 13 Pro Max",
+      "scale" : 0.95850000000000002,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Blue",
+        "Midnight",
+        "Purple",
+        "Red",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone14",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "16.0",
+      "model" : "iPhone 14",
+      "nativeHeight" : 2532,
+      "nativeWidth" : 1170,
+      "runDestination" : "iPhone 14",
+      "scale" : 0.95450000000000002,
+      "screenCornerRadius" : 0.11799999999999994,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Blue",
+        "Midnight",
+        "Purple",
+        "Red",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone14Plus",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "16.0",
+      "model" : "iPhone 14 Plus",
+      "nativeHeight" : 2778,
+      "nativeWidth" : 1284,
+      "runDestination" : "iPhone 14 Plus",
+      "scale" : 0.95900000000000007,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "DeepPurple",
+        "Gold",
+        "Silver",
+        "SpaceBlack"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone14Pro",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "16.0",
+      "model" : "iPhone 14 Pro",
+      "nativeHeight" : 2556,
+      "nativeWidth" : 1179,
+      "runDestination" : "iPhone 14 Pro",
+      "scale" : 0.95800000000000007,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "DeepPurple",
+        "Gold",
+        "Silver",
+        "SpaceBlack"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone14ProMax",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "16.0",
+      "model" : "iPhone 14 Pro Max",
+      "nativeHeight" : 2796,
+      "nativeWidth" : 1290,
+      "runDestination" : "iPhone 14 Pro Max",
+      "scale" : 0.96250000000000002,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Black",
+        "Blue",
+        "Green",
+        "Pink",
+        "Yellow"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone15",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "17.0",
+      "model" : "iPhone 15",
+      "nativeHeight" : 2556,
+      "nativeWidth" : 1179,
+      "runDestination" : "iPhone 15",
+      "scale" : 0.95750000000000002,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Black",
+        "Blue",
+        "Green",
+        "Pink",
+        "Yellow"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone15Plus",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "17.0",
+      "model" : "iPhone 15 Plus",
+      "nativeHeight" : 2796,
+      "nativeWidth" : 1290,
+      "runDestination" : "iPhone 15 Plus",
+      "scale" : 0.96150000000000002,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "BlackTitanium",
+        "BlueTitanium",
+        "NaturalTitanium",
+        "WhiteTitanium"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone15Pro",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "17.0",
+      "model" : "iPhone 15 Pro",
+      "nativeHeight" : 2556,
+      "nativeWidth" : 1179,
+      "runDestination" : "iPhone 15 Pro",
+      "scale" : 0.96350000000000002,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "BlackTitanium",
+        "BlueTitanium",
+        "NaturalTitanium",
+        "WhiteTitanium"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone15ProMax",
+      "maxOSVersion" : "17.9",
+      "minOSVersion" : "17.0",
+      "model" : "iPhone 15 Pro Max",
+      "nativeHeight" : 2796,
+      "nativeWidth" : 1290,
+      "runDestination" : "iPhone 15 Pro Max",
+      "scale" : 0.96850000000000003,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Black",
+        "Pink",
+        "Teal",
+        "Ultramarine",
+        "White"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone16",
+      "maxOSVersion" : "25.9",
+      "minOSVersion" : "18.0",
+      "model" : "iPhone 16",
+      "nativeHeight" : 2556,
+      "nativeWidth" : 1179,
+      "runDestination" : "iPhone 16",
+      "scale" : 0.95650000000000002,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Black",
+        "Pink",
+        "Teal",
+        "Ultramarine",
+        "White"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone16Plus",
+      "maxOSVersion" : "25.9",
+      "minOSVersion" : "18.0",
+      "model" : "iPhone 16 Plus",
+      "nativeHeight" : 2796,
+      "nativeWidth" : 1290,
+      "runDestination" : "iPhone 16 Plus",
+      "scale" : 0.96150000000000002,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "BlackTitanium",
+        "DesertTitanium",
+        "NaturalTitanium",
+        "WhiteTitanium"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone16Pro",
+      "maxOSVersion" : "25.9",
+      "minOSVersion" : "18.0",
+      "model" : "iPhone 16 Pro",
+      "nativeHeight" : 2622,
+      "nativeWidth" : 1206,
+      "runDestination" : "iPhone 16 Pro",
+      "scale" : 0.97050000000000003,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "BlackTitanium",
+        "DesertTitanium",
+        "NaturalTitanium",
+        "WhiteTitanium"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone16ProMax",
+      "maxOSVersion" : "25.9",
+      "minOSVersion" : "18.0",
+      "model" : "iPhone 16 Pro Max",
+      "nativeHeight" : 2868,
+      "nativeWidth" : 1320,
+      "runDestination" : "iPhone 16 Pro Max",
+      "scale" : 0.97250000000000003,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Black",
+        "Lavender",
+        "MistBlue",
+        "Sage",
+        "White"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone17",
+      "maxOSVersion" : null,
+      "minOSVersion" : "26.0",
+      "model" : "iPhone 17",
+      "nativeHeight" : 2622,
+      "nativeWidth" : 1206,
+      "runDestination" : "iPhone 17",
+      "scale" : 0.97050000000000003,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "CosmicOrange",
+        "DeepBlue",
+        "Silver"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone17Pro",
+      "maxOSVersion" : null,
+      "minOSVersion" : "26.0",
+      "model" : "iPhone 17 Pro",
+      "nativeHeight" : 2622,
+      "nativeWidth" : 1206,
+      "runDestination" : "iPhone 17 Pro",
+      "scale" : 0.96750000000000003,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "CosmicOrange",
+        "DeepBlue",
+        "Silver"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhone17ProMax",
+      "maxOSVersion" : null,
+      "minOSVersion" : "26.0",
+      "model" : "iPhone 17 Pro Max",
+      "nativeHeight" : 2868,
+      "nativeWidth" : 1320,
+      "runDestination" : "iPhone 17 Pro Max",
+      "scale" : 0.97150000000000003,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "CloudWhite",
+        "LightGold",
+        "SkyBlue",
+        "SpaceBlack"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPhoneAir",
+      "maxOSVersion" : null,
+      "minOSVersion" : "26.0",
+      "model" : "iPhone Air",
+      "nativeHeight" : 2556,
+      "nativeWidth" : 1179,
+      "runDestination" : "iPhone Air",
+      "scale" : 0.96950000000000003,
+      "screenCornerRadius" : 0.10000000000000001,
+      "verticalOffset" : 0
+    }
+  ]
+}

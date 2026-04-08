@@ -18,23 +18,34 @@
     @AutomaticSeeAlso(disabled)
 }
 
-Add `HarnessKitScreenshots` to your UI test target and capture annotated screenshots in one function call.
+Integrate the screenshot data types into your project and configure the transform pipeline.
 
 ## Overview
 
-`HarnessKitScreenshots` ships as a library product inside the `HarnessKit` package. Link it to your XCUITest target to access `captureScreenshot` and the `Screenshot` / `ScreenshotConfig` types.
+`HarnessKitScreenshots` is the **model library** — it defines ``Screenshot``, ``ScreenshotConfig``, and all supporting types. It contains no XCTest code.
 
-## Adding HarnessKitScreenshots
+To **capture** screenshots, add `HarnessKitScreenshotTesting` to your UI test target.
+To **transform** screenshots, add `HarnessKitTransform` to your macOS transformer app.
+
+Both depend on `HarnessKitScreenshots` for the shared types.
+
+## Adding to Your Project
 
 1. In Xcode, select **File > Add Packages...**.
 2. Enter the HarnessKit repository URL and click **Add Package**.
-3. Assign `HarnessKitScreenshots` to your **UI test target**. If the macOS Tester app also needs to read config, add it there too.
+3. Assign libraries to the correct targets:
 
-> Important: `HarnessKitScreenshots` contains XCTest-guarded code (`captureScreenshot`, `updateOrientation`, `resetTheme`). Those functions compile only when `XCTest` is available, so linking to a non-test target is safe.
+| Library | Target | Purpose |
+| :--- | :--- | :--- |
+| `HarnessKitScreenshots` | App target, macOS transformer | Shared model types |
+| `HarnessKitScreenshotTesting` | UI test target | `captureScreenshot`, `updateOrientation`, `resetTheme` |
+| `HarnessKitTransform` | macOS transformer app | Image pipeline, bezel compositing |
+
+> Important: `HarnessKitScreenshots` has **no XCTest dependency**. It is safe to link to any target. The XCTest functions live in `HarnessKitScreenshotTesting`.
 
 ## Defining a Screenshot
 
-Create a `Screenshot` value for each screen you want to capture:
+Create a ``Screenshot`` value for each screen you want to capture. The `os` and `osVersion` are set automatically by the capture infrastructure:
 
 ```swift
 import HarnessKitScreenshots
@@ -42,27 +53,26 @@ import HarnessKitScreenshots
 let homeLight = Screenshot(
     id: "home",
     appearance: .light,
-    os: .iOS,
-    osVersion: "18.2",
-    backgroundHex: "F2F2F7"
+    background: .solid(hex: "F2F2F7"),
+    shadows: [.drop(DropShadow(opacity: 0.4, blur: 0.02))],
+    addBezel: true
 )
 
 let homeDark = Screenshot(
     id: "home",
     appearance: .dark,
-    os: .iOS,
-    osVersion: "18.2",
-    backgroundHex: "1C1C1E"
+    background: .solid(hex: "1C1C1E"),
+    shadows: [.drop(DropShadow(opacity: 0.5, blur: 0.02))]
 )
 ```
 
 ## Capturing in a UI Test
 
-Call `captureScreenshot` inside an `XCTestCase`. The function sets the device appearance, waits for animations to settle, and attaches the PNG to the test run:
+Import `HarnessKitScreenshotTesting` (not `HarnessKitScreenshots`) in your test file to access the capture function:
 
 ```swift
 import XCTest
-import HarnessKitScreenshots
+import HarnessKitScreenshotTesting
 
 final class ScreenshotTests: XCTestCase {
 
@@ -77,51 +87,64 @@ final class ScreenshotTests: XCTestCase {
 }
 ```
 
-Pass a `sleepSeconds` value when the UI needs longer to settle, or a `customActions` closure to run additional setup before capture:
+### What Happens During Capture
 
-```swift
-captureScreenshot(
-    screenshot: homeLight,
-    app: app,
-    sleepSeconds: 3,
-    customActions: { app.buttons["Load"].tap() },
-    add: add
-)
-```
+1. `captureScreenshot` sets `XCUIDevice.shared.appearance` from ``Screenshot/appearance``.
+2. Sleeps to let the UI settle (default 2 seconds).
+3. Captures the screen and creates an `XCTAttachment`.
+4. The attachment name is set via ``Screenshot/screenshotName()`` — a flat `key*value^key*value.png` string encoding `id`, `os`, `appearance`, `crop`, `background`, `osVersion`, and `addBezel`.
+5. The **full** ``Screenshot`` (including ``Screenshot/shadows``) is also embedded as JSON inside the PNG via ``ScreenshotMetadata``.
+
+### What Goes in the Filename vs. PNG Metadata
+
+| Data | Filename | PNG Metadata |
+| :--- | :--- | :--- |
+| `id`, `os`, `appearance`, `orientation`, `crop`, `background`, `osVersion`, `addBezel` | Yes | Yes |
+| `shadows` | **No** (too complex) | **Yes** |
+| Full round-trip fidelity | Approximate | **Exact** |
+
+The transform pipeline reads the PNG metadata (not the filename) to reconstruct the full ``Screenshot``.
 
 ## Setting Orientation
 
-Call `updateOrientation()` before launching the app. It reads `ScreenshotConfig.load()` and rotates the simulator to match the configured orientation for the current device type:
+Call `updateOrientation(config:)` (from `HarnessKitScreenshotTesting`) before launching the app:
 
 ```swift
+import HarnessKitScreenshotTesting
+
 override func setUp() {
     super.setUp()
-    updateOrientation()
+    let config = ScreenshotConfig.load(from: myConfigURL)
+    updateOrientation(config: config)
 }
 ```
 
-## Loading Config in the Tester App
+## Configuring the Transform Pipeline
 
-On macOS, load the bundled config to drive the transform tool:
+The config JSON is owned by your project. Load it from Application Support or build programmatically:
 
 ```swift
 import HarnessKitScreenshots
 
-let config = await ScreenshotConfig.load()
-```
+// Load from file
+let config = ScreenshotConfig.load(from: myConfigURL)
 
-Override any field programmatically before passing it to `HarnessKitTransform`:
-
-```swift
-var config = await ScreenshotConfig.load()
+// Or build from defaults
+var config = ScreenshotConfig.defaults
+config.phoneBezel = [
+    VersionedBezel(minVersion: "26.0", deviceID: "iPhone17", color: "Black")
+]
 config.resolution = .full
 ```
 
+Pass the config to `HarnessKitTransform` functions like `processScreenshot(image:screenshot:config:)`.
+
 ## Troubleshooting
 
-- **`captureScreenshot` not found**: Confirm `HarnessKitScreenshots` is linked to the UI test target and you have `import HarnessKitScreenshots` at the top of the file.
-- **Appearance not applied on watchOS**: watchOS does not support `XCUIDevice.appearance`. The `captureScreenshot` function skips the appearance step on watchOS automatically.
-- **Config loads defaults instead of JSON**: Make sure `config.json` is inside `Sources/HarnessKitScreenshots/Resources/` and the target declares `resources: [.process("Resources")]` in `Package.swift`.
+- **`captureScreenshot` not found**: You need `import HarnessKitScreenshotTesting`, not `import HarnessKitScreenshots`. The capture function lives in the testing library.
+- **Appearance not applied on watchOS**: watchOS does not support `XCUIDevice.appearance`. The capture function skips this step automatically.
+- **Config loads defaults**: ``ScreenshotConfig/load(from:)`` returns `.defaults` if the file doesn't exist or can't be decoded. Verify the URL points to a valid JSON file.
+- **Shadows missing after round-trip**: If you parse from the filename string via ``Screenshot/fromScreenshotName(_:)``, shadows are lost. Use ``ScreenshotMetadata/read(from:)`` to read the full ``Screenshot`` from the PNG.
 
 ## Next Steps
 

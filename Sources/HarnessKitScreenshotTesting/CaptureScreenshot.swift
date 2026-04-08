@@ -14,6 +14,9 @@ import XCTest
 /// On watchOS only light-mode screenshots are captured.
 /// On all other platforms a full-screen capture is performed.
 ///
+/// The OS version is always resolved from the running device as `major.0`
+/// and cannot be overridden by the caller.
+///
 /// - Parameters:
 ///   - screenshot: Metadata describing this screenshot (appearance, OS, crop, etc.).
 ///   - app: The `XCUIApplication` under test.
@@ -28,22 +31,8 @@ public func captureScreenshot(
     customActions: () -> Void = { },
     add: (XCTAttachment) -> Void
 ) {
-    let resolvedScreenshot: Screenshot
-    if screenshot.osVersion == nil {
-        let major = ProcessInfo.processInfo.operatingSystemVersion.majorVersion
-        resolvedScreenshot = Screenshot(
-            id: screenshot.id,
-            appearance: screenshot.appearance,
-            os: screenshot.os,
-            orientation: screenshot.orientation,
-            crop: screenshot.crop,
-            backgroundHex: screenshot.backgroundHex,
-            addBezel: screenshot.addBezel,
-            osVersion: "\(major).0"
-        )
-    } else {
-        resolvedScreenshot = screenshot
-    }
+    let major = ProcessInfo.processInfo.operatingSystemVersion.majorVersion
+    let resolvedScreenshot = screenshot.withOSVersion("\(major).0")
 
     #if os(iOS)
     if let orientation = resolvedScreenshot.orientation{
@@ -119,16 +108,15 @@ private func _roundedPNG(
         dy: insets.top + insets.bottom > 0 ? insets.top : 0
     )
 
-    let img = NSImage(size: pixelSize)
-    img.lockFocusFlipped(false)
-    NSGraphicsContext.current?.imageInterpolation = .high
+    let img = NSImage(size: pixelSize, flipped: false) { _ in
+        NSGraphicsContext.current?.imageInterpolation = .high
 
-    let path = NSBezierPath(roundedRect: insetRect, xRadius: cornerRadius, yRadius: cornerRadius)
-    path.addClip()
+        let path = NSBezierPath(roundedRect: insetRect, xRadius: cornerRadius, yRadius: cornerRadius)
+        path.addClip()
 
-    nsImage.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1.0)
-
-    img.unlockFocus()
+        nsImage.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1.0)
+        return true
+    }
 
     guard
         let tiff = img.tiffRepresentation,

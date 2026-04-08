@@ -1,38 +1,34 @@
-# ``HarnessKitTransform/saveResults(image:name:to:)``
+# ``HarnessKitTransform/saveResults(image:screenshot:to:)``
 
 @Metadata {
     @SupportedLanguage(swift)
     @Available(macOS, introduced: "11.0")
     @DocumentationExtension(mergeBehavior: override)
 }
-
 @Options {
+    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
-Saves an image as a PNG file inside the given directory.
+Saves the processed image as a PNG with embedded screenshot metadata.
 
 ## Overview
 
-`saveResults` converts `image` to PNG data and writes it to `directory/name.png`. The `.png` extension is appended automatically if not present in `name`. The directory is created with intermediate directories if it does not exist.
+Creates the output directory if it does not exist, derives the filename from `Screenshot.prettyName()`, and writes the image as a PNG using `ScreenshotMetadata.write(cgImage:screenshot:to:)` to embed the `Screenshot` metadata in the file.
 
-## Parameters
+A second overload, `saveResults(image:name:to:)`, accepts a plain string name instead of a `Screenshot` value and writes a standard PNG without metadata.
+
+### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :--- |
-| `image` | `NSImage` | The image to write. |
-| `name` | `String` | Output filename without extension (`.png` is appended). |
-| `directory` | `URL` | Destination directory. Created if it does not exist. |
+| `image` | `NSImage` | The processed image to save. |
+| `screenshot` | `Screenshot` | Metadata embedded into the PNG and used to derive the filename. |
+| `to` | `URL` | Directory where the PNG will be written. Created if needed. |
 
-## Throws
+> Throws: ``TransformError`` if the directory cannot be created or the image cannot be converted to PNG.
 
-- `TransformError.outputDirectoryUnavailable` if the directory cannot be created.
-- `TransformError.imageSaveFailed` if PNG conversion or file writing fails.
+## See Also
 
-## Example
-
-```swift
-let outputDir = URL(fileURLWithPath: "/Users/me/Desktop/Screenshots")
-try saveResults(image: composedImage, name: "home-iOS", to: outputDir)
-// writes: /Users/me/Desktop/Screenshots/home-iOS.png
-```
+- ``transformScreenshot(image:screenshot:config:outputDirectory:)``
+- ``processScreenshot(image:screenshot:config:)``

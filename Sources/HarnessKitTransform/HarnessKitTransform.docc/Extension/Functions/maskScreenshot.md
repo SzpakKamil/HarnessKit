@@ -1,30 +1,31 @@
-# ``HarnessKitTransform/maskScreenshot(image:bezel:)``
+# ``HarnessKitTransform/maskScreenshot(image:cornerRadius:)``
 
 @Metadata {
     @SupportedLanguage(swift)
     @Available(macOS, introduced: "11.0")
     @DocumentationExtension(mergeBehavior: override)
 }
-
 @Options {
+    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
-Clips a screenshot to the device's screen shape using a grayscale mask PNG.
+Clips the screenshot to a rounded rectangle.
 
 ## Overview
 
-`maskScreenshot` loads the mask image for `bezel` via `bezel.maskImage()` and uses `CGImage.masking(_:)` to clip the screenshot. White pixels in the mask reveal the screenshot; black pixels cut it out. This removes rounded display corners and cutouts so the screenshot fits cleanly inside the bezel art.
+Applies a rounded-rectangle clipping mask to the image using the given corner radius in pixels. Pass `0` to skip clipping and return the original image unchanged.
 
-The mask PNG must exist in the module bundle as `"\(bezel.shortID)Mask.png"`. If the mask cannot be loaded, the function returns the original image unchanged.
+The corner radius is typically derived from the ``BezelPipelineParams/cornerRadius`` fraction multiplied by the smaller image dimension, so it scales correctly across different device resolutions.
 
-## Parameters
+### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :--- |
 | `image` | `NSImage` | The screenshot to mask. |
-| `bezel` | `any BezelDescriptor` | The bezel whose mask shape to apply. |
+| `cornerRadius` | `CGFloat` | Corner radius in pixels. `0` skips clipping. |
 
-## Returns
+## See Also
 
-The masked `NSImage`, or the original image if the mask PNG is unavailable.
+- ``prepareScreenshot(image:os:)``
+- ``scaleToBezel(image:factor:)``

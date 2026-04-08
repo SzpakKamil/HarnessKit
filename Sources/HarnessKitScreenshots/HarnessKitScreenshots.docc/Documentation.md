@@ -1,6 +1,6 @@
 # ``HarnessKitScreenshots``
 
-Screenshot metadata, capture utilities, and configuration models for all Apple platforms.
+Screenshot metadata and configuration models shared across the HarnessKit pipeline.
 
 @Metadata {
     @SupportedLanguage(swift)
@@ -23,9 +23,9 @@ Screenshot metadata, capture utilities, and configuration models for all Apple p
 
 ## Overview
 
-`HarnessKitScreenshots` provides the data layer shared between UI test targets and the macOS transform tool. Use it in an XCUITest suite to capture annotated screenshots, and reference the same `Screenshot` and `ScreenshotConfig` types in `HarnessKitTransform` to produce finished App Store images.
+`HarnessKitScreenshots` is the **data layer** shared between UI test targets (via `HarnessKitScreenshotTesting`) and the macOS transform tool (via `HarnessKitTransform`). It defines ``Screenshot``, ``ScreenshotConfig``, and all supporting types.
 
-The module has no external dependencies and compiles for iOS, iPadOS, macOS, tvOS, watchOS, and visionOS. XCTest-specific functions are guarded by `#if canImport(XCTest)` so the module stays linkable in non-test targets.
+This module contains **no XCTest code** — it is a pure model library with no external dependencies. It compiles for iOS, iPadOS, macOS, tvOS, watchOS, and visionOS. The capture functions (`captureScreenshot`, `updateOrientation`, `resetTheme`) live in `HarnessKitScreenshotTesting`.
 
 ## Getting Started
 
@@ -53,19 +53,19 @@ The module has no external dependencies and compiles for iOS, iPadOS, macOS, tvO
 - ``ScreenOrientation``
 - ``TargetOS``
 
+### Background and Shadows
+
+- ``ScreenshotBackground``
+- ``ScreenshotShadow``
+- ``DropShadow``
+- ``ShapeShadow``
+
 ### Layout and Cropping
 
 - ``CropRect``
 - ``FillMode``
 - ``ScreenshotResolution``
 
-### Capture
+### Metadata Embedding
 
-- ``captureScreenshot(screenshot:app:sleepSeconds:customActions:add:)``
-- ``updateOrientation()``
-- ``resetTheme(to:)``
-- ``currentTheme()``
-
-### Export
-
-- ``ExportPath``
+- ``ScreenshotMetadata``

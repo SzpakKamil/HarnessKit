@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @MainActor
-public protocol PathFolder: CaseIterable, Sendable, PathComponent {
+public protocol PathFolder: Sendable, PathComponent {
     static var name: String { get }
     associatedtype ParentSection: PathComponent
     static var options: [any PathFolder] { get }
@@ -39,8 +39,6 @@ extension PathFolder {
     }
     @_documentation(visibility: internal)
     public static var namePath: String { nameComponents.joined(separator: "/") }
-    @_documentation(visibility: internal)
-    public static var options: [any PathFolder] { Array(allCases) }
     @_documentation(visibility: internal)
     public var description: String { caseName }
     @_documentation(visibility: internal)

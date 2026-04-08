@@ -1,0 +1,268 @@
+{
+  "devices" : [
+    {
+      "colors" : [
+        "Silver"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPad9thGen",
+      "maxOSVersion" : null,
+      "minOSVersion" : "15.0",
+      "model" : "iPad 9th Generation",
+      "nativeHeight" : 1620,
+      "nativeWidth" : 2160,
+      "runDestination" : "iPad (9th generation)",
+      "scale" : 0.89600000000000002,
+      "screenCornerRadius" : 0,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Blue",
+        "Purple",
+        "SpaceGray",
+        "Stardust"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadAir11M2",
+      "maxOSVersion" : null,
+      "minOSVersion" : "17.0",
+      "model" : "iPad Air 11-inch M2",
+      "nativeHeight" : 1640,
+      "nativeWidth" : 2360,
+      "runDestination" : "iPad Air 11-inch (M2)",
+      "scale" : 0.91300000000000003,
+      "screenCornerRadius" : 0.02,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Blue",
+        "Purple",
+        "SpaceGray",
+        "Stardust"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadAir11M3",
+      "maxOSVersion" : null,
+      "minOSVersion" : "18.0",
+      "model" : "iPad Air 11-inch M3",
+      "nativeHeight" : 1640,
+      "nativeWidth" : 2360,
+      "runDestination" : "iPad Air 11-inch (M3)",
+      "scale" : 0.91300000000000003,
+      "screenCornerRadius" : 0.02,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Blue",
+        "Purple",
+        "SpaceGray",
+        "Stardust"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadAir11M4",
+      "maxOSVersion" : null,
+      "minOSVersion" : "18.0",
+      "model" : "iPad Air 11-inch M4",
+      "nativeHeight" : 1640,
+      "nativeWidth" : 2360,
+      "runDestination" : "iPad Air 11-inch (M4)",
+      "scale" : 0.91300000000000003,
+      "screenCornerRadius" : 0.02,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Blue",
+        "Purple",
+        "SpaceGray",
+        "Stardust"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadAir13M2",
+      "maxOSVersion" : null,
+      "minOSVersion" : "17.0",
+      "model" : "iPad Air 13-inch M2",
+      "nativeHeight" : 2048,
+      "nativeWidth" : 2732,
+      "runDestination" : "iPad Air 13-inch (M2)",
+      "scale" : 0.93400000000000005,
+      "screenCornerRadius" : 0.021999999999999992,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Blue",
+        "Purple",
+        "SpaceGray",
+        "Stardust"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadAir13M3",
+      "maxOSVersion" : null,
+      "minOSVersion" : "18.0",
+      "model" : "iPad Air 13-inch M3",
+      "nativeHeight" : 2048,
+      "nativeWidth" : 2732,
+      "runDestination" : "iPad Air 13-inch (M3)",
+      "scale" : 0.93400000000000005,
+      "screenCornerRadius" : 0.022000000000000002,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Blue",
+        "Purple",
+        "SpaceGray",
+        "Stardust"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadAir13M4",
+      "maxOSVersion" : null,
+      "minOSVersion" : "18.0",
+      "model" : "iPad Air 13-inch M4",
+      "nativeHeight" : 2048,
+      "nativeWidth" : 2732,
+      "runDestination" : "iPad Air 13-inch (M4)",
+      "scale" : 0.93400000000000005,
+      "screenCornerRadius" : 0.022000000000000002,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadMiniA17Pro",
+      "maxOSVersion" : null,
+      "minOSVersion" : "18.0",
+      "model" : "iPad mini A17 Pro",
+      "nativeHeight" : 1488,
+      "nativeWidth" : 2266,
+      "runDestination" : "iPad mini (A17 Pro)",
+      "scale" : 0.90500000000000003,
+      "screenCornerRadius" : 0.029999999999999999,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadMiniA18Pro",
+      "maxOSVersion" : null,
+      "minOSVersion" : "18.0",
+      "model" : "iPad mini A18 Pro",
+      "nativeHeight" : 1488,
+      "nativeWidth" : 2266,
+      "runDestination" : "iPad mini (A18 Pro)",
+      "scale" : 0.90500000000000003,
+      "screenCornerRadius" : 0.029999999999999999,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceGray"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadPro11M3",
+      "maxOSVersion" : null,
+      "minOSVersion" : "17.0",
+      "model" : "iPad Pro 11-inch M3",
+      "nativeHeight" : 1668,
+      "nativeWidth" : 2420,
+      "runDestination" : "iPad Pro 11-inch (M3)",
+      "scale" : 0.92900000000000005,
+      "screenCornerRadius" : 0.036999999999999984,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceGray"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadPro11M4",
+      "maxOSVersion" : null,
+      "minOSVersion" : "17.0",
+      "model" : "iPad Pro 11-inch M4",
+      "nativeHeight" : 1668,
+      "nativeWidth" : 2420,
+      "runDestination" : "iPad Pro 11-inch (M4)",
+      "scale" : 0.92900000000000005,
+      "screenCornerRadius" : 0.036999999999999998,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceGray"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadPro11M5",
+      "maxOSVersion" : null,
+      "minOSVersion" : "18.0",
+      "model" : "iPad Pro 11-inch M5",
+      "nativeHeight" : 1668,
+      "nativeWidth" : 2420,
+      "runDestination" : "iPad Pro 11-inch (M5)",
+      "scale" : 0.92900000000000005,
+      "screenCornerRadius" : 0.036999999999999998,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceGray"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadPro13M3",
+      "maxOSVersion" : null,
+      "minOSVersion" : "17.0",
+      "model" : "iPad Pro 13-inch M3",
+      "nativeHeight" : 2048,
+      "nativeWidth" : 2732,
+      "runDestination" : "iPad Pro 13-inch (M3)",
+      "scale" : 0.93900000000000006,
+      "screenCornerRadius" : 0.02,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceGray"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadPro13M4",
+      "maxOSVersion" : null,
+      "minOSVersion" : "17.0",
+      "model" : "iPad Pro 13-inch M4",
+      "nativeHeight" : 2064,
+      "nativeWidth" : 2752,
+      "runDestination" : "iPad Pro 13-inch (M4)",
+      "scale" : 0.92300000000000004,
+      "screenCornerRadius" : 0.02,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceGray"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "iPadPro13M5",
+      "maxOSVersion" : null,
+      "minOSVersion" : "18.0",
+      "model" : "iPad Pro 13-inch M5",
+      "nativeHeight" : 2064,
+      "nativeWidth" : 2752,
+      "runDestination" : "iPad Pro 13-inch (M5)",
+      "scale" : 0.92300000000000004,
+      "screenCornerRadius" : 0.02,
+      "verticalOffset" : 0
+    }
+  ]
+}

@@ -1,0 +1,477 @@
+{
+  "devices" : [
+    {
+      "colors" : [
+        "Silver",
+        "SpaceGray"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookPro14M1",
+      "model" : "MacBook Pro 14\"",
+      "nativeHeight" : 1900,
+      "nativeWidth" : 3024,
+      "processor" : "M1",
+      "runDestination" : "My Mac",
+      "scale" : 0.82600000000000007,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.034999999999999989
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceGray"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookPro16M1",
+      "model" : "MacBook Pro 16\"",
+      "nativeHeight" : 2170,
+      "nativeWidth" : 3456,
+      "processor" : "M1",
+      "runDestination" : "My Mac",
+      "scale" : 0.83999999999999997,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.033000000000000022
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceGray"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookPro14M2",
+      "model" : "MacBook Pro 14\"",
+      "nativeHeight" : 1900,
+      "nativeWidth" : 3024,
+      "processor" : "M2",
+      "runDestination" : "My Mac",
+      "scale" : 0.82599999999999996,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.035000000000000003
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceGray"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookPro16M2",
+      "model" : "MacBook Pro 16\"",
+      "nativeHeight" : 2170,
+      "nativeWidth" : 3456,
+      "processor" : "M2",
+      "runDestination" : "My Mac",
+      "scale" : 0.83999999999999997,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.033000000000000002
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceBlack"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookPro14M3",
+      "model" : "MacBook Pro 14\"",
+      "nativeHeight" : 1900,
+      "nativeWidth" : 3024,
+      "processor" : "M3",
+      "runDestination" : "My Mac",
+      "scale" : 0.82599999999999996,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.035000000000000003
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceBlack"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookPro16M3",
+      "model" : "MacBook Pro 16\"",
+      "nativeHeight" : 2170,
+      "nativeWidth" : 3456,
+      "processor" : "M3",
+      "runDestination" : "My Mac",
+      "scale" : 0.83999999999999997,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.033000000000000002
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceBlack"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookPro14M4",
+      "model" : "MacBook Pro 14\"",
+      "nativeHeight" : 1900,
+      "nativeWidth" : 3024,
+      "processor" : "M4",
+      "runDestination" : "My Mac",
+      "scale" : 0.82599999999999996,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.033000000000000002
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceBlack"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookPro16M4",
+      "model" : "MacBook Pro 16\"",
+      "nativeHeight" : 2170,
+      "nativeWidth" : 3456,
+      "processor" : "M4",
+      "runDestination" : "My Mac",
+      "scale" : 0.83999999999999997,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.033000000000000002
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceBlack"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookPro14M5",
+      "model" : "MacBook Pro 14\"",
+      "nativeHeight" : 1900,
+      "nativeWidth" : 3024,
+      "processor" : "M5",
+      "runDestination" : "My Mac",
+      "scale" : 0.82599999999999996,
+      "supportedOS" : {
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.035000000000000003
+    },
+    {
+      "colors" : [
+        "Silver",
+        "SpaceBlack"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookPro16M5",
+      "model" : "MacBook Pro 16\"",
+      "nativeHeight" : 2170,
+      "nativeWidth" : 3456,
+      "processor" : "M5",
+      "runDestination" : "My Mac",
+      "scale" : 0.83999999999999997,
+      "supportedOS" : {
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.033000000000000002
+    },
+    {
+      "colors" : [
+        "Midnight",
+        "Silver",
+        "SpaceGray",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookAir13M2",
+      "model" : "MacBook Air 13\"",
+      "nativeHeight" : 1610,
+      "nativeWidth" : 2560,
+      "processor" : "M2",
+      "runDestination" : "My Mac",
+      "scale" : 0.82800000000000007,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.024000000000000014
+    },
+    {
+      "colors" : [
+        "Midnight",
+        "Silver",
+        "SpaceGray",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookAir13M3",
+      "model" : "MacBook Air 13\"",
+      "nativeHeight" : 1610,
+      "nativeWidth" : 2560,
+      "processor" : "M3",
+      "runDestination" : "My Mac",
+      "scale" : 0.82799999999999996,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.024
+    },
+    {
+      "colors" : [
+        "Midnight",
+        "Silver",
+        "SkyBlue",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookAir13M4",
+      "model" : "MacBook Air 13\"",
+      "nativeHeight" : 1610,
+      "nativeWidth" : 2560,
+      "processor" : "M4",
+      "runDestination" : "My Mac",
+      "scale" : 0.82799999999999996,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.024
+    },
+    {
+      "colors" : [
+        "Midnight",
+        "Silver",
+        "SkyBlue",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookAir13M5",
+      "model" : "MacBook Air 13\"",
+      "nativeHeight" : 1610,
+      "nativeWidth" : 2560,
+      "processor" : "M5",
+      "runDestination" : "My Mac",
+      "scale" : 0.82799999999999996,
+      "supportedOS" : {
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.024
+    },
+    {
+      "colors" : [
+        "Midnight",
+        "Silver",
+        "SpaceGray",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookAir15M2",
+      "model" : "MacBook Air 15\"",
+      "nativeHeight" : 1810,
+      "nativeWidth" : 2880,
+      "processor" : "M2",
+      "runDestination" : "My Mac",
+      "scale" : 0.84900000000000009,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.021000000000000005
+    },
+    {
+      "colors" : [
+        "Midnight",
+        "Silver",
+        "SpaceGray",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookAir15M3",
+      "model" : "MacBook Air 15\"",
+      "nativeHeight" : 1810,
+      "nativeWidth" : 2880,
+      "processor" : "M3",
+      "runDestination" : "My Mac",
+      "scale" : 0.84899999999999998,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.021000000000000001
+    },
+    {
+      "colors" : [
+        "Midnight",
+        "Silver",
+        "SkyBlue",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookAir15M4",
+      "model" : "MacBook Air 15\"",
+      "nativeHeight" : 1810,
+      "nativeWidth" : 2880,
+      "processor" : "M4",
+      "runDestination" : "My Mac",
+      "scale" : 0.84899999999999998,
+      "supportedOS" : {
+        "15" : [
+          "Default",
+          "Custom"
+        ],
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.021000000000000001
+    },
+    {
+      "colors" : [
+        "Midnight",
+        "Silver",
+        "SkyBlue",
+        "Starlight"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookAir15M5",
+      "model" : "MacBook Air 15\"",
+      "nativeHeight" : 1810,
+      "nativeWidth" : 2880,
+      "processor" : "M5",
+      "runDestination" : "My Mac",
+      "scale" : 0.84899999999999998,
+      "supportedOS" : {
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.021000000000000001
+    },
+    {
+      "colors" : [
+        "Silver",
+        "Blush",
+        "Citrus",
+        "Indigo"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "MacbookNeo13A18Pro",
+      "model" : "MacBook Neo 13\"",
+      "nativeHeight" : 1550,
+      "nativeWidth" : 2560,
+      "processor" : "A18Pro",
+      "runDestination" : "My Mac",
+      "scale" : 0.80200000000000005,
+      "supportedOS" : {
+        "26" : [
+          "Default",
+          "Custom"
+        ]
+      },
+      "verticalOffset" : 0.027000000000000017
+    }
+  ]
+}

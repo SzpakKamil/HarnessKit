@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.0
 
 import PackageDescription
 
@@ -39,8 +39,7 @@ let package = Package(
         ),
         .target(
             name: "HarnessKitScreenshots",
-            path: "Sources/HarnessKitScreenshots",
-            resources: [.process("Resources")]
+            path: "Sources/HarnessKitScreenshots"
         ),
         .target(
             name: "HarnessKitScreenshotTesting",
@@ -66,6 +65,10 @@ let package = Package(
         .testTarget(
             name: "HarnessKitTests",
             dependencies: ["HarnessKit", "HarnessKitTesting"]
+        ),
+        .testTarget(
+            name: "HarnessKitTransformTests",
+            dependencies: ["HarnessKitTransform"]
         )
     ]
 )

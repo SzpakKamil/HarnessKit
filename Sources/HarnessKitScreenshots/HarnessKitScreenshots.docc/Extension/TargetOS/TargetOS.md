@@ -2,6 +2,12 @@
 
 @Metadata {
     @SupportedLanguage(swift)
+    @Available(iOS, introduced: "14.0")
+    @Available(iPadOS, introduced: "14.0")
+    @Available(macOS, introduced: "11.0")
+    @Available(tvOS, introduced: "14.0")
+    @Available(watchOS, introduced: "10.0")
+    @Available(visionOS, introduced: "1.0")
     @DocumentationExtension(mergeBehavior: override)
 }
 
@@ -34,17 +40,16 @@ let screenshot = Screenshot(id: "home", appearance: .light, os: .iOS, osVersion:
 
 - ``iOS``
 - ``iPadOS``
-- ``watchOS``
+- ``macOS``
 - ``tvOS``
+- ``watchOS``
 - ``visionOS``
-- ``macOSTahoe``
-- ``macOSSequoia``
 
 ### Properties
 
+- ``id``
 - ``isMacOS``
 
 ### Static Helpers
 
 - ``currentOS``
-- ``newestMacOS``

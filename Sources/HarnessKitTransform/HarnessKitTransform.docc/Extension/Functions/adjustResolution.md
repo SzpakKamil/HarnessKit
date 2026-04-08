@@ -5,29 +5,27 @@
     @Available(macOS, introduced: "11.0")
     @DocumentationExtension(mergeBehavior: override)
 }
-
 @Options {
+    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
-Scales an image to fit the target resolution canvas.
+Scales the image to fit the target resolution canvas.
 
 ## Overview
 
-`adjustResolution` is the final sizing step in the pipeline. It scales `image` to fit inside the canvas defined by `resolution.size`, preserving aspect ratio and centering the result on a transparent background.
+Aspect-fits the image into the dimensions defined by the `ScreenshotResolution`, centering the result on a transparent canvas. If the image already matches the target size, it is returned unchanged.
 
-| Resolution | Canvas |
-| :--- | :--- |
-| `.default` | 603 × 416 pt |
-| `.full` | 2089 × 1440 pt |
+High-quality interpolation is used for downscaling and low-quality interpolation for drawing the fitted image, balancing sharpness with performance.
 
-## Parameters
+### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :--- |
 | `image` | `NSImage` | The image to resize. |
-| `resolution` | `ScreenshotResolution` | The target canvas size from `ScreenshotConfig.resolution`. |
+| `resolution` | `ScreenshotResolution` | Target resolution defining the output canvas size. |
 
-## Returns
+## See Also
 
-The image scaled to fit the resolution canvas, centered on a transparent background.
+- ``cropImage(image:crop:)``
+- ``applyBezelPipeline(image:params:)``

@@ -6,15 +6,12 @@
     @DocumentationExtension(mergeBehavior: override)
 }
 
-@Options {
-    @AutomaticArticleSubheading(disabled)
-}
 
 Resizes and repositions the first application window when the view appears.
 
 ## Overview
 
-`windowSize(_:)` reads `NSApplication.shared.windows.first` in `onAppear` and calls `setFrame(_:display:)` followed by `center()`. Apply it to the root view of your macOS Tester app to ensure the window opens at a consistent size.
+`windowSize(_:)` reads `NSApplication.shared.windows.first` in `onAppear` and calls `setFrame(_:display:)` followed by `center()`. Apply it to the root view of your macOS transformer app to ensure the window opens at a consistent size.
 
 ```swift
 HarnessView(project: MyProject.self)

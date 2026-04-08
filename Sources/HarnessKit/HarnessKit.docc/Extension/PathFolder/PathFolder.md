@@ -21,7 +21,7 @@ A section or leaf level in a HarnessKit navigation hierarchy.
 
 Conform an `enum` to `PathFolder` to define a group of navigable views within a ``PathProject``. Each enum case represents one navigable option (a leaf view), while the folder itself acts as a section title in the navigation list. Folders can also be nested by populating the ``folders`` property with sub-folder types.
 
-`PathFolder` requires `CaseIterable` so the framework can enumerate all options automatically. Conforming types are typically `Int`-raw-value enums to support tvOS remote navigation, where the framework calculates the number of remote-down presses required based on the case's raw value.
+Conforming types are typically `Int`-raw-value enums to support tvOS remote navigation, where the framework calculates the number of remote-down presses required based on the case's raw value. Provide the `options` static property to tell the framework which cases to display.
 
 > Note: All members must be accessed on the main actor. Conforms to `Sendable`.
 
@@ -93,17 +93,7 @@ struct App: View {
 | Name | Type | Description |
 | :--- | :--- | :--- |
 | ``folders`` | `[any PathFolder.Type]` | The ordered list of sub-folder types nested inside this folder. |
-| ``options`` | `[any PathFolder]` | All navigable case instances of this folder, in declaration order. Defaults to `Array(allCases)`. |
-
-## Path Information
-
-These properties are automatically provided via extensions and are used by the framework for navigation and testing.
-
-| Name | Type | Description |
-| :--- | :--- | :--- |
-| ``pathIds`` | `[Int]` | The ordered integer path from the project root to this level (folder or case). |
-| ``nameComponents`` | `[String]` | The ordered display-name components from the project root to this level. |
-| ``namePath`` | `String` | A slash-joined string representation of the full name path (e.g., "Buttons/Primary"). |
+| ``options`` | `[any PathFolder]` | The navigable case instances rendered as rows in the navigation list. Defaults to `[]` via `PathComponent` — override to expose cases. |
 
 ## Topics
 
@@ -117,17 +107,6 @@ These properties are automatically provided via extensions and are used by the f
 ### Hierarchy and Options
 - ``folders``
 - ``options``
-
-### Path Information (Static)
-- ``pathIds``
-- ``nameComponents``
-- ``namePath``
-
-### Path Information (Instance)
-- ``pathIds-2v8w7``
-- ``nameComponents-6l0zs``
-- ``namePath-508su``
-
 ### Path Resolution
 - ``ids(for:)``
 - ``names(for:)``

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "sketch-implement-design": {
+      "source": "sketch-hq/skills",
+      "sourceType": "github",
+      "computedHash": "ef5f6e2856d0c171de767efde36b07f5acf5e0a7dccffcb91010328075a0e3ed"
+    }
+  }
+}

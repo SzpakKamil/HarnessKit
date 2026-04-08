@@ -1,6 +1,6 @@
 # ``HarnessKitTransform``
 
-macOS image-processing pipeline that composites device bezels and produces App Store-ready screenshots.
+macOS image pipeline that composites device bezels, shadows, and backgrounds to produce App Store-ready screenshots.
 
 @Metadata {
     @SupportedLanguage(swift)
@@ -18,9 +18,18 @@ macOS image-processing pipeline that composites device bezels and produces App S
 
 ## Overview
 
-`HarnessKitTransform` takes a raw screenshot captured by `HarnessKitScreenshots` and transforms it into a finished image: rounding corners, applying a device bezel, adding a background color, cropping, and scaling to the target resolution. The pipeline is platform-specific — iOS, iPadOS, macOS, watchOS, tvOS, and visionOS each get dedicated compositing logic — and every step is an independent public function you can call directly to build custom pipelines.
+`HarnessKitTransform` takes a raw screenshot and a `Screenshot` metadata value, then composites it with a device bezel frame, applies drop and shape shadows, fills the background, crops, and scales to the target resolution.
 
-The module is macOS-only. All image work uses `AppKit` (`NSImage`, `NSBitmapImageRep`).
+The module is **macOS-only** and uses `AppKit` (`NSImage`, `NSGraphicsContext`). All pipeline functions are `nonisolated` and safe to call from background threads via `Task.detached`.
+
+### Module Structure
+
+| Directory | Contents |
+| :--- | :--- |
+| **Pipeline/** | Compositing steps — `applyBezelPipeline`, `placeBezel`, `applyShadows`, `addBackground`, `composeCanvas`, `cropImage`, `adjustResolution` |
+| **Platform/** | Per-OS entry points — `processScreenshotIOS`, `processScreenshotMacOS`, shared helpers |
+| **Descriptors/** | Device catalogues — `DeviceDescriptor`, `MacDeviceDescriptor`, `WatchDeviceDescriptor` with bezel indexes |
+| **Catalogue/** | R2 asset management — `HarnessKitCatalogue`, `ObjectCache`, `CatalogueStore`, `GenerationCache` |
 
 ## Getting Started
 
@@ -40,40 +49,39 @@ The module is macOS-only. All image work uses `AppKit` (`NSImage`, `NSBitmapImag
 
 - ``transformScreenshot(image:screenshot:config:outputDirectory:)``
 - ``processScreenshot(image:screenshot:config:)``
+- ``applyBezelPipeline(image:params:)``
+- ``BezelPipelineParams``
 
-### Platform Processors
+### Multi-Device Composition
 
-- ``processScreenshotIOS(image:config:screenshot:)``
-- ``processScreenshotIPadOS(image:config:screenshot:)``
-- ``processScreenshotMacOS(image:config:screenshot:)``
-- ``processScreenshotWatchOS(image:config:screenshot:)``
-- ``processScreenshotTVOS(image:config:screenshot:)``
-- ``processScreenshotVisionOS(image:config:screenshot:)``
+- ``composeCanvas(layers:canvasSize:background:crop:)``
+- ``CanvasLayer``
 
 ### Pipeline Steps
 
-- ``prepareScreenshot(image:scaleMacOS:os:)``
-- ``maskScreenshot(image:bezel:)``
+- ``prepareScreenshot(image:os:)``
+- ``maskScreenshot(image:cornerRadius:)``
 - ``scaleToBezel(image:factor:)``
-- ``placeBezel(image:bezel:verticalOffset:screenshotOnTop:)``
+- ``placeBezel(image:bezel:verticalOffset:horizontalOffset:screenshotOnTop:scaleUpToFill:nativeScreenSize:)``
 - ``applyOrientation(image:orientation:)``
-- ``addBackgroundColor(image:color:)``
+- ``applyShadows(image:shadows:compositionSize:compositionCenter:)``
+- ``addBackground(image:background:backgroundImageCache:)``
 - ``cropImage(image:crop:)``
 - ``adjustResolution(image:resolution:)``
-- ``saveResults(image:name:to:)``
 
-### Bezel Resolution
+### Device Descriptors
 
-- ``resolveBezel(from:for:bezelType:)``
-- ``BezelDescriptor``
+- ``DeviceDescriptor``
+- ``MacDeviceDescriptor``
+- ``WatchDeviceDescriptor``
 
-### Bezel Catalogs
+### Remote Catalogue
 
-- ``PhoneBezel``
-- ``PadBezel``
-- ``WatchBezel``
-- ``MacBezel``
-- ``OtherBezel``
+- ``HarnessKitCatalogue``
+
+### Output
+
+- ``saveResults(image:screenshot:to:)``
 
 ### Errors
 

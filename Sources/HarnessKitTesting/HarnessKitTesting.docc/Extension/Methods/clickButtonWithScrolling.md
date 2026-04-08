@@ -102,5 +102,5 @@ final class DesignSystemTests: XCTestCase {
 
 ### Navigation Helpers
 
-- <doc:HarnessKitTesting/tapButtonWithScrolling(app:titleOrIdentifier:maxSwipes:)>
+- ``HarnessKitTesting/tapButtonWithScrolling(app:titleOrIdentifier:maxSwipes:)``
 - ``HarnessKit/PathFolder/navigate(app:)``

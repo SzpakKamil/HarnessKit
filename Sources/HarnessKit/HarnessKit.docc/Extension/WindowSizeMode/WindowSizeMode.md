@@ -6,9 +6,6 @@
     @DocumentationExtension(mergeBehavior: override)
 }
 
-@Options {
-    @AutomaticSeeAlso(disabled)
-}
 
 Controls how a window is sized when it appears.
 

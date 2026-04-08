@@ -5,24 +5,27 @@
     @Available(macOS, introduced: "11.0")
     @DocumentationExtension(mergeBehavior: override)
 }
-
 @Options {
+    @AutomaticSeeAlso(disabled)
     @AutomaticArticleSubheading(disabled)
 }
 
-Rotates a composed image for landscape output.
+Rotates the device composition to the requested orientation.
 
 ## Overview
 
-`applyOrientation` is a no-op for `.portrait`. For `.landscape` it rotates the image 90° counterclockwise, swapping width and height in the process. The pipeline calls this step after bezel compositing and before adding the background color.
+When `orientation` is `.landscape`, the image is rotated 90 degrees clockwise and the output dimensions are swapped (width becomes height and vice versa). For `.portrait` or any other value, the image is returned unchanged.
 
-## Parameters
+This step runs after ``placeBezel(image:bezel:verticalOffset:horizontalOffset:screenshotOnTop:scaleUpToFill:nativeScreenSize:)`` and before the composition is placed onto the resolution canvas inside ``applyBezelPipeline(image:params:)``.
+
+### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :--- |
-| `image` | `NSImage` | The image to rotate. |
-| `orientation` | `ScreenOrientation` | `.portrait` returns the image unchanged; `.landscape` rotates 90° CCW. |
+| `image` | `NSImage` | The device composition to rotate. |
+| `orientation` | `ScreenOrientation` | The target orientation. |
 
-## Returns
+## See Also
 
-The rotated `NSImage`, or the original image if `orientation` is `.portrait`.
+- ``placeBezel(image:bezel:verticalOffset:horizontalOffset:screenshotOnTop:scaleUpToFill:nativeScreenSize:)``
+- ``applyBezelPipeline(image:params:)``

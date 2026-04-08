@@ -1,0 +1,59 @@
+{
+  "devices" : [
+    {
+      "colors" : [
+        "Default"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "AppleTVFrame",
+      "maxOSVersion" : null,
+      "minOSVersion" : "18.0",
+      "model" : "Apple TV",
+      "nativeHeight" : 1080,
+      "nativeWidth" : 1920,
+      "runDestination" : "Apple TV 4K (3rd Generation)",
+      "scale" : 0.98999999999999999,
+      "screenCornerRadius" : 0,
+      "verticalOffset" : 0
+    },
+    {
+      "colors" : [
+        "Default"
+      ],
+      "generations" : [
+        "HD",
+        "4K1",
+        "4K2",
+        "4K3"
+      ],
+      "horizontalOffset" : -0.032000000000000001,
+      "id" : "AppleTVFrameBox",
+      "maxOSVersion" : null,
+      "minOSVersion" : "18.0",
+      "model" : "Apple TV",
+      "nativeHeight" : 1080,
+      "nativeWidth" : 1920,
+      "runDestination" : "Apple TV 4K (3rd Generation)",
+      "scale" : 0.92500000000000004,
+      "screenCornerRadius" : 0,
+      "verticalOffset" : 0.070499999999999993
+    },
+    {
+      "allowsScreenshot" : false,
+      "colors" : [
+        "Default"
+      ],
+      "horizontalOffset" : 0,
+      "id" : "AppleTVDecoration",
+      "maxOSVersion" : null,
+      "minOSVersion" : "18.0",
+      "model" : "Apple TV (Decoration)",
+      "nativeHeight" : 0,
+      "nativeWidth" : 0,
+      "runDestination" : "Apple TV 4K (3rd Generation)",
+      "scale" : 1.0,
+      "screenCornerRadius" : 0,
+      "verticalOffset" : 0
+    }
+  ]
+}

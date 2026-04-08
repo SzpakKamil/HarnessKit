@@ -25,11 +25,7 @@ Set via `typealias` in every conforming type, the `ParentSection` associated typ
 
 ### Path Resolution Logic
 
-HarnessKit uses `ParentSection` to select the correct conditional extension for path-building. By specifying the parent, you enable the framework to automatically walk up the tree and compute:
-
-1.  **Integer Identifiers**: The sequence of indices that uniquely identifies a folder or case within the hierarchy (``PathFolder/pathIds``).
-2.  **Name Components**: The ordered list of display names from the project root down to the current level (``PathFolder/nameComponents``).
-3.  **Name Path**: A slash-joined string representation of the full path, useful for accessibility identifiers (``PathFolder/namePath``).
+HarnessKit uses `ParentSection` to select the correct conditional extension for path-building.
 
 ## Implementation Requirements
 

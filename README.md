@@ -156,3 +156,7 @@ targets: [
 ## License
 
 HarnessKit is released under the MIT license.
+
+## Third-Party Notices
+
+The device bezel images fetched at runtime by `HarnessKitTransform` depict Apple hardware and are the intellectual property of Apple Inc. They are used in accordance with Apple's [App Store Marketing Guidelines](https://developer.apple.com/app-store/marketing/guidelines/) and may only be used to frame screenshots of your own application for App Store promotion. See [NOTICE.md](NOTICE.md) for full details.

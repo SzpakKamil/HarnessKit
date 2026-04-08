@@ -78,4 +78,3 @@ print(MainFolder.detail.namePath) // Output: "Main/detail"
 
 - ``HarnessKit/PathProject/nameComponents``
 - ``HarnessKit/PathProject/name``
-- ``HarnessKit/PathFolder/namePath``
