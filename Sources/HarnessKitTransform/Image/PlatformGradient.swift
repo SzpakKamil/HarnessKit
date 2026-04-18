@@ -45,8 +45,3 @@ nonisolated func drawRadialGradient(
     ctx.drawRadialGradient(gradient, startCenter: center, startRadius: 0,
                            endCenter: center, endRadius: radius, options: [])
 }
-
-/// Sets a shadow on the given CGContext.
-nonisolated func setContextShadow(ctx: CGContext, color: PlatformColor, blur: CGFloat, offset: CGSize) {
-    ctx.setShadow(offset: offset, blur: blur, color: color.cgColor)
-}

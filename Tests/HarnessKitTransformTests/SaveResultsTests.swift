@@ -1,16 +1,3 @@
-//
-//  SaveResultsTests.swift
-//  HarnessKitTransformTests
-//
-//  Covers §S8.1 + §S8.2 — save pipeline.
-//  S8.1: `ScreenshotMetadata.write` was already ImageIO-direct (verified
-//        below by reading metadata back round-trip).
-//  S8.2: `saveResults(image:name:to:)` now streams via
-//        `CGImageDestinationCreateWithURL` instead of buffering through
-//        a Data blob. Verified by writing → re-decoding → asserting the
-//        file is a valid PNG with original dimensions.
-//
-
 import XCTest
 import CoreGraphics
 import ImageIO
@@ -62,34 +49,9 @@ final class SaveResultsTests: XCTestCase {
         return CGImageSourceCreateImageAtIndex(src, 0, nil)
     }
 
-    // MARK: - §S8.2: streaming saveResults
-
-    /// `saveResults(image:name:to:)` writes a valid PNG at `<dir>/<name>.png`.
-    /// File is decodable, dimensions match, magenta pixels survive the round-trip.
-    func testSaveResultsNoMetadataWritesValidPNG() throws {
-        let image = referenceImage()
-        try saveResults(image: image, name: "magenta", to: tempDir)
-
-        let url = tempDir.appendingPathComponent("magenta.png")
-        XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
-
-        let decoded = try XCTUnwrap(decodePNG(at: url))
-        XCTAssertEqual(decoded.width, 200)
-        XCTAssertEqual(decoded.height, 200)
-    }
-
-    /// `saveResults` with a name that already has `.png` doesn't double-suffix.
-    func testSaveResultsDoesNotDoubleSuffix() throws {
-        try saveResults(image: referenceImage(), name: "already.png", to: tempDir)
-        XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("already.png").path))
-        XCTAssertFalse(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("already.png.png").path))
-    }
-
-    // MARK: - §S8.1: metadata-aware save (regression)
-
     /// `saveResults(image:screenshot:to:)` writes a PNG with embedded metadata
-    /// readable via `ScreenshotMetadata.read`. Verifies §S8.1's confirmation
-    /// that the existing ImageIO-direct path is correct.
+    /// readable via `ScreenshotMetadata.read`. Verifies the existing
+    /// ImageIO-direct path is correct.
     func testSaveResultsWithMetadataRoundTrips() throws {
         let original = Screenshot(id: "fixture", appearance: .light, os: .iOS)
             .withOSVersion("17.0")
@@ -105,10 +67,9 @@ final class SaveResultsTests: XCTestCase {
         XCTAssertEqual(recovered.osVersion, original.osVersion)
     }
 
-    /// `savePNG(image:to:)` (the new helper) writes the same bytes pngData would
-    /// have produced via the old `data.write(to:)` path — both are deterministic
-    /// CGImageDestination outputs without options. Asserts the file size and
-    /// the decoded CGImage's dimensions match.
+    /// `savePNG(image:to:)` writes the same bytes `pngData(from:) + Data.write` would
+    /// have produced — both are deterministic `CGImageDestination` outputs without
+    /// options. Asserts the file size and the decoded CGImage's dimensions match.
     func testSavePNGProducesEquivalentFileToPNGDataPath() throws {
         let image = referenceImage()
 

@@ -257,14 +257,3 @@ func compositeLayer(
         ctx.restoreGState()
     }
 }
-
-// MARK: - Helpers
-
-func compositeImages(bottom: PlatformImage, top: PlatformImage) -> PlatformImage {
-    let size = imageSize(bottom)
-    return createImage(size: size) { ctx in
-        let rect = CGRect(origin: .zero, size: size)
-        drawImageInContext(bottom, in: rect, context: ctx)
-        drawImageInContext(top, in: rect, context: ctx)
-    }
-}

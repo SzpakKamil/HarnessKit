@@ -1,25 +1,6 @@
 import Foundation
 import HarnessKitScreenshots
 
-public nonisolated func saveResults(image: PlatformImage, name: String, to directory: URL) throws {
-    let fileManager = FileManager.default
-
-    do {
-        try fileManager.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
-    } catch {
-        throw TransformError.outputDirectoryUnavailable(directory, error)
-    }
-
-    let fileName = name.hasSuffix(".png") ? name : name + ".png"
-    let fileURL = directory.appendingPathComponent(fileName)
-
-    do {
-        try savePNG(image: image, to: fileURL)
-    } catch {
-        throw TransformError.imageSaveFailed(fileURL, error)
-    }
-}
-
 public nonisolated func saveResults(image: PlatformImage, screenshot: Screenshot, to directory: URL) throws {
     let fileManager = FileManager.default
 

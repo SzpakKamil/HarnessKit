@@ -145,15 +145,6 @@ public actor HarnessKitCatalogue {
         TextRenderCache.clear()
     }
 
-    /// Sets the bezel image cache budget in bytes. Default is 128 MB.
-    /// Callers that run on memory-constrained hosts (e.g. batch CI
-    /// agents, iOS app extensions) can lower this; callers that render
-    /// many distinct devices in one run (e.g. Framely's all-device
-    /// export) can raise it. Clamped to a 16 MB floor.
-    public static func setBezelCacheBudget(bytes: Int) {
-        BezelImageCache.shared.setBudget(bytes: bytes)
-    }
-
     /// Removes cached objects not referenced by the current manifest.
     /// Safe to call at any time — no-op if no manifest is loaded.
     ///
