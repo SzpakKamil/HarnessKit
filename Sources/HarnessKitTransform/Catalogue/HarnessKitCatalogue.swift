@@ -19,17 +19,12 @@ public actor HarnessKitCatalogue {
     public static let shared = HarnessKitCatalogue()
 
     /// Base URL for remote assets. Defaults to the production R2 custom domain.
-    /// Override via ``configureBaseURL(_:)`` before the first call to ``refresh()``.
+    /// Assign before the first call to ``refresh()`` to point at staging or a
+    /// local mirror. Thread-safe — backed by an `os_unfair_lock` so concurrent
+    /// reads and writes are race-free.
     public nonisolated static var baseURL: URL {
-        BaseURLConfig.shared.url
-    }
-
-    /// Sets the base URL for all subsequent remote asset downloads. Thread-safe;
-    /// call once at app launch (or before each test setUp). Switching the URL
-    /// while a `refresh()` is in flight is supported (the next download uses the
-    /// new URL) but not recommended.
-    public nonisolated static func configureBaseURL(_ url: URL) {
-        BaseURLConfig.shared.setURL(url)
+        get { BaseURLConfig.shared.url }
+        set { BaseURLConfig.shared.setURL(newValue) }
     }
 
     /// In-flight eviction handle. `refresh()` cancels and replaces it; `evictStaleCache()`

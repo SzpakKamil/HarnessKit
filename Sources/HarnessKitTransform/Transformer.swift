@@ -1,11 +1,75 @@
-// Bulk `transformScreenshots(_:)` API. Processes many screenshots in
-// parallel via `withThrowingTaskGroup`, bounded by `concurrency` so
-// peak RAM stays at `concurrency × per-task` instead of `inputs.count ×
-// per-task`. Each task wraps in `autoreleasepool` so per-task allocations
-// drain immediately on completion.
+// Public `Transformer` namespace plus the bulk
+// `transformScreenshots(_:)` implementation it wraps. Processes many
+// screenshots in parallel via `withThrowingTaskGroup`, bounded by
+// `concurrency` so peak RAM stays at `concurrency × per-task` instead
+// of `inputs.count × per-task`. Each task wraps in `autoreleasepool`
+// so per-task allocations drain immediately on completion.
 
 import Foundation
 import HarnessKitScreenshots
+
+/// Public namespace for the transform entry points — single-screenshot
+/// process / save and bulk parallel processing.
+public enum Transformer {
+
+    /// Processes a single screenshot through the platform pipeline and
+    /// writes the result to `outputDirectory` as a PNG.
+    public static func transform(
+        _ screenshot: Screenshot,
+        image: PlatformImage,
+        config: ScreenshotConfig,
+        into outputDirectory: URL
+    ) throws {
+        try transformScreenshot(
+            image: image,
+            screenshot: screenshot,
+            config: config,
+            outputDirectory: outputDirectory
+        )
+    }
+
+    /// Bulk parallel transform. Throttled to at most `concurrency`
+    /// in-flight tasks so peak RAM stays bounded.
+    public static func transform(
+        _ jobs: [BulkTransformInput],
+        config: ScreenshotConfig,
+        into outputDirectory: URL,
+        concurrency: Int = ProcessInfo.processInfo.activeProcessorCount
+    ) async throws {
+        try await transformScreenshots(
+            jobs,
+            config: config,
+            outputDirectory: outputDirectory,
+            concurrency: concurrency
+        )
+    }
+
+    /// Bulk parallel transform whose concurrency is derived from a
+    /// memory budget (`max(1, memoryBudgetMB / 280)`).
+    public static func transform(
+        _ jobs: [BulkTransformInput],
+        config: ScreenshotConfig,
+        into outputDirectory: URL,
+        memoryBudgetMB: Int
+    ) async throws {
+        try await transformScreenshots(
+            jobs,
+            config: config,
+            outputDirectory: outputDirectory,
+            memoryBudgetMB: memoryBudgetMB
+        )
+    }
+
+    /// Processes a screenshot and returns the resulting image without
+    /// saving. Useful for previews.
+    public static func process(
+        _ screenshot: Screenshot,
+        image: PlatformImage,
+        config: ScreenshotConfig
+    ) throws -> PlatformImage {
+        try processScreenshot(image: image, screenshot: screenshot, config: config)
+    }
+}
 
 /// Processes `inputs` in parallel and writes one PNG per input to
 /// `outputDirectory`. Throttled to at most `concurrency` in-flight tasks.
