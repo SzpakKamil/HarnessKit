@@ -84,11 +84,16 @@ nonisolated func createImage(size: CGSize, flipped: Bool = false, drawing: @Send
     let renderer = UIGraphicsImageRenderer(size: size, format: format)
     return renderer.image { rendererCtx in
         let ctx = rendererCtx.cgContext
-        // UIGraphicsImageRenderer provides a top-down context matching
-        // UIKit convention. No manual transform needed — text APIs and
-        // CGContext drawing both work correctly in this orientation.
-        // The `flipped` parameter is handled by the macOS path only
-        // (NSImage flipped:); on iOS the context is inherently top-down.
+        // Normalize to a Y-up CGContext when `flipped == false` so the
+        // shared renderer math (gradient endpoints, `-offsetY` drop
+        // shadows, `pixelRect` Y) matches the macOS path. When `flipped
+        // == true`, keep UIGraphicsImageRenderer's native Y-down so
+        // `NSAttributedString.draw(in:)` in Renderer+Text.swift renders
+        // upright via its `UIGraphicsPushContext(ctx)`.
+        if !flipped {
+            ctx.translateBy(x: 0, y: size.height)
+            ctx.scaleBy(x: 1, y: -1)
+        }
         drawing(ctx)
     }
     #endif
@@ -134,11 +139,9 @@ nonisolated func drawImageInContext(_ image: PlatformImage, in rect: CGRect, con
     }
     #else
     guard let cgImg = image.cgImage else { return }
-    ctx.saveGState()
-    ctx.translateBy(x: rect.minX, y: rect.maxY)
-    ctx.scaleBy(x: 1, y: -1)
-    ctx.draw(cgImg, in: CGRect(origin: .zero, size: rect.size))
-    ctx.restoreGState()
+    // `createImage` normalizes the iOS context to Y-up (matching
+    // macOS), so CG's native `draw(_:in:)` places the bitmap upright.
+    ctx.draw(cgImg, in: rect)
     #endif
 }
 

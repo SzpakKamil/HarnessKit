@@ -47,12 +47,11 @@ public struct CanvasLayerFrame: Codable, Hashable, Sendable {
         self.pixelHeight = pixelHeight
     }
 
-    /// Converts to a pixel rect for a given canvas size.
-    /// On macOS the rendering context is bottom-up (y=0 at bottom),
-    /// so `y * canvasHeight` maps correctly. On iOS the context is
-    /// top-down (y=0 at top) — the `y` value (which callers encode as
-    /// bottom-up) must be flipped so layers land at the visual position
-    /// the caller intended.
+    /// Converts to a pixel rect for a given canvas size. Both platforms
+    /// render into a Y-up CGContext (origin at bottom-left), so callers
+    /// pass `y` as bottom-up normalized [0, 1] and `y * canvasHeight`
+    /// maps directly. The iOS render context is flipped to Y-up inside
+    /// `createImage`; see `PlatformImage.swift`.
     public func pixelRect(in canvasSize: CGSize) -> CGRect {
         let w: CGFloat
         let h: CGFloat
@@ -64,20 +63,12 @@ public struct CanvasLayerFrame: Codable, Hashable, Sendable {
             h = CGFloat(height) * canvasSize.height
         }
         let cx = CGFloat(x) * canvasSize.width
-        #if canImport(AppKit)
         let cy = CGFloat(y) * canvasSize.height
-        #else
-        let cy = canvasSize.height - CGFloat(y) * canvasSize.height
-        #endif
         return CGRect(x: cx - w / 2, y: cy - h / 2, width: w, height: h)
     }
 
     /// The center point in pixels for a given canvas size.
     public func pixelCenter(in canvasSize: CGSize) -> CGPoint {
-        #if canImport(AppKit)
         CGPoint(x: CGFloat(x) * canvasSize.width, y: CGFloat(y) * canvasSize.height)
-        #else
-        CGPoint(x: CGFloat(x) * canvasSize.width, y: canvasSize.height - CGFloat(y) * canvasSize.height)
-        #endif
     }
 }
