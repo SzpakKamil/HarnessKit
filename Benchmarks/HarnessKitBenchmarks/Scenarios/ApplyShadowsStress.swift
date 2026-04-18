@@ -35,7 +35,7 @@ final class ApplyShadowsStress: Scenario, @unchecked Sendable {
         ]
         let compSize = CGSize(width: 3840, height: 2160)
         let center = CGPoint(x: compSize.width / 2, y: compSize.height / 2)
-        return applyShadows(image: canvas, shadows: shadows,
+        return Pipeline.applyShadows(to: canvas, shadows: shadows,
                             compositionSize: compSize, compositionCenter: center)
     }
 

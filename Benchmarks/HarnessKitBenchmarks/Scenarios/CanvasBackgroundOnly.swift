@@ -21,6 +21,6 @@ final class CanvasBackgroundOnly: Scenario, @unchecked Sendable {
             background: .solid(hex: "202428"),
             layers: []
         )
-        return renderCanvas(comp)
+        return Canvas.render(comp)
     }
 }

@@ -60,7 +60,7 @@ enum FixtureBuilders {
             background: .solid(hex: "2E3440"),
             layers: []
         )
-        return renderCanvas(comp)
+        return Canvas.render(comp)
     }
 
     static func canvasGradientBackground() -> PlatformImage {
@@ -69,7 +69,7 @@ enum FixtureBuilders {
             background: .gradient(startHex: "1E2636", endHex: "3A5080", angle: 135),
             layers: []
         )
-        return renderCanvas(comp)
+        return Canvas.render(comp)
     }
 
     static func canvasShapeFillStroke() -> PlatformImage {
@@ -90,7 +90,7 @@ enum FixtureBuilders {
             background: .solid(hex: "1A1E24"),
             layers: [shape]
         )
-        return renderCanvas(comp)
+        return Canvas.render(comp)
     }
 
     static func canvasTextLayer() -> PlatformImage {
@@ -116,7 +116,7 @@ enum FixtureBuilders {
             background: .solid(hex: "202428"),
             layers: [text]
         )
-        return renderCanvas(comp)
+        return Canvas.render(comp)
     }
 
     static func canvasContactShadows3Groups() -> PlatformImage {
@@ -149,7 +149,7 @@ enum FixtureBuilders {
             background: .gradient(startHex: "0F1115", endHex: "2A2F37", angle: 180),
             layers: [device]
         )
-        return renderCanvas(comp)
+        return Canvas.render(comp)
     }
 
     static func canvasEffectBlur() -> PlatformImage {
@@ -170,7 +170,7 @@ enum FixtureBuilders {
             background: .solid(hex: "10151C"),
             layers: [shape]
         )
-        return renderCanvas(comp)
+        return Canvas.render(comp)
     }
 
     static func canvasEffectProgressiveBlur() -> PlatformImage {
@@ -191,7 +191,7 @@ enum FixtureBuilders {
             background: .solid(hex: "10151C"),
             layers: [shape]
         )
-        return renderCanvas(comp)
+        return Canvas.render(comp)
     }
 
     static func canvasEffectProgressiveFade() -> PlatformImage {
@@ -212,7 +212,7 @@ enum FixtureBuilders {
             background: .solid(hex: "1A1E24"),
             layers: [shape]
         )
-        return renderCanvas(comp)
+        return Canvas.render(comp)
     }
 
     static func canvasMultilayerCornerRadius() -> PlatformImage {
@@ -259,7 +259,7 @@ enum FixtureBuilders {
             background: .gradient(startHex: "0F1115", endHex: "1D2330", angle: 180),
             layers: [bg, accent, text]
         )
-        return renderCanvas(comp)
+        return Canvas.render(comp)
     }
 
     // MARK: - Rotated layers fixture
@@ -342,7 +342,7 @@ enum FixtureBuilders {
             background: .solid(hex: "101826"),
             layers: [reference, diamond, ellipseClipped, roundedRect, ninetyBar]
         )
-        return renderCanvas(comp)
+        return Canvas.render(comp)
     }
 
     /// Deterministic "picture-frame" bezel: opaque dark border around a
@@ -371,14 +371,12 @@ enum FixtureBuilders {
     /// AdjustResolution together — the full non-canvas path.
     static func noBezelPipelinePortrait() -> PlatformImage {
         let input = syntheticImage(width: 360, height: 780)
-        var result = prepareScreenshot(image: input, os: .iOS)
-        result = scaleToBezel(image: result, factor: 0.9)
-        result = applyOrientation(image: result, orientation: .portrait)
+        var result = Pipeline.normalizeToPortrait(input, os: .iOS)
+        result = Pipeline.scale(result, by: 0.9)
+        result = Pipeline.applyOrientation(result, orientation: .portrait)
         let compSize = result.size
         let center = CGPoint(x: compSize.width / 2, y: compSize.height / 2)
-        result = applyShadows(
-            image: result,
-            shadows: [
+        result = Pipeline.applyShadows(to: result, shadows: [
                 .drop(DropShadow(color: "000000", opacity: 0.4,
                                   blur: 0.02, offsetX: 0, offsetY: 0.015)),
                 .shape(ShapeShadow(color: "000000", opacity: 0.25,
@@ -388,33 +386,28 @@ enum FixtureBuilders {
             compositionSize: compSize,
             compositionCenter: center
         )
-        result = addBackground(image: result,
-                                background: .gradient(startHex: "0F1115",
+        result = Pipeline.addBackground(to: result, background: .gradient(startHex: "0F1115",
                                                       endHex: "2A2F37",
                                                       angle: 180))
-        result = cropImage(image: result,
-                            crop: CropRect(x: 0, y: 0, width: 1, height: 1))
-        result = adjustResolution(image: result,
-                                    resolution: .custom(width: 640, height: 480))
+        result = Pipeline.crop(result, to: CropRect(x: 0, y: 0, width: 1, height: 1))
+        result = Pipeline.adjustResolution(result, to: .custom(width: 640, height: 480))
         return result
     }
 
     /// Landscape-in + landscape-out variant of the no-bezel pipeline. The
-    /// synthetic input is wider-than-tall so `prepareScreenshot` rotates
+    /// synthetic input is wider-than-tall so `normalizeToPortrait` rotates
     /// it to portrait on iOS, then `applyOrientation(.landscape)` rotates
     /// the pipeline output back to landscape. This is the exact double-
     /// rotation path §S4.2 optimizes — the Golden pins the current visual
     /// so the optimized code must match bit-for-bit.
     static func noBezelPipelineLandscape() -> PlatformImage {
         let input = syntheticImage(width: 780, height: 360)
-        var result = prepareScreenshot(image: input, os: .iOS)
-        result = scaleToBezel(image: result, factor: 0.9)
-        result = applyOrientation(image: result, orientation: .landscape)
+        var result = Pipeline.normalizeToPortrait(input, os: .iOS)
+        result = Pipeline.scale(result, by: 0.9)
+        result = Pipeline.applyOrientation(result, orientation: .landscape)
         let compSize = result.size
         let center = CGPoint(x: compSize.width / 2, y: compSize.height / 2)
-        result = applyShadows(
-            image: result,
-            shadows: [
+        result = Pipeline.applyShadows(to: result, shadows: [
                 .drop(DropShadow(color: "000000", opacity: 0.4,
                                   blur: 0.02, offsetX: 0, offsetY: 0.015)),
                 .shape(ShapeShadow(color: "000000", opacity: 0.25,
@@ -424,14 +417,11 @@ enum FixtureBuilders {
             compositionSize: compSize,
             compositionCenter: center
         )
-        result = addBackground(image: result,
-                                background: .gradient(startHex: "0F1115",
+        result = Pipeline.addBackground(to: result, background: .gradient(startHex: "0F1115",
                                                       endHex: "2A2F37",
                                                       angle: 180))
-        result = cropImage(image: result,
-                            crop: CropRect(x: 0, y: 0, width: 1, height: 1))
-        result = adjustResolution(image: result,
-                                    resolution: .custom(width: 640, height: 480))
+        result = Pipeline.crop(result, to: CropRect(x: 0, y: 0, width: 1, height: 1))
+        result = Pipeline.adjustResolution(result, to: .custom(width: 640, height: 480))
         return result
     }
 
@@ -439,7 +429,7 @@ enum FixtureBuilders {
 
     /// Landscape-in + landscape-out variant of `applyBezelPipeline`. Uses a
     /// synthetic bezel since bundled bezels are deferred. On iOS this
-    /// exercises the specific L→L flow §S4.2 optimizes: `prepareScreenshot`
+    /// exercises the specific L→L flow §S4.2 optimizes: `normalizeToPortrait`
     /// rotates the landscape input to portrait, placeBezel composes with
     /// the portrait bezel, then `applyOrientation` rotates the whole
     /// composition back to landscape. With non-zero offsets the Golden
@@ -459,7 +449,7 @@ enum FixtureBuilders {
             orientation: .landscape,
             nativeScreenSize: nil
         )
-        return applyBezelPipeline(image: input, params: params)
+        return Pipeline.applyBezel(to: input, params: params)
     }
 
     /// Zoom + pan crop fixture. `crop.width = crop.height = 1.5` with a
@@ -469,7 +459,7 @@ enum FixtureBuilders {
     /// actually need the redraw.
     static func cropImageZoomPan() -> PlatformImage {
         let input = syntheticImage(width: 480, height: 320)
-        return cropImage(image: input, crop: CropRect(x: 0.4, y: -0.2, width: 1.5, height: 1.5))
+        return Pipeline.crop(input, to: CropRect(x: 0.4, y: -0.2, width: 1.5, height: 1.5))
     }
 
     /// Portrait-in + portrait-out control case for the bezel pipeline —
@@ -490,6 +480,6 @@ enum FixtureBuilders {
             orientation: .portrait,
             nativeScreenSize: nil
         )
-        return applyBezelPipeline(image: input, params: params)
+        return Pipeline.applyBezel(to: input, params: params)
     }
 }

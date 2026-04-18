@@ -39,7 +39,7 @@ final class BezelPipelineStressLandscape: Scenario, @unchecked Sendable {
             orientation: .landscape,
             nativeScreenSize: nil
         )
-        return applyBezelPipeline(image: input, params: params)
+        return Pipeline.applyBezel(to: input, params: params)
     }
 
     func teardown() {

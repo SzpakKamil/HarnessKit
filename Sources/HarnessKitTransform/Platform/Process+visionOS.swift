@@ -5,7 +5,7 @@ import HarnessKitScreenshots
 
 nonisolated func processScreenshotVisionOS(image: PlatformImage, config: ScreenshotConfig, screenshot: Screenshot) -> PlatformImage {
     // visionOS has no bezel compositing — use a neutral scale factor of 1.0
-    let preparedScreenshot = prepareScreenshot(image: image, os: screenshot.os)
+    let preparedScreenshot = normalizeToPortrait(image: image, os: screenshot.os)
     let scaledImage = scaleToBezel(image: preparedScreenshot, factor: 1.0)
     let compSize = scaledImage.size
     let compCenter = CGPoint(x: compSize.width / 2, y: compSize.height / 2)

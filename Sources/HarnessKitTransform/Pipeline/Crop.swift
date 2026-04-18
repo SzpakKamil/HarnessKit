@@ -1,7 +1,7 @@
 import Foundation
 import HarnessKitScreenshots
 
-public nonisolated func cropImage(image: PlatformImage, crop: CropRect) -> PlatformImage {
+nonisolated func cropImage(image: PlatformImage, crop: CropRect) -> PlatformImage {
     // No zoom → pan contributes 0 (panX/Y multiply by `(imgSize - sourceSize)/2` which
     // is zero when sourceSize == imgSize). The output is the input regardless of x/y.
     if crop.width == 1.0, crop.height == 1.0 {

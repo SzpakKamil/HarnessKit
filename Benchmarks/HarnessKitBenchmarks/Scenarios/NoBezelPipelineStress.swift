@@ -25,14 +25,12 @@ final class NoBezelPipelineStress: Scenario, @unchecked Sendable {
     }
 
     func run() throws -> PlatformImage? {
-        var result = prepareScreenshot(image: input, os: .iOS)
-        result = scaleToBezel(image: result, factor: 0.92)
-        result = applyOrientation(image: result, orientation: .portrait)
+        var result = Pipeline.normalizeToPortrait(input, os: .iOS)
+        result = Pipeline.scale(result, by: 0.92)
+        result = Pipeline.applyOrientation(result, orientation: .portrait)
         let compSize = result.size
         let center = CGPoint(x: compSize.width / 2, y: compSize.height / 2)
-        result = applyShadows(
-            image: result,
-            shadows: [
+        result = Pipeline.applyShadows(to: result, shadows: [
                 .drop(DropShadow(color: "000000", opacity: 0.4, blur: 0.02, offsetX: 0, offsetY: 0.015)),
                 .shape(ShapeShadow(color: "000000", opacity: 0.25, blur: 0.06,
                                     x: 0, y: -1.02, width: 1.2, height: 0.05, cornerRadius: 1.0)),
@@ -40,9 +38,9 @@ final class NoBezelPipelineStress: Scenario, @unchecked Sendable {
             compositionSize: compSize,
             compositionCenter: center
         )
-        result = addBackground(image: result, background: .gradient(startHex: "0F1115", endHex: "202428", angle: 180))
-        result = cropImage(image: result, crop: CropRect(x: 0, y: 0, width: 1, height: 1))
-        result = adjustResolution(image: result, resolution: .custom(width: 3840, height: 2160))
+        result = Pipeline.addBackground(to: result, background: .gradient(startHex: "0F1115", endHex: "202428", angle: 180))
+        result = Pipeline.crop(result, to: CropRect(x: 0, y: 0, width: 1, height: 1))
+        result = Pipeline.adjustResolution(result, to: .custom(width: 3840, height: 2160))
         return result
     }
 

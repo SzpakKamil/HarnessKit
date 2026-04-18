@@ -22,10 +22,10 @@ import CoreGraphics
 import HarnessKitScreenshots
 import HarnessKitTransform
 
-private func makeBatchInputs(count: Int) -> [BulkTransformInput] {
+private func makeBatchInputs(count: Int) -> [TransformJob] {
     let image = SyntheticImage.gradient(width: 1290, height: 2796)
     return (0..<count).map { i in
-        BulkTransformInput(
+        TransformJob(
             image: image,
             screenshot: Screenshot(
                 id: "bulk-\(i)",
@@ -43,7 +43,7 @@ final class BulkTransformBatch10Sequential: Scenario, @unchecked Sendable {
     let iterations = 1
     var usesAsync: Bool { true }
 
-    private var inputs: [BulkTransformInput]!
+    private var inputs: [TransformJob]!
     private var outputDir: URL!
 
     func prepare() throws {
@@ -56,11 +56,7 @@ final class BulkTransformBatch10Sequential: Scenario, @unchecked Sendable {
 
     func runAsync() async throws -> PlatformImage? {
         for input in inputs {
-            try transformScreenshot(
-                image: input.image,
-                screenshot: input.screenshot,
-                config: .defaults,
-                outputDirectory: outputDir
+            try Transformer.transform(input.screenshot, image: input.image, config: .defaults, into: outputDir
             )
         }
         return nil
@@ -80,7 +76,7 @@ final class BulkTransformBatch10Bulk: Scenario, @unchecked Sendable {
     let iterations = 1
     var usesAsync: Bool { true }
 
-    private var inputs: [BulkTransformInput]!
+    private var inputs: [TransformJob]!
     private var outputDir: URL!
 
     func prepare() throws {
@@ -92,10 +88,7 @@ final class BulkTransformBatch10Bulk: Scenario, @unchecked Sendable {
     func run() throws -> PlatformImage? { nil }
 
     func runAsync() async throws -> PlatformImage? {
-        try await transformScreenshots(
-            inputs,
-            config: .defaults,
-            outputDirectory: outputDir
+        try await Transformer.transform(inputs, config: .defaults, into: outputDir
         )
         return nil
     }

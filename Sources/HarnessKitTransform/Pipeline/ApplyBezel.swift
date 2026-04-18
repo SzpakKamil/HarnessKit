@@ -47,12 +47,12 @@ public struct BezelPipelineParams: @unchecked Sendable {
 /// The output is the device composition at native bezel resolution with no
 /// surrounding canvas, background, shadows, or crop. Use `renderDeviceOnCanvas`
 /// or `renderCanvas` to place the result on a sized canvas.
-public nonisolated func applyBezelPipeline(image: PlatformImage, params: BezelPipelineParams) -> PlatformImage {
+nonisolated func applyBezelPipeline(image: PlatformImage, params: BezelPipelineParams) -> PlatformImage {
     autoreleasepool {
         guard !Task.isCancelled else { return image }
 
         // iOS/iPadOS L→L fast path. The current (non-optimized) sequence
-        // rotates the screenshot -π/2 in `prepareScreenshot`, composes
+        // rotates the screenshot -π/2 in `normalizeToPortrait`, composes
         // against the portrait bezel, then rotates the whole composition
         // +π/2 in `applyOrientation`. The two screenshot rotations cancel;
         // we can compose directly in landscape by pre-rotating the bezel
@@ -75,7 +75,7 @@ public nonisolated func applyBezelPipeline(image: PlatformImage, params: BezelPi
             hOffset = -params.verticalOffset
             vOffset = params.horizontalOffset
         } else {
-            prepared = prepareScreenshot(image: image, os: params.os)
+            prepared = normalizeToPortrait(image: image, os: params.os)
             composingBezel = params.bezelImage
             hOffset = params.horizontalOffset
             vOffset = params.verticalOffset
@@ -117,7 +117,7 @@ public nonisolated func applyBezelPipeline(image: PlatformImage, params: BezelPi
 ///
 /// This is the standard way to produce a final screenshot image from a tight
 /// device composition returned by `applyBezelPipeline`.
-public nonisolated func renderDeviceOnCanvas(
+nonisolated func renderDeviceOnCanvas(
     deviceImage: PlatformImage,
     canvasSize: CGSize,
     background: ScreenshotBackground? = nil,

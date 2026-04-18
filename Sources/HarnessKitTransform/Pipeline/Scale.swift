@@ -1,6 +1,6 @@
 import Foundation
 
-public nonisolated func scaleToBezel(image: PlatformImage, factor: CGFloat) -> PlatformImage {
+nonisolated func scaleToBezel(image: PlatformImage, factor: CGFloat) -> PlatformImage {
     guard factor != 1.0 else { return image }
 
     let originalSize = imageSize(image)

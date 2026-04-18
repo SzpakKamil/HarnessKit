@@ -61,7 +61,7 @@ nonisolated func createImage(size: CGSize, flipped: Bool = false, drawing: @Send
 /// `UIImage` loaded via `UIImage(contentsOfFile:)` preserves EXIF
 /// orientation; drawing such an image through `cgImage` yields the
 /// pre-rotation bitmap. One-shot normalization at the pipeline entry
-/// (`prepareScreenshot`) lets every downstream `drawImageInContext`
+/// (`normalizeToPortrait`) lets every downstream `drawImageInContext`
 /// assume `.up` and skip a per-call render-into-bitmap dance.
 nonisolated func normalizeOrientation(_ image: PlatformImage) -> PlatformImage {
     #if canImport(AppKit)
@@ -82,7 +82,7 @@ nonisolated func normalizeOrientation(_ image: PlatformImage) -> PlatformImage {
 /// - Precondition: on UIKit platforms, `image.imageOrientation` must
 ///   be `.up`. Callers that receive arbitrary `UIImage`s (EXIF-tagged
 ///   screenshots, etc.) should run them through `normalizeOrientation`
-///   first — typically in `prepareScreenshot`.
+///   first — typically in `normalizeToPortrait`.
 nonisolated func drawImageInContext(_ image: PlatformImage, in rect: CGRect, context ctx: CGContext) {
     #if canImport(AppKit)
     NSGraphicsContext.current.map { _ in

@@ -2,7 +2,7 @@ import Foundation
 import CoreGraphics
 import HarnessKitScreenshots
 
-public nonisolated func adjustResolution(image: PlatformImage, resolution: ScreenshotResolution) -> PlatformImage {
+nonisolated func adjustResolution(image: PlatformImage, resolution: ScreenshotResolution) -> PlatformImage {
     let canvasSize = resolution.size
     let sourceSize = imageSize(image)
     guard sourceSize.width > 0, sourceSize.height > 0,

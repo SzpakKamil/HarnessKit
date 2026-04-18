@@ -4,7 +4,7 @@ import CoreImage
 import CoreImage.CIFilterBuiltins
 import HarnessKitScreenshots
 
-public nonisolated func applyShadows(
+nonisolated func applyShadows(
     image: PlatformImage,
     shadows: [ScreenshotShadow],
     compositionSize: CGSize,
@@ -129,6 +129,6 @@ public nonisolated func applyShadows(
 }
 
 /// Returns the pixel dimensions of a platform image.
-public nonisolated func pixelSize(of image: PlatformImage) -> CGSize {
+nonisolated func pixelSize(of image: PlatformImage) -> CGSize {
     imagePixelSize(image)
 }

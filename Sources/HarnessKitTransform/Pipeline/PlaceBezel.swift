@@ -1,6 +1,6 @@
 import Foundation
 
-public nonisolated func placeBezel(
+nonisolated func placeBezel(
     image: PlatformImage,
     bezel: PlatformImage,
     verticalOffset: CGFloat,

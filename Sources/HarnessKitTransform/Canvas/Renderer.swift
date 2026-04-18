@@ -14,7 +14,7 @@ import HarnessKitScreenshots
 /// `path` field as a filesystem path. The dict takes priority; if a
 /// layer has no entry, the renderer falls back to loading the path
 /// from disk so existing non-Framely callers keep working.
-public nonisolated func renderCanvas(
+nonisolated func renderCanvas(
     _ composition: CanvasComposition,
     deviceImages: [UUID: PlatformImage] = [:],
     imageLayerImages: [UUID: PlatformImage] = [:],

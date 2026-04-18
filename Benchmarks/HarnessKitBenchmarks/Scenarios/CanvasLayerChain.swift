@@ -88,7 +88,7 @@ final class CanvasLayerChain: Scenario, @unchecked Sendable {
             background: .gradient(startHex: "0F1115", endHex: "202428", angle: 180),
             layers: [panel, accent, subaccent, device, headline]
         )
-        return renderCanvas(comp, deviceImages: [deviceLayerID: deviceImage])
+        return Canvas.render(comp, deviceImages: [deviceLayerID: deviceImage])
     }
 
     func teardown() {

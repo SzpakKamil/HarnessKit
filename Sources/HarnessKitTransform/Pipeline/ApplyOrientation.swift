@@ -1,7 +1,7 @@
 import Foundation
 import HarnessKitScreenshots
 
-public nonisolated func applyOrientation(image: PlatformImage, orientation: ScreenOrientation) -> PlatformImage {
+nonisolated func applyOrientation(image: PlatformImage, orientation: ScreenOrientation) -> PlatformImage {
     guard orientation == .landscape else { return image }
 
     let imgSize = imageSize(image)

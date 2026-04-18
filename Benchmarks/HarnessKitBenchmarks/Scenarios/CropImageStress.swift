@@ -24,9 +24,9 @@ final class CropImageStress: Scenario, @unchecked Sendable {
 
     func run() throws -> PlatformImage? {
         // Pan-only: §S4.4 short-circuits (identity, no bitmap).
-        let panned = cropImage(image: input, crop: CropRect(x: 0.3, y: -0.2, width: 1.0, height: 1.0))
+        let panned = Pipeline.crop(input, to: CropRect(x: 0.3, y: -0.2, width: 1.0, height: 1.0))
         // Zoom + pan: goes through the rescale path.
-        return cropImage(image: panned, crop: CropRect(x: 0.1, y: 0.1, width: 1.5, height: 1.5))
+        return Pipeline.crop(panned, to: CropRect(x: 0.1, y: 0.1, width: 1.5, height: 1.5))
     }
 
     func teardown() {

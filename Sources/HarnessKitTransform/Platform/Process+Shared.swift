@@ -49,7 +49,7 @@ func applyNoBezelPipeline(
 ) -> PlatformImage {
     autoreleasepool {
         // iOS/iPadOS L→L fast path: input is landscape AND target is landscape.
-        // Current pipeline rotates -π/2 in `prepareScreenshot` then +π/2 in
+        // Current pipeline rotates -π/2 in `normalizeToPortrait` then +π/2 in
         // `applyOrientation`, netting identity on the screenshot pixels.
         // Skip both rotations — for uniform scaling with a symmetric kernel,
         // rotation and scaling commute, so the output is bit-for-bit identical.
@@ -61,7 +61,7 @@ func applyNoBezelPipeline(
 
         let prepared = canSkipRotations
             ? normalizeOrientation(image)
-            : prepareScreenshot(image: image, os: screenshot.os)
+            : normalizeToPortrait(image: image, os: screenshot.os)
         var result = scaleToBezel(image: prepared, factor: scale)
         if !canSkipRotations, let orientation {
             result = applyOrientation(image: result, orientation: orientation)

@@ -3,7 +3,7 @@ import CoreGraphics
 import HarnessKitScreenshots
 
 /// Applies a background behind the given image based on the `ScreenshotBackground` type.
-public nonisolated func addBackground(
+nonisolated func addBackground(
     image: PlatformImage,
     background: ScreenshotBackground?,
     backgroundImageCache: PlatformImage? = nil

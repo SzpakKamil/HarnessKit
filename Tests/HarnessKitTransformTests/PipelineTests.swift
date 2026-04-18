@@ -51,13 +51,13 @@ final class PipelineTests: XCTestCase {
 
     func testRenderCanvas_zeroCanvasSize_returnsEmptyImage() {
         let composition = CanvasComposition(width: 0, height: 0)
-        let result = renderCanvas(composition)
+        let result = Canvas.render(composition)
         XCTAssertEqual(result.size, .zero)
     }
 
     func testRenderCanvas_emptyLayers_returnsCanvas() {
         let composition = CanvasComposition(width: 100, height: 100)
-        let result = renderCanvas(composition)
+        let result = Canvas.render(composition)
         XCTAssertEqual(result.size.width, 100)
         XCTAssertEqual(result.size.height, 100)
     }
@@ -69,7 +69,7 @@ final class PipelineTests: XCTestCase {
             frame: CanvasLayerFrame(x: 0.5, y: 0.5, width: 0.5, height: 0.5)
         )
         let composition = CanvasComposition(width: 200, height: 200, layers: [layer])
-        let result = renderCanvas(composition)
+        let result = Canvas.render(composition)
         XCTAssertEqual(result.size.width, 200)
         XCTAssertEqual(result.size.height, 200)
     }
@@ -81,7 +81,7 @@ final class PipelineTests: XCTestCase {
             frame: CanvasLayerFrame(x: 0.5, y: 0.5, width: 0.8, height: 0.2)
         )
         let composition = CanvasComposition(width: 200, height: 200, layers: [layer])
-        let result = renderCanvas(composition)
+        let result = Canvas.render(composition)
         XCTAssertEqual(result.size.width, 200)
     }
 
@@ -109,14 +109,14 @@ final class PipelineTests: XCTestCase {
 
     func testApplyOrientation_portrait_unchanged() {
         let image = makeTestImage(width: 100, height: 200)
-        let result = applyOrientation(image: image, orientation: .portrait)
+        let result = Pipeline.applyOrientation(image, orientation: .portrait)
         XCTAssertEqual(result.size.width, 100)
         XCTAssertEqual(result.size.height, 200)
     }
 
     func testApplyOrientation_landscape_rotated() {
         let image = makeTestImage(width: 100, height: 200)
-        let result = applyOrientation(image: image, orientation: .landscape)
+        let result = Pipeline.applyOrientation(image, orientation: .landscape)
         XCTAssertEqual(result.size.width, 200)
         XCTAssertEqual(result.size.height, 100)
     }
@@ -125,14 +125,14 @@ final class PipelineTests: XCTestCase {
 
     func testMaskScreenshot_zeroRadius_unchanged() {
         let image = makeTestImage(width: 100, height: 100)
-        let result = maskScreenshot(image: image, cornerRadius: 0)
+        let result = Pipeline.mask(image, cornerRadius: 0)
         // Zero radius returns original image
         XCTAssertTrue(result === image)
     }
 
     func testMaskScreenshot_nonZeroRadius_sameSize() {
         let image = makeTestImage(width: 100, height: 100)
-        let result = maskScreenshot(image: image, cornerRadius: 10)
+        let result = Pipeline.mask(image, cornerRadius: 10)
         XCTAssertEqual(result.size.width, 100)
         XCTAssertEqual(result.size.height, 100)
     }
@@ -142,14 +142,14 @@ final class PipelineTests: XCTestCase {
     func testPlaceBezel_zeroSizeImage_returnsOriginal() {
         let image = makeTestImage(width: 0, height: 0)
         let bezel = makeTestImage(width: 100, height: 200)
-        let result = placeBezel(image: image, bezel: bezel, verticalOffset: 0)
+        let result = Pipeline.placeBezel(image, bezel: bezel, verticalOffset: 0)
         XCTAssertTrue(result === image)
     }
 
     func testPlaceBezel_zeroSizeBezel_returnsOriginal() {
         let image = makeTestImage(width: 100, height: 200)
         let bezel = makeTestImage(width: 0, height: 0)
-        let result = placeBezel(image: image, bezel: bezel, verticalOffset: 0)
+        let result = Pipeline.placeBezel(image, bezel: bezel, verticalOffset: 0)
         XCTAssertTrue(result === image)
     }
 
@@ -157,7 +157,7 @@ final class PipelineTests: XCTestCase {
 
     func testScaleToBezel_factorOne_sameSize() {
         let image = makeTestImage(width: 100, height: 200)
-        let result = scaleToBezel(image: image, factor: 1.0)
+        let result = Pipeline.scale(image, by: 1.0)
         XCTAssertEqual(result.size.width, 100)
         XCTAssertEqual(result.size.height, 200)
     }
@@ -171,7 +171,7 @@ final class PipelineTests: XCTestCase {
         let image = makeTestImage(width: 3840, height: 2160)
         // Fake a sub-pixel source by giving NSImage a non-integer size.
         image.size = NSSize(width: 3839.5, height: 2160)
-        let result = adjustResolution(image: image, resolution: .custom(width: 3840, height: 2160))
+        let result = Pipeline.adjustResolution(image, to: .custom(width: 3840, height: 2160))
         XCTAssertTrue(result === image, "sub-pixel source should short-circuit")
     }
 
@@ -179,7 +179,7 @@ final class PipelineTests: XCTestCase {
     func testAdjustResolution_pastSlackThreshold_rescales() {
         let image = makeTestImage(width: 3840, height: 2160)
         image.size = NSSize(width: 3838, height: 2160)  // 2 px off → redraws
-        let result = adjustResolution(image: image, resolution: .custom(width: 3840, height: 2160))
+        let result = Pipeline.adjustResolution(image, to: .custom(width: 3840, height: 2160))
         XCTAssertFalse(result === image)
         XCTAssertEqual(result.size.width, 3840)
         XCTAssertEqual(result.size.height, 2160)
@@ -193,14 +193,14 @@ final class PipelineTests: XCTestCase {
     /// the CGImage materialization + full-canvas bitmap entirely.
     func testCropImage_panWithNoZoom_returnsIdentity() {
         let image = makeTestImage(width: 100, height: 200)
-        let result = cropImage(image: image, crop: CropRect(x: 0.5, y: -0.3, width: 1.0, height: 1.0))
+        let result = Pipeline.crop(image, to: CropRect(x: 0.5, y: -0.3, width: 1.0, height: 1.0))
         XCTAssertTrue(result === image, "pan-with-no-zoom should be identity, saving the full-canvas redraw")
     }
 
     /// The original (0,0,1,1) short-circuit must still fire after §S4.4's refactor.
     func testCropImage_identity_returnsInput() {
         let image = makeTestImage(width: 100, height: 200)
-        let result = cropImage(image: image, crop: CropRect(x: 0, y: 0, width: 1.0, height: 1.0))
+        let result = Pipeline.crop(image, to: CropRect(x: 0, y: 0, width: 1.0, height: 1.0))
         XCTAssertTrue(result === image)
     }
 
@@ -209,7 +209,7 @@ final class PipelineTests: XCTestCase {
     /// cases that actually need resampling.
     func testCropImage_zoomPan_rescaleToViewport() {
         let image = makeTestImage(width: 400, height: 300)
-        let result = cropImage(image: image, crop: CropRect(x: 0.2, y: 0, width: 1.5, height: 1.5))
+        let result = Pipeline.crop(image, to: CropRect(x: 0.2, y: 0, width: 1.5, height: 1.5))
         XCTAssertEqual(result.size.width, 400)
         XCTAssertEqual(result.size.height, 300)
         XCTAssertFalse(result === image, "rescale path should allocate a new image")
@@ -218,7 +218,7 @@ final class PipelineTests: XCTestCase {
     // MARK: - §S4.2 rotation/scale commutativity
 
     /// The no-bezel L→L optimization in `applyNoBezelPipeline` replaces
-    /// `prepareScreenshot → scaleToBezel → applyOrientation(.landscape)`
+    /// `normalizeToPortrait → scaleToBezel → applyOrientation(.landscape)`
     /// with `normalizeOrientation → scaleToBezel`. For that to be
     /// pixel-safe the two sequences must produce bit-identical output on
     /// the pixels §S4.2 is allowed to touch — i.e. before shadows/
@@ -229,12 +229,12 @@ final class PipelineTests: XCTestCase {
     func testNoBezel_L2L_rotationAndScaleCommute_bitForBit() throws {
         let input = makeTestImage(width: 780, height: 360)
 
-        var raw = prepareScreenshot(image: input, os: .iOS)
-        raw = scaleToBezel(image: raw, factor: 0.9)
-        raw = applyOrientation(image: raw, orientation: .landscape)
+        var raw = Pipeline.normalizeToPortrait(input, os: .iOS)
+        raw = Pipeline.scale(raw, by: 0.9)
+        raw = Pipeline.applyOrientation(raw, orientation: .landscape)
 
         var optimized = normalizeOrientation(input)
-        optimized = scaleToBezel(image: optimized, factor: 0.9)
+        optimized = Pipeline.scale(optimized, by: 0.9)
 
         XCTAssertEqual(raw.size, optimized.size)
 

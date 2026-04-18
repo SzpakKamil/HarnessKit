@@ -50,7 +50,7 @@ final class CanvasShadowStress: Scenario, @unchecked Sendable {
             background: .gradient(startHex: "1A1E24", endHex: "3A3F4A", angle: 180),
             layers: [layer]
         )
-        return renderCanvas(comp, deviceImages: [deviceLayerID: deviceImage])
+        return Canvas.render(comp, deviceImages: [deviceLayerID: deviceImage])
     }
 
     func teardown() {

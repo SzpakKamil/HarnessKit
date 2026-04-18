@@ -42,7 +42,7 @@ final class CanvasEffectsStress: Scenario, @unchecked Sendable {
             background: .solid(hex: "0F1115"),
             layers: [layer]
         )
-        return renderCanvas(comp, deviceImages: [deviceLayerID: deviceImage])
+        return Canvas.render(comp, deviceImages: [deviceLayerID: deviceImage])
     }
 
     func teardown() {

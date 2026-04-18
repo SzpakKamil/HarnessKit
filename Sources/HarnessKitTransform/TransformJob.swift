@@ -18,7 +18,7 @@ import HarnessKitScreenshots
 ///   `NSImage` / `UIImage` `Sendable` in a future SDK or Swift's
 ///   region-based isolation reliably accepts immutable-after-init class
 ///   types.
-public struct BulkTransformInput: @unchecked Sendable {
+public struct TransformJob: @unchecked Sendable {
     public let image: PlatformImage
     public let screenshot: Screenshot
 

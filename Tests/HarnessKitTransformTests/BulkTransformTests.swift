@@ -53,8 +53,8 @@ final class BulkTransformTests: XCTestCase {
         #endif
     }
 
-    private func makeInput(id: String) -> BulkTransformInput {
-        BulkTransformInput(
+    private func makeInput(id: String) -> TransformJob {
+        TransformJob(
             image: referenceImage(),
             screenshot: Screenshot(id: id, appearance: .light, os: .iOS, addBezel: false)
         )
@@ -70,11 +70,7 @@ final class BulkTransformTests: XCTestCase {
     func testBulkTransformProducesAllOutputs() async throws {
         let inputs = (0..<5).map { makeInput(id: "fixture-\($0)") }
 
-        try await transformScreenshots(
-            inputs,
-            config: .defaults,
-            outputDirectory: tempDir,
-            concurrency: 2
+        try await Transformer.transform(inputs, config: .defaults, into: tempDir, concurrency: 2
         )
 
         XCTAssertEqual(pngCount(in: tempDir), 5)
@@ -82,11 +78,7 @@ final class BulkTransformTests: XCTestCase {
 
     /// Empty input is a no-op. Doesn't touch the directory at all.
     func testBulkTransformEmptyInputIsNoOp() async throws {
-        try await transformScreenshots(
-            [],
-            config: .defaults,
-            outputDirectory: tempDir,
-            concurrency: 4
+        try await Transformer.transform([], config: .defaults, into: tempDir, concurrency: 4
         )
         XCTAssertFalse(FileManager.default.fileExists(atPath: tempDir.path))
     }
@@ -100,11 +92,7 @@ final class BulkTransformTests: XCTestCase {
         let outputDir = tempDir!
 
         let task = Task<Void, Error> { [inputs] in
-            try await transformScreenshots(
-                inputs,
-                config: .defaults,
-                outputDirectory: outputDir,
-                concurrency: 2
+            try await Transformer.transform(inputs, config: .defaults, into: outputDir, concurrency: 2
             )
         }
         task.cancel()
@@ -130,11 +118,7 @@ final class BulkTransformTests: XCTestCase {
         let unwritable = URL(fileURLWithPath: "/dev/null/cannot-create/sub")
 
         do {
-            try await transformScreenshots(
-                inputs,
-                config: .defaults,
-                outputDirectory: unwritable,
-                concurrency: 4
+            try await Transformer.transform(inputs, config: .defaults, into: unwritable, concurrency: 4
             )
             XCTFail("expected throw from unwritable output directory")
         } catch {
@@ -152,11 +136,7 @@ final class BulkTransformTests: XCTestCase {
     func testMemoryBudgetPicksConcurrencyFromBudget() async throws {
         let inputs = (0..<10).map { makeInput(id: "budget-\($0)") }
 
-        try await transformScreenshots(
-            inputs,
-            config: .defaults,
-            outputDirectory: tempDir,
-            memoryBudgetMB: 560  // → concurrency = 2
+        try await Transformer.transform(inputs, config: .defaults, into: tempDir, memoryBudgetMB: 560  // → concurrency = 2
         )
 
         XCTAssertEqual(pngCount(in: tempDir), 10)
@@ -165,11 +145,7 @@ final class BulkTransformTests: XCTestCase {
     /// Tiny budget clamps to concurrency=1 (`max(1, 1/280) == 1`).
     func testMemoryBudgetClampsToOneAtTinyValues() async throws {
         let inputs = (0..<3).map { makeInput(id: "tiny-\($0)") }
-        try await transformScreenshots(
-            inputs,
-            config: .defaults,
-            outputDirectory: tempDir,
-            memoryBudgetMB: 1  // → max(1, 0) = 1
+        try await Transformer.transform(inputs, config: .defaults, into: tempDir, memoryBudgetMB: 1  // → max(1, 0) = 1
         )
         XCTAssertEqual(pngCount(in: tempDir), 3)
     }
@@ -179,11 +155,7 @@ final class BulkTransformTests: XCTestCase {
     func testStress100Inputs() async throws {
         let inputs = (0..<100).map { makeInput(id: "stress-\($0)") }
 
-        try await transformScreenshots(
-            inputs,
-            config: .defaults,
-            outputDirectory: tempDir,
-            concurrency: 4
+        try await Transformer.transform(inputs, config: .defaults, into: tempDir, concurrency: 4
         )
 
         XCTAssertEqual(pngCount(in: tempDir), 100)

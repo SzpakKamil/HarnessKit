@@ -1,7 +1,7 @@
 import Foundation
 import HarnessKitScreenshots
 
-public nonisolated func prepareScreenshot(image: PlatformImage, os: TargetOS) -> PlatformImage {
+nonisolated func normalizeToPortrait(image: PlatformImage, os: TargetOS) -> PlatformImage {
     if os.isMacOS { return image }
 
     // One-shot orientation bake. `drawImageInContext` on UIKit

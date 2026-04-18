@@ -31,7 +31,7 @@ public enum Transformer {
     /// Bulk parallel transform. Throttled to at most `concurrency`
     /// in-flight tasks so peak RAM stays bounded.
     public static func transform(
-        _ jobs: [BulkTransformInput],
+        _ jobs: [TransformJob],
         config: ScreenshotConfig,
         into outputDirectory: URL,
         concurrency: Int = ProcessInfo.processInfo.activeProcessorCount
@@ -47,7 +47,7 @@ public enum Transformer {
     /// Bulk parallel transform whose concurrency is derived from a
     /// memory budget (`max(1, memoryBudgetMB / 280)`).
     public static func transform(
-        _ jobs: [BulkTransformInput],
+        _ jobs: [TransformJob],
         config: ScreenshotConfig,
         into outputDirectory: URL,
         memoryBudgetMB: Int
@@ -93,8 +93,8 @@ public enum Transformer {
 ///   - concurrency: Maximum number of in-flight tasks. Defaults to
 ///     `ProcessInfo.processInfo.activeProcessorCount` and is clamped to
 ///     `[1, inputs.count]`.
-public func transformScreenshots(
-    _ inputs: [BulkTransformInput],
+func transformScreenshots(
+    _ inputs: [TransformJob],
     config: ScreenshotConfig,
     outputDirectory: URL,
     concurrency: Int = ProcessInfo.processInfo.activeProcessorCount
@@ -146,8 +146,8 @@ public func transformScreenshots(
 /// (post-Part-V steady-state estimate for a 4K-canvas, single-bezel
 /// transform). Use this when you want bounded peak RSS regardless of
 /// core count — e.g. a CI runner with 8 cores and 1 GB free.
-public func transformScreenshots(
-    _ inputs: [BulkTransformInput],
+func transformScreenshots(
+    _ inputs: [TransformJob],
     config: ScreenshotConfig,
     outputDirectory: URL,
     memoryBudgetMB: Int

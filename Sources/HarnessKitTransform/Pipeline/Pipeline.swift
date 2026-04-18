@@ -133,7 +133,7 @@ public enum Pipeline {
         _ image: PlatformImage,
         os: TargetOS
     ) -> PlatformImage {
-        prepareScreenshot(image: image, os: os)
+        HarnessKitTransform.normalizeToPortrait(image: image, os: os)
     }
 
     /// Scales the image by a uniform factor.

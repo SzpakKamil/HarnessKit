@@ -2,7 +2,7 @@ import Foundation
 
 /// Clips an image to a rounded rectangle using the given corner radius.
 /// Pass `0` to skip clipping and return the original image unchanged.
-public nonisolated func maskScreenshot(image: PlatformImage, cornerRadius: CGFloat) -> PlatformImage {
+nonisolated func maskScreenshot(image: PlatformImage, cornerRadius: CGFloat) -> PlatformImage {
     guard cornerRadius > 0 else { return image }
 
     let size = imageSize(image)

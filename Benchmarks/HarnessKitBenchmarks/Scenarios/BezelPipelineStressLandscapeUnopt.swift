@@ -3,7 +3,7 @@
 //  HarnessKitBenchmarks
 //
 //  Companion to BezelPipelineStressLandscape. Mirrors the pre-§S4.2
-//  applyBezelPipeline behavior: prepareScreenshot rotates L→P, compose
+//  applyBezelPipeline behavior: normalizeToPortrait rotates L→P, compose
 //  with the portrait bezel, then applyOrientation rotates the whole
 //  composition P→L. Kept as a regression witness so any future
 //  reversion shows up as a RSS/time spike.
@@ -27,21 +27,19 @@ final class BezelPipelineStressLandscapeUnopt: Scenario, @unchecked Sendable {
     }
 
     func run() throws -> PlatformImage? {
-        let prepared = prepareScreenshot(image: input, os: .iOS)
+        let prepared = Pipeline.normalizeToPortrait(input, os: .iOS)
         let prepSize = prepared.size
         let cornerPx = 0.04 * min(prepSize.width, prepSize.height)
-        let masked = maskScreenshot(image: prepared, cornerRadius: cornerPx)
-        let scaled = scaleToBezel(image: masked, factor: 0.93)
-        let bezeled = placeBezel(
-            image: scaled,
-            bezel: bezel,
+        let masked = Pipeline.mask(prepared, cornerRadius: cornerPx)
+        let scaled = Pipeline.scale(masked, by: 0.93)
+        let bezeled = Pipeline.placeBezel(scaled, bezel: bezel,
             verticalOffset: 0.02,
             horizontalOffset: 0.01,
             screenshotOnTop: false,
             scaleUpToFill: true,
             nativeScreenSize: nil
         )
-        return applyOrientation(image: bezeled, orientation: .landscape)
+        return Pipeline.applyOrientation(bezeled, orientation: .landscape)
     }
 
     func teardown() {
