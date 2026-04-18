@@ -1,54 +1,28 @@
-//
-//  AdjustResolution.swift
-//  HarnessKitTransform
-//
-
 import Foundation
-import AppKit
+import CoreGraphics
 import HarnessKitScreenshots
 
-public nonisolated func adjustResolution(image: NSImage, resolution: ScreenshotResolution) -> NSImage {
+public nonisolated func adjustResolution(image: PlatformImage, resolution: ScreenshotResolution) -> PlatformImage {
     let canvasSize = resolution.size
-
-    let sourceSize = image.size
+    let sourceSize = imageSize(image)
     guard sourceSize.width > 0, sourceSize.height > 0,
           canvasSize.width > 0, canvasSize.height > 0 else { return image }
 
-    // Skip if image already matches target resolution
-    if sourceSize.width == canvasSize.width, sourceSize.height == canvasSize.height {
+    // Sub-pixel deltas left by earlier aspect-fit stages shouldn't cost a
+    // full-canvas bitmap. Up to ~1 pixel slack collapses to the input.
+    if abs(sourceSize.width - canvasSize.width) < 1.5,
+       abs(sourceSize.height - canvasSize.height) < 1.5 {
         return image
     }
 
-    let widthRatio = canvasSize.width / sourceSize.width
-    let heightRatio = canvasSize.height / sourceSize.height
-    let scaleFactor = min(widthRatio, heightRatio)
+    let scaleFactor = min(canvasSize.width / sourceSize.width, canvasSize.height / sourceSize.height)
+    let drawSize = CGSize(width: sourceSize.width * scaleFactor, height: sourceSize.height * scaleFactor)
+    let origin = CGPoint(x: (canvasSize.width - drawSize.width) / 2.0, y: (canvasSize.height - drawSize.height) / 2.0)
 
-    let drawSize = CGSize(
-        width: sourceSize.width * scaleFactor,
-        height: sourceSize.height * scaleFactor
-    )
-
-    let origin = CGPoint(
-        x: (canvasSize.width - drawSize.width) / 2.0,
-        y: (canvasSize.height - drawSize.height) / 2.0
-    )
-
-    return NSImage(size: canvasSize, flipped: false) { _ in
-        if let context = NSGraphicsContext.current {
-            context.imageInterpolation = .high
-        }
-
-        NSColor.clear.set()
-        NSRect(origin: .zero, size: canvasSize).fill()
-
-        image.draw(
-            in: NSRect(origin: origin, size: drawSize),
-            from: NSRect(origin: .zero, size: sourceSize),
-            operation: .sourceOver,
-            fraction: 1.0,
-            respectFlipped: false,
-            hints: [.interpolation: NSImageInterpolation.low]
-        )
-        return true
+    return createImage(size: canvasSize) { ctx in
+        ctx.interpolationQuality = .high
+        ctx.setFillColor(CGColor(red: 0, green: 0, blue: 0, alpha: 0))
+        ctx.fill(CGRect(origin: .zero, size: canvasSize))
+        drawImageInContext(image, in: CGRect(origin: origin, size: drawSize), context: ctx)
     }
 }

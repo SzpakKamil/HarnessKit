@@ -1,8 +1,3 @@
-//
-//  ScreenshotMetadata.swift
-//  HarnessKitScreenshots
-//
-
 import Foundation
 import ImageIO
 

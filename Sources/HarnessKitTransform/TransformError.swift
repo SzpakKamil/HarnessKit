@@ -1,8 +1,3 @@
-//
-//  TransformError.swift
-//  HarnessKitTransform
-//
-
 import Foundation
 
 public enum TransformError: LocalizedError {

@@ -129,3 +129,65 @@ jobs:
     - name: Build for visionOS
       run: |
         xcodebuild -scheme HarnessKit -destination 'platform=visionOS Simulator,name=Apple Vision Pro,OS=26.2,arch=arm64' build
+
+  snapshot-goldens:
+    # Strict gate: any pixel diff in the Canvas / no-bezel pipeline fails CI.
+    # Regenerate fixtures explicitly (see Tests/HarnessKitTransformTests/Golden/README.md)
+    # when a pixel change is intentional.
+    name: Snapshot Goldens
+    runs-on: macos-15
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Select Xcode 16.0
+      run: |
+        sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
+        swift --version
+
+    - name: Run Golden tests
+      run: swift test --filter GoldenTests
+
+    - name: Upload diff artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: golden-failure-artifacts
+        path: Tests/HarnessKitTransformTests/Golden/Fixtures/_failed_*.png
+        if-no-files-found: ignore
+        retention-days: 7
+
+  benchmarks:
+    # Runs the HarnessKitBenchmarks executable and uploads the CSV as an
+    # artifact on every PR. Comparison vs the checked-in baseline is
+    # non-strict today because CI hardware has its own cost profile — once
+    # a CI-specific baseline lands under Benchmarks/baselines/, flip
+    # `--strict` on in the compare step below.
+    name: Benchmarks (non-strict compare)
+    runs-on: macos-15
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Select Xcode 16.0
+      run: |
+        sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
+        swift --version
+
+    - name: Build benchmarks (release)
+      run: swift build --product HarnessKitBenchmarks -c release
+
+    - name: Run benchmarks + compare
+      run: |
+        mkdir -p .bench-out
+        swift run -c release HarnessKitBenchmarks \
+          --compare Benchmarks/baselines/1.0-baseline.csv \
+          > .bench-out/current.csv
+
+    - name: Upload CSV
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchmark-csv
+        path: .bench-out/current.csv
+        retention-days: 30

@@ -1,8 +1,3 @@
-//
-//  ResetTheme.swift
-//  HarnessKitScreenshotTesting
-//
-
 import Foundation
 import HarnessKitScreenshots
 #if canImport(XCTest)

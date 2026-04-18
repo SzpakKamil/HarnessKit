@@ -1,10 +1,3 @@
-//
-//  WatchDeviceDescriptor+Catalogue.swift
-//  HarnessKitTransform
-//
-//  Static Watch device catalogue loader with generation-keyed caching.
-//
-
 import Foundation
 
 // MARK: - JSON catalogue

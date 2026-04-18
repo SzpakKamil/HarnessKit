@@ -1,8 +1,3 @@
-//
-//  ScreenshotResolution.swift
-//  HarnessKitScreenshots
-//
-
 import Foundation
 import CoreGraphics
 

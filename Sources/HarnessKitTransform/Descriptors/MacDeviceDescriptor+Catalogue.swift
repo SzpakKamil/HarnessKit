@@ -1,10 +1,3 @@
-//
-//  MacDeviceDescriptor+Catalogue.swift
-//  HarnessKitTransform
-//
-//  Static Mac device catalogue loader with generation-keyed caching.
-//
-
 import Foundation
 
 // MARK: - JSON catalogue

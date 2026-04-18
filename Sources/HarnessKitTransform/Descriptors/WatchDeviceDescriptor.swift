@@ -1,10 +1,4 @@
-//
-//  WatchDeviceDescriptor.swift
-//  HarnessKitTransform
-//
-
 import Foundation
-import AppKit
 
 /// Describes an Apple Watch device model with its available case color / band combinations.
 /// Loaded from `watch_devices.json` in the module bundle.
@@ -94,22 +88,16 @@ public struct WatchDeviceDescriptor: Equatable, Hashable, Sendable, Codable {
         return (series, size, material)
     }
 
-    /// Loads the bezzel NSImage using the `key*value^key*value` index.
+    /// Loads the bezzel PlatformImage using the `key*value^key*value` index.
     /// Cache-first, bundle-fallback. See `HarnessKitCatalogue` for the prefetch contract.
-    public func bezelImage(color: String, band: String) throws -> NSImage {
+    public func bezelImage(color: String, band: String) throws -> PlatformImage {
         guard let (series, size, material) = parsedWatchID else {
             throw TransformError.cannotParseDeviceID(id: id)
         }
 
-        let match = ParsedWatchBezelName.index.first { entry in
-            entry.parsed.series   == series
-                && entry.parsed.size     == size
-                && entry.parsed.material == material
-                && entry.parsed.color    == color
-                && entry.parsed.band     == band
-        }
-
-        guard let entry = match, let image = NSImage(contentsOf: entry.url) else {
+        let key = WatchBezelKey(series: series, size: size, material: material, color: color, band: band)
+        guard let url = ParsedWatchBezelName.tables.byKey[key],
+              let image = BezelImageCache.shared.image(for: url, maxPixelSize: nil) else {
             throw TransformError.bezelFileNotFound(id: id, color: color)
         }
         return image

@@ -1,8 +1,3 @@
-//
-//  Screenshot.swift
-//  HarnessKitScreenshots
-//
-
 import Foundation
 
 public struct Screenshot: Identifiable, Hashable, Equatable, Sendable {
@@ -110,42 +105,42 @@ public struct Screenshot: Identifiable, Hashable, Equatable, Sendable {
     /// Format:
     /// id*value^os*value^orientation*value^appearance*value^crop*x,y,w,h^backgroundHex*value[^osVersion*value][^addBezel*false].png
     public func screenshotName() -> String {
-        let cropPart = "\(crop.x),\(crop.y),\(crop.width),\(crop.height)"
-        let backgroundPart: String
+        var s = ""
+        // Most names land in 100-180 chars; pre-reserving avoids the 2-3
+        // doublings the COW string would otherwise pay during incremental
+        // appends. Eliminates the components-Array + joined(separator:)
+        // path's intermediate allocations.
+        s.reserveCapacity(192)
+
+        s += "id*\(id)"
+        s += "^os*\(os)"
+        s += "^orientation*\(orientation?.rawValue ?? "nil")"
+        s += "^appearance*\(appearance)"
+        s += "^crop*\(crop.x),\(crop.y),\(crop.width),\(crop.height)"
+        s += "^background*"
         switch background {
         case .solid(let hex):
-            backgroundPart = "solid:\(hex)"
-        case .gradient(let s, let e, let a):
-            backgroundPart = "gradient:\(s),\(e),\(a)"
+            s += "solid:\(hex)"
+        case .gradient(let start, let end, let angle):
+            s += "gradient:\(start),\(end),\(angle)"
         case .image(let name, let directory, let scale, let offsetX, let offsetY):
-            var parts = "image:\(name)"
-            if let directory { parts += ",dir:\(directory)" }
-            if scale != 1.0 { parts += ",s:\(scale)" }
-            if offsetX != 0 { parts += ",ox:\(offsetX)" }
-            if offsetY != 0 { parts += ",oy:\(offsetY)" }
-            backgroundPart = parts
+            s += "image:\(name)"
+            if let directory { s += ",dir:\(directory)" }
+            if scale != 1.0 { s += ",s:\(scale)" }
+            if offsetX != 0 { s += ",ox:\(offsetX)" }
+            if offsetY != 0 { s += ",oy:\(offsetY)" }
         case .none:
-            backgroundPart = "nil"
+            s += "nil"
         }
-
-        var components = [
-            "id*\(id)",
-            "os*\(os)",
-            "orientation*\(orientation?.rawValue ?? "nil")",
-            "appearance*\(appearance)",
-            "crop*\(cropPart)",
-            "background*\(backgroundPart)"
-        ]
 
         if let osVersion {
-            components.append("osVersion*\(osVersion)")
+            s += "^osVersion*\(osVersion)"
         }
-
         if !addBezel {
-            components.append("addBezel*false")
+            s += "^addBezel*false"
         }
-
-        return components.joined(separator: "^") + ".png"
+        s += ".png"
+        return s
     }
 
     public func prettyName() -> String {

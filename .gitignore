@@ -2,6 +2,9 @@
 .build/
 DerivedData/
 
+# Benchmark output (trace files + scratch CSVs)
+.bench-out/
+
 # Xcode
 *.xcodeproj/xcuserdata/
 *.xcworkspace/xcuserdata/

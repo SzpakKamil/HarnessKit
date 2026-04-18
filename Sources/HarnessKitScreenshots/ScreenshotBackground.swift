@@ -1,8 +1,3 @@
-//
-//  ScreenshotBackground.swift
-//  HarnessKitScreenshots
-//
-
 import Foundation
 
 public enum ScreenshotBackground: Hashable, Sendable {

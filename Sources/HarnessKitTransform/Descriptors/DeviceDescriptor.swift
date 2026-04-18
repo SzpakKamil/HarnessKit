@@ -1,10 +1,4 @@
-//
-//  DeviceDescriptor.swift
-//  HarnessKitTransform
-//
-
 import Foundation
-import AppKit
 
 /// Describes a non-macOS, non-watch device model.
 /// Loaded from platform-specific JSON files in the module bundle.
@@ -90,56 +84,51 @@ public struct DeviceDescriptor: Codable, Equatable, Hashable, Sendable {
     /// Splits an ID like `iPadAir11M4` or `iPadMiniA17Pro` into `(family, processor)`.
     /// Returns `nil` if no processor suffix is found (e.g. `iPhone17`, `iPad9thGen`).
     private var parsedFamilyAndProcessor: (family: String, processor: String)? {
-        guard let range = id.range(of: #"(M\d+|A\d+[A-Za-z]*)$"#, options: .regularExpression) else {
+        guard let range = id.firstMatch(of: BezelIDRegex.processorSuffix) else {
             return nil
         }
         return (String(id[id.startIndex..<range.lowerBound]), String(id[range]))
     }
 
-    /// Loads the bezzel NSImage for `device*{id}^color*{color}.png`.
+    /// Loads the bezzel PlatformImage for `device*{id}^color*{color}.png`.
     ///
     /// For processor-set iPad bezels (e.g. `device*iPadAir11^processors*M2+M3+M4^color*Blue.png`),
     /// falls back to an index scan when the direct filename is not found.
     /// Cache-first, bundle-fallback. Callers should `await HarnessKitCatalogue.shared.prefetch(for:)`
     /// beforehand if they want to guarantee the remote copy is used; otherwise the
     /// bundled baseline (if any) is returned.
-    public func bezelImage(color: String) throws -> NSImage {
+    public func bezelImage(color: String) throws -> PlatformImage {
         let name = "device*\(id)^color*\(color)"
         let relativePath = "\(remoteBezelPrefix)\(name).png"
         if let cachedURL = CatalogueStore.shared.cachedBezelURL(relativePath: relativePath),
-           let image = NSImage(contentsOf: cachedURL) {
+           let image = BezelImageCache.shared.image(for: cachedURL, maxPixelSize: nil) {
             return image
         }
         if let url = Bundle.module.url(forResource: name, withExtension: "png"),
-           let image = NSImage(contentsOf: url) {
+           let image = BezelImageCache.shared.image(for: url, maxPixelSize: nil) {
             return image
         }
         // Processor-set fallback: used for iPads where one file covers multiple chip generations.
         if let (family, processor) = parsedFamilyAndProcessor {
-            let match = ParsedPadBezelName.index.first { entry in
-                entry.parsed.device == family
-                    && entry.parsed.processors.contains(processor)
-                    && entry.parsed.color == color
-            }
-            if let entry = match, let image = NSImage(contentsOf: entry.url) {
+            let key = PadBezelKey(device: family, processor: processor, color: color)
+            if let url = ParsedPadBezelName.tables.byProcessor[key],
+               let image = BezelImageCache.shared.image(for: url, maxPixelSize: nil) {
                 return image
             }
         } else if runDestination.lowercased().contains("ipad") {
             // Device ID has no processor suffix (e.g. iPad9thGen) but the bezel
             // filename still uses the processor-set convention. Match by device + color only.
-            let match = ParsedPadBezelName.index.first { entry in
-                entry.parsed.device == id && entry.parsed.color == color
-            }
-            if let entry = match, let image = NSImage(contentsOf: entry.url) {
+            let key = PadBezelKey(device: id, processor: "", color: color)
+            if let url = ParsedPadBezelName.tables.byDeviceColor[key],
+               let image = BezelImageCache.shared.image(for: url, maxPixelSize: nil) {
                 return image
             }
         }
         // TV generation-set fallback: FrameBox files include ^gens*... in the filename.
         if id.hasPrefix("AppleTV") {
-            let match = ParsedTVBezelName.index.first { entry in
-                entry.parsed.device == id && entry.parsed.color == color
-            }
-            if let entry = match, let image = NSImage(contentsOf: entry.url) {
+            let key = TVBezelKey(device: id, color: color)
+            if let url = ParsedTVBezelName.tables.byDeviceColor[key],
+               let image = BezelImageCache.shared.image(for: url, maxPixelSize: nil) {
                 return image
             }
         }

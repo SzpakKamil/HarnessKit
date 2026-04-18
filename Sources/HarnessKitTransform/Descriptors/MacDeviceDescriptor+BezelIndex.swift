@@ -1,12 +1,4 @@
-//
-//  MacDeviceDescriptor+BezelIndex.swift
-//  HarnessKitTransform
-//
-//  Bezel filename index cache for Mac bezels (key*value^key*value convention).
-//
-
 import Foundation
-import AppKit
 
 // MARK: - Parsed bezel filename
 
@@ -53,4 +45,49 @@ struct ParsedBezelName {
 
 private let macIndexCache = GenerationCache {
     buildBezelIndex(prefix: RemotePath.macBezelPrefix, parse: ParsedBezelName.parse, resolveURL: macBezelURL)
+}
+
+// MARK: - O(1) lookup tables (Mac)
+
+struct MacBezelKey: Hashable {
+    let device: String
+    let size: String
+    let model: String
+    let color: String
+    let osMajor: String
+    let wallpaper: String
+    let appearance: String
+}
+
+struct MacBezelTables: Sendable {
+    let byKey: [MacBezelKey: URL]
+
+    init(from index: [(parsed: ParsedBezelName, url: URL)]) {
+        var out: [MacBezelKey: URL] = [:]
+        for entry in index {
+            for model in entry.parsed.models {
+                let key = MacBezelKey(
+                    device: entry.parsed.device,
+                    size: entry.parsed.size,
+                    model: model,
+                    color: entry.parsed.color,
+                    osMajor: entry.parsed.osMajor,
+                    wallpaper: entry.parsed.wallpaper,
+                    appearance: entry.parsed.appearance
+                )
+                if out[key] == nil { out[key] = entry.url }
+            }
+        }
+        self.byKey = out
+    }
+}
+
+private let macTablesCache = GenerationCache<MacBezelTables> {
+    [MacBezelTables(from: macIndexCache.current())]
+}
+
+extension ParsedBezelName {
+    static var tables: MacBezelTables {
+        macTablesCache.current().first ?? MacBezelTables(from: [])
+    }
 }

@@ -1,8 +1,3 @@
-//
-//  ScreenOrientation.swift
-//  HarnessKitScreenshots
-//
-
 import Foundation
 import SwiftUI
 

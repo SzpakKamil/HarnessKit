@@ -102,11 +102,16 @@ Parse back with ``Screenshot/fromScreenshotName(_:)``.
 Different OS versions ship on different hardware. ``ScreenshotConfig`` stores `[VersionedBezel]` arrays — one per platform — so the transform tool picks the right device art automatically:
 
 ```swift
-var config = ScreenshotConfig.defaults
-config.phoneBezel = [
-    VersionedBezel(minVersion: "16.0", maxVersion: "26.0", deviceID: "iPhone16", color: "Black"),
-    VersionedBezel(minVersion: "26.0", deviceID: "iPhone17", color: "Black")
-]
+let config = ScreenshotConfig(
+    phoneBezel: [
+        VersionedBezel(minVersion: "16.0", maxVersion: "26.0", deviceID: "iPhone16", color: "Black"),
+        VersionedBezel(minVersion: "26.0", deviceID: "iPhone17", color: "Black")
+    ],
+    phoneOrientation: .portrait,
+    padBezel: [], padOrientation: .landscape,
+    watchBezel: [], macBezel: [], tvBezel: [],
+    resolution: .default
+)
 ```
 
 A screenshot with `osVersion: "18.2"` picks `iPhone16`; one with `osVersion: "26.0"` picks `iPhone17`.

@@ -1,8 +1,3 @@
-//
-//  ScreenshotShadow.swift
-//  HarnessKitScreenshots
-//
-
 import Foundation
 
 /// A single shadow effect applied to a screenshot.
@@ -59,8 +54,8 @@ public struct ShapeShadow: Codable, Hashable, Sendable {
 
     public init(
         color: String = "000000", opacity: Double = 0.3, blur: Double = 0.06,
-        x: Double = 0, y: Double = -1.1,
-        width: Double = 1.7, height: Double = 0.025,
+        x: Double = 0, y: Double = -1.03,
+        width: Double = 1.1, height: Double = 0.025,
         cornerRadius: Double = 1
     ) {
         self.color = color

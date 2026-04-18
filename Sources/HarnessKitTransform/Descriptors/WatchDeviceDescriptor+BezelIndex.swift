@@ -1,12 +1,4 @@
-//
-//  WatchDeviceDescriptor+BezelIndex.swift
-//  HarnessKitTransform
-//
-//  Bezel filename index cache for Apple Watch bezels.
-//
-
 import Foundation
-import AppKit
 
 // MARK: - Parsed watch bezel filename
 
@@ -38,4 +30,43 @@ struct ParsedWatchBezelName {
 
 private let watchIndexCache = GenerationCache {
     buildBezelIndex(prefix: RemotePath.watchBezelPrefix, parse: ParsedWatchBezelName.parse, resolveURL: watchBezelURL)
+}
+
+// MARK: - O(1) lookup tables (Watch)
+
+struct WatchBezelKey: Hashable {
+    let series: String
+    let size: String
+    let material: String
+    let color: String
+    let band: String
+}
+
+struct WatchBezelTables: Sendable {
+    let byKey: [WatchBezelKey: URL]
+
+    init(from index: [(parsed: ParsedWatchBezelName, url: URL)]) {
+        var out: [WatchBezelKey: URL] = [:]
+        for entry in index {
+            let key = WatchBezelKey(
+                series: entry.parsed.series,
+                size: entry.parsed.size,
+                material: entry.parsed.material,
+                color: entry.parsed.color,
+                band: entry.parsed.band
+            )
+            if out[key] == nil { out[key] = entry.url }
+        }
+        self.byKey = out
+    }
+}
+
+private let watchTablesCache = GenerationCache<WatchBezelTables> {
+    [WatchBezelTables(from: watchIndexCache.current())]
+}
+
+extension ParsedWatchBezelName {
+    static var tables: WatchBezelTables {
+        watchTablesCache.current().first ?? WatchBezelTables(from: [])
+    }
 }

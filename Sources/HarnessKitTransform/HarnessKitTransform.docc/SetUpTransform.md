@@ -121,11 +121,16 @@ let canvas = composeCanvas(
 The config is owned by your project — load it from Application Support or build programmatically:
 
 ```swift
-var config = ScreenshotConfig.defaults
-config.phoneBezel = [
-    VersionedBezel(minVersion: "16.0", maxVersion: "26.0", deviceID: "iPhone16", color: "Black"),
-    VersionedBezel(minVersion: "26.0", deviceID: "iPhone17", color: "Black")
-]
+let config = ScreenshotConfig(
+    phoneBezel: [
+        VersionedBezel(minVersion: "16.0", maxVersion: "26.0", deviceID: "iPhone16", color: "Black"),
+        VersionedBezel(minVersion: "26.0", deviceID: "iPhone17", color: "Black")
+    ],
+    phoneOrientation: .portrait,
+    padBezel: [], padOrientation: .landscape,
+    watchBezel: [], macBezel: [], tvBezel: [],
+    resolution: .default
+)
 ```
 
 Print `DeviceDescriptor.allPhone.map(\.id)` to see available phone identifiers. For Mac: `MacDeviceDescriptor.all.map(\.id)`. For Watch: `WatchDeviceDescriptor.all.map(\.id)`.

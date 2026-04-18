@@ -1,10 +1,4 @@
-//
-//  MacDeviceDescriptor.swift
-//  HarnessKitTransform
-//
-
 import Foundation
-import AppKit
 import HarnessKitScreenshots
 
 /// Describes a macOS device model with its available color variants.
@@ -81,7 +75,7 @@ public struct MacDeviceDescriptor: Equatable, Hashable, Sendable, Codable {
     /// - A-series: `"MacbookNeo13A18Pro"` → `("MacbookNeo", "13", "A18Pro")`
     private var parsedID: (device: String, size: String, model: String)? {
         // M-series: ends with digits then M+digits  e.g. MacbookPro14M4
-        if let match = id.range(of: #"\d+M\d+$"#, options: .regularExpression) {
+        if let match = id.firstMatch(of: BezelIDRegex.macMProcessorWithSize) {
             let suffix = id[match]
             let family = String(id[id.startIndex..<match.lowerBound])
             let digits = suffix.prefix { $0.isNumber }
@@ -89,11 +83,11 @@ public struct MacDeviceDescriptor: Equatable, Hashable, Sendable, Codable {
             return (family, String(digits), String(model))
         }
         // A-series: ends with A+digits+optional letters  e.g. MacbookNeo13A18Pro
-        if let modelMatch = id.range(of: #"A\d+[A-Za-z]*$"#, options: .regularExpression) {
+        if let modelMatch = id.firstMatch(of: BezelIDRegex.macAProcessor) {
             let model = String(id[modelMatch])
             let beforeModel = String(id[id.startIndex..<modelMatch.lowerBound])
             // Extract trailing size digits from the part before the model token
-            if let sizeMatch = beforeModel.range(of: #"\d+$"#, options: .regularExpression) {
+            if let sizeMatch = beforeModel.firstMatch(of: BezelIDRegex.trailingDigits) {
                 let size = String(beforeModel[sizeMatch])
                 let family = String(beforeModel[beforeModel.startIndex..<sizeMatch.lowerBound])
                 return (family, size, model)
@@ -103,7 +97,7 @@ public struct MacDeviceDescriptor: Equatable, Hashable, Sendable, Codable {
         return nil
     }
 
-    /// Loads the bezzel NSImage from `Bundle.module` by scanning the parsed bezel index
+    /// Loads the bezzel PlatformImage from `Bundle.module` by scanning the parsed bezel index
     /// and finding an entry whose fields match and whose `models` set contains this descriptor.
     /// Falls back to `"Default"` wallpaper if `wallpaperType` is not listed for `osMajor`.
     /// - Throws: `NSError` if no matching bezel is found in the bundle.
@@ -112,7 +106,7 @@ public struct MacDeviceDescriptor: Equatable, Hashable, Sendable, Codable {
         osMajor: String,
         wallpaperType: String = "Default",
         appearance: ScreenshotAppearance
-    ) throws -> NSImage {
+    ) throws -> PlatformImage {
         guard let (family, size, model) = parsedID else {
             throw TransformError.cannotParseDeviceID(id: id)
         }
@@ -124,17 +118,17 @@ public struct MacDeviceDescriptor: Equatable, Hashable, Sendable, Codable {
             preferredWallpaper = "Default"
         }
 
-        let match = ParsedBezelName.index.first { entry in
-            entry.parsed.device == family
-                && entry.parsed.size == size
-                && entry.parsed.models.contains(model)
-                && entry.parsed.color == color
-                && entry.parsed.osMajor == osMajor
-                && entry.parsed.wallpaper == preferredWallpaper
-                && entry.parsed.appearance == appearance.rawValue
-        }
-
-        guard let entry = match, let image = NSImage(contentsOf: entry.url) else {
+        let key = MacBezelKey(
+            device: family,
+            size: size,
+            model: model,
+            color: color,
+            osMajor: osMajor,
+            wallpaper: preferredWallpaper,
+            appearance: appearance.rawValue
+        )
+        guard let url = ParsedBezelName.tables.byKey[key],
+              let image = BezelImageCache.shared.image(for: url, maxPixelSize: nil) else {
             throw TransformError.bezelFileNotFound(id: id, color: color)
         }
         return image

@@ -1,8 +1,3 @@
-//
-//  RemotePath.swift
-//  HarnessKitTransform
-//
-
 import Foundation
 
 /// Relative-path constants + URL encoding for the R2 asset layout.
@@ -24,24 +19,24 @@ enum RemotePath {
 
     static let cataloguePrefix   = "catalogue/"
 
-    /// Appends `relativePath` to `baseURL`, percent-encoding each path component
-    /// so characters like `*`, `^`, `+` become `%2A`, `%5E`, `%2B`.
-    static func url(base: URL, relativePath: String) -> URL? {
-        let components = relativePath.split(separator: "/", omittingEmptySubsequences: false)
-        let encodedParts: [String] = components.compactMap { part in
-            part.addingPercentEncoding(withAllowedCharacters: .urlPathAllowedExcludingDelimiters)
-        }
-        guard encodedParts.count == components.count else { return nil }
-        let joined = encodedParts.joined(separator: "/")
-        return URL(string: joined, relativeTo: base)?.absoluteURL
-    }
-}
-
-private extension CharacterSet {
-    /// `urlPathAllowed` minus the Screenshot-style delimiters so they get escaped.
+    /// `urlPathAllowed` minus the Screenshot-style delimiters (`*`, `^`, `+`)
+    /// so they get percent-escaped per path component. One-time materialization
+    /// at first access; reused by every `url(base:relativePath:)` call.
     static let urlPathAllowedExcludingDelimiters: CharacterSet = {
         var set = CharacterSet.urlPathAllowed
         set.remove(charactersIn: "*^+")
         return set
     }()
+
+    /// Appends `relativePath` to `baseURL`, percent-encoding each path component
+    /// so characters like `*`, `^`, `+` become `%2A`, `%5E`, `%2B`.
+    static func url(base: URL, relativePath: String) -> URL? {
+        let components = relativePath.split(separator: "/", omittingEmptySubsequences: false)
+        let encodedParts: [String] = components.compactMap { part in
+            part.addingPercentEncoding(withAllowedCharacters: urlPathAllowedExcludingDelimiters)
+        }
+        guard encodedParts.count == components.count else { return nil }
+        let joined = encodedParts.joined(separator: "/")
+        return URL(string: joined, relativeTo: base)?.absoluteURL
+    }
 }

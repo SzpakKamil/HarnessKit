@@ -129,12 +129,18 @@ import HarnessKitScreenshots
 // Load from file
 let config = ScreenshotConfig.load(from: myConfigURL)
 
-// Or build from defaults
-var config = ScreenshotConfig.defaults
-config.phoneBezel = [
-    VersionedBezel(minVersion: "26.0", deviceID: "iPhone17", color: "Black")
-]
-config.resolution = .full
+// Or construct directly — `ScreenshotConfig` is immutable; call `.init`
+// (or `.defaults`) instead of mutating properties in place.
+let config = ScreenshotConfig(
+    phoneBezel: [VersionedBezel(minVersion: "26.0", deviceID: "iPhone17", color: "Black")],
+    phoneOrientation: .portrait,
+    padBezel: [],
+    padOrientation: .landscape,
+    watchBezel: [],
+    macBezel: [],
+    tvBezel: [],
+    resolution: .full
+)
 ```
 
 Pass the config to `HarnessKitTransform` functions like `processScreenshot(image:screenshot:config:)`.

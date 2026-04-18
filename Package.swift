@@ -51,7 +51,7 @@ let package = Package(
             dependencies: [
                 .target(
                     name: "HarnessKitTransform",
-                    condition: .when(platforms: [.macOS])
+                    condition: .when(platforms: [.macOS, .iOS, .visionOS])
                 )
             ],
             path: "SwiftPM-PlatformExclude/HarnessKitTransformWrap"
@@ -68,7 +68,20 @@ let package = Package(
         ),
         .testTarget(
             name: "HarnessKitTransformTests",
-            dependencies: ["HarnessKitTransform"]
+            dependencies: [
+                "HarnessKitTransform",
+                .target(name: "HarnessKitScreenshotTesting", condition: .when(platforms: [.macOS])),
+            ]
+        ),
+        .executableTarget(
+            name: "HarnessKitBenchmarks",
+            dependencies: [
+                .target(
+                    name: "HarnessKitTransform",
+                    condition: .when(platforms: [.macOS])
+                )
+            ],
+            path: "Benchmarks/HarnessKitBenchmarks"
         )
     ]
 )

@@ -1,8 +1,3 @@
-//
-//  ScreenshotConfig.swift
-//  HarnessKitScreenshots
-//
-
 import Foundation
 
 /// Specifies which bezel to use for a specific OS version range.
@@ -73,16 +68,27 @@ extension VersionedBezel: Codable {
     }
 }
 
-public struct ScreenshotConfig: Codable, Equatable {
-    public var phoneBezel: [VersionedBezel]
-    public var phoneOrientation: ScreenOrientation
-    public var padBezel: [VersionedBezel]
-    public var padOrientation: ScreenOrientation
-    public var watchBezel: [VersionedBezel]
-    public var tvBezel: [VersionedBezel]
-    public var macBezel: [VersionedBezel]
-    public var visionBezel: [VersionedBezel]
-    public var resolution: ScreenshotResolution
+public struct ScreenshotConfig: Codable, Equatable, Sendable {
+    public let phoneBezel: [VersionedBezel]
+    public let phoneOrientation: ScreenOrientation
+    public let padBezel: [VersionedBezel]
+    public let padOrientation: ScreenOrientation
+    public let watchBezel: [VersionedBezel]
+    public let tvBezel: [VersionedBezel]
+    public let macBezel: [VersionedBezel]
+    public let visionBezel: [VersionedBezel]
+    public let resolution: ScreenshotResolution
+
+    /// Pre-sorted (descending by `minVersion`) bezel arrays keyed by OS,
+    /// computed once at init / decode. `matchedBezel(for:)` reads from this
+    /// dict instead of sorting on every call. Not serialized — recomputed on
+    /// every decode (same pattern as `Manifest.filesByPrefix`).
+    private let _sortedBezelsByOS: [TargetOS: [VersionedBezel]]
+
+    private enum CodingKeys: String, CodingKey {
+        case phoneBezel, phoneOrientation, padBezel, padOrientation,
+             watchBezel, tvBezel, macBezel, visionBezel, resolution
+    }
 
     public init(
         phoneBezel: [VersionedBezel],
@@ -104,6 +110,67 @@ public struct ScreenshotConfig: Codable, Equatable {
         self.tvBezel = tvBezel
         self.visionBezel = visionBezel
         self.resolution = resolution
+        self._sortedBezelsByOS = Self.buildSortedBezels(
+            iOS: phoneBezel, iPadOS: padBezel, watchOS: watchBezel,
+            macOS: macBezel, tvOS: tvBezel
+        )
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let phoneBezel  = try c.decode([VersionedBezel].self, forKey: .phoneBezel)
+        let phoneOrient = try c.decode(ScreenOrientation.self, forKey: .phoneOrientation)
+        let padBezel    = try c.decode([VersionedBezel].self, forKey: .padBezel)
+        let padOrient   = try c.decode(ScreenOrientation.self, forKey: .padOrientation)
+        let watchBezel  = try c.decode([VersionedBezel].self, forKey: .watchBezel)
+        let tvBezel     = try c.decode([VersionedBezel].self, forKey: .tvBezel)
+        let macBezel    = try c.decode([VersionedBezel].self, forKey: .macBezel)
+        let visionBezel = (try? c.decode([VersionedBezel].self, forKey: .visionBezel)) ?? []
+        let resolution  = try c.decode(ScreenshotResolution.self, forKey: .resolution)
+        self.init(
+            phoneBezel: phoneBezel,
+            phoneOrientation: phoneOrient,
+            padBezel: padBezel,
+            padOrientation: padOrient,
+            watchBezel: watchBezel,
+            macBezel: macBezel,
+            tvBezel: tvBezel,
+            visionBezel: visionBezel,
+            resolution: resolution
+        )
+    }
+
+    /// Equality skips `_sortedBezelsByOS` — it's a deterministic function of
+    /// the bezel arrays, so comparing it would just duplicate work.
+    public static func == (lhs: ScreenshotConfig, rhs: ScreenshotConfig) -> Bool {
+        lhs.phoneBezel       == rhs.phoneBezel       &&
+        lhs.phoneOrientation == rhs.phoneOrientation &&
+        lhs.padBezel         == rhs.padBezel         &&
+        lhs.padOrientation   == rhs.padOrientation   &&
+        lhs.watchBezel       == rhs.watchBezel       &&
+        lhs.tvBezel          == rhs.tvBezel          &&
+        lhs.macBezel         == rhs.macBezel         &&
+        lhs.visionBezel      == rhs.visionBezel      &&
+        lhs.resolution       == rhs.resolution
+    }
+
+    private static func buildSortedBezels(
+        iOS phoneBezel: [VersionedBezel],
+        iPadOS padBezel: [VersionedBezel],
+        watchOS watchBezel: [VersionedBezel],
+        macOS macBezel: [VersionedBezel],
+        tvOS tvBezel: [VersionedBezel]
+    ) -> [TargetOS: [VersionedBezel]] {
+        let comparator: (VersionedBezel, VersionedBezel) -> Bool = {
+            $0.minVersion.compare($1.minVersion, options: .numeric) == .orderedDescending
+        }
+        return [
+            .iOS:     phoneBezel.sorted(by: comparator),
+            .iPadOS:  padBezel.sorted(by: comparator),
+            .watchOS: watchBezel.sorted(by: comparator),
+            .macOS:   macBezel.sorted(by: comparator),
+            .tvOS:    tvBezel.sorted(by: comparator),
+        ]
     }
 
     // MARK: - Factory
@@ -155,27 +222,22 @@ public struct ScreenshotConfig: Codable, Equatable {
 
     /// Returns the matched `VersionedBezel` (full struct) for `screenshot`.
     /// Falls back to the highest-minVersion entry when no exact match. Returns `nil` for visionOS.
+    ///
+    /// Reads from the pre-sorted `_sortedBezelsByOS` cache built at init —
+    /// no per-call sort. The cache stores entries descending by `minVersion`
+    /// so the version-match loop walks highest → lowest, and the no-match
+    /// fallback is `sorted.first`.
     public func matchedBezel(for screenshot: Screenshot) -> VersionedBezel? {
-        let candidates: [VersionedBezel]
-        switch screenshot.os {
-        case .iOS:      candidates = phoneBezel
-        case .iPadOS:   candidates = padBezel
-        case .watchOS:  candidates = watchBezel
-        case .macOS:    candidates = macBezel
-        case .tvOS:     candidates = tvBezel
-        case .visionOS: return nil
+        guard let sorted = _sortedBezelsByOS[screenshot.os], !sorted.isEmpty else {
+            return nil
         }
-        guard !candidates.isEmpty else { return nil }
 
         if let version = screenshot.osVersion {
-            let sorted = candidates.sorted {
-                $0.minVersion.compare($1.minVersion, options: .numeric) == .orderedDescending
-            }
             for entry in sorted {
-                let meetsMin = _versionCompare(version, isGreaterThanOrEqualTo: entry.minVersion)
+                let meetsMin = versionCompare(version, isGreaterThanOrEqualTo: entry.minVersion)
                 let meetsMax: Bool
                 if let max = entry.maxVersion {
-                    meetsMax = _versionCompare(version, isLessThan: max)
+                    meetsMax = versionCompare(version, isLessThan: max)
                 } else {
                     meetsMax = true
                 }
@@ -183,18 +245,16 @@ public struct ScreenshotConfig: Codable, Equatable {
             }
         }
 
-        return candidates.sorted {
-            $0.minVersion.compare($1.minVersion, options: .numeric) == .orderedDescending
-        }.first
+        return sorted.first
     }
 }
 
 // MARK: - Private Helpers
 
-private func _versionCompare(_ version: String, isGreaterThanOrEqualTo other: String) -> Bool {
+private func versionCompare(_ version: String, isGreaterThanOrEqualTo other: String) -> Bool {
     version.compare(other, options: .numeric) != .orderedAscending
 }
 
-private func _versionCompare(_ version: String, isLessThan other: String) -> Bool {
+private func versionCompare(_ version: String, isLessThan other: String) -> Bool {
     version.compare(other, options: .numeric) == .orderedAscending
 }

@@ -28,13 +28,18 @@ The config is owned by the consumer project — not bundled inside HarnessKit. L
 // Load from a file
 let config = ScreenshotConfig.load(from: myConfigURL)
 
-// Or start from defaults and override
-var config = ScreenshotConfig.defaults
-config.resolution = .full
-config.phoneBezel = [
-    VersionedBezel(minVersion: "16.0", deviceID: "iPhone16", color: "Black"),
-    VersionedBezel(minVersion: "26.0", deviceID: "iPhone17", color: "Black")
-]
+// Or construct directly — `ScreenshotConfig` is immutable; use `.init`
+// (or `.defaults`) instead of mutating properties.
+let config = ScreenshotConfig(
+    phoneBezel: [
+        VersionedBezel(minVersion: "16.0", deviceID: "iPhone16", color: "Black"),
+        VersionedBezel(minVersion: "26.0", deviceID: "iPhone17", color: "Black")
+    ],
+    phoneOrientation: .portrait,
+    padBezel: [], padOrientation: .landscape,
+    watchBezel: [], macBezel: [], tvBezel: [],
+    resolution: .full
+)
 ```
 
 ## JSON Format

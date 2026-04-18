@@ -1,12 +1,13 @@
-//
-//  CaptureScreenshot.swift
-//  HarnessKitScreenshotTesting
-//
-
 import Foundation
 import HarnessKitScreenshots
 #if canImport(XCTest)
 import XCTest
+#if os(macOS)
+import AppKit
+import CoreGraphics
+import ImageIO
+import UniformTypeIdentifiers
+#endif
 
 /// Captures a screenshot during a UI test and attaches it with metadata-encoded name.
 ///
@@ -91,41 +92,70 @@ public func captureScreenshot(
 }
 
 #if os(macOS)
+@MainActor
 private func _roundedPNG(
     from screenshot: XCUIScreenshot,
     cornerRadius: CGFloat,
     insets: NSEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 0)
 ) -> Data? {
-    let data = screenshot.pngRepresentation
-    guard let nsImage = NSImage(data: data) else { return nil }
+    _roundedPNG(fromPNG: screenshot.pngRepresentation, cornerRadius: cornerRadius, insets: insets)
+}
 
-    let size = nsImage.size
-    let pixelSize = NSSize(width: size.width, height: size.height)
+/// Streams `pngData` through CGImageSource → CGContext (rounded clip) →
+/// CGImageDestination. Avoids an NSImage → tiffRepresentation →
+/// NSBitmapImageRep round-trip whose intermediate uncompressed TIFF is
+/// ~13 MB at 1242×2688 — the dominant per-capture allocation in a UI test run.
+/// `internal` so tests in `HarnessKitTransformTests` can drive it without
+/// constructing an `XCUIScreenshot`.
+internal func _roundedPNG(
+    fromPNG pngData: Data,
+    cornerRadius: CGFloat,
+    insets: NSEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 0)
+) -> Data? {
+    guard
+        let source = CGImageSourceCreateWithData(pngData as CFData, nil),
+        let cg = CGImageSourceCreateImageAtIndex(source, 0, nil)
+    else { return nil }
 
-    let rect = NSRect(origin: .zero, size: pixelSize)
+    let width = cg.width
+    let height = cg.height
+    let rect = CGRect(x: 0, y: 0, width: width, height: height)
     let insetRect = rect.insetBy(
         dx: insets.left + insets.right > 0 ? insets.left : 0,
         dy: insets.top + insets.bottom > 0 ? insets.top : 0
     )
 
-    let img = NSImage(size: pixelSize, flipped: false) { _ in
-        NSGraphicsContext.current?.imageInterpolation = .high
+    let colorSpace = CGColorSpaceCreateDeviceRGB()
+    guard let ctx = CGContext(
+        data: nil,
+        width: width,
+        height: height,
+        bitsPerComponent: 8,
+        bytesPerRow: 0,
+        space: colorSpace,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    ) else { return nil }
 
-        let path = NSBezierPath(roundedRect: insetRect, xRadius: cornerRadius, yRadius: cornerRadius)
-        path.addClip()
+    ctx.interpolationQuality = .high
+    let clipPath = CGPath(
+        roundedRect: insetRect,
+        cornerWidth: cornerRadius,
+        cornerHeight: cornerRadius,
+        transform: nil
+    )
+    ctx.addPath(clipPath)
+    ctx.clip()
+    ctx.draw(cg, in: rect)
 
-        nsImage.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1.0)
-        return true
-    }
+    guard let rounded = ctx.makeImage() else { return nil }
 
-    guard
-        let tiff = img.tiffRepresentation,
-        let bitmap = NSBitmapImageRep(data: tiff),
-        let png = bitmap.representation(using: .png, properties: [:])
-    else {
-        return nil
-    }
-    return png
+    let outData = NSMutableData()
+    guard let dest = CGImageDestinationCreateWithData(
+        outData, UTType.png.identifier as CFString, 1, nil
+    ) else { return nil }
+    CGImageDestinationAddImage(dest, rounded, nil)
+    guard CGImageDestinationFinalize(dest) else { return nil }
+    return outData as Data
 }
 #endif
 

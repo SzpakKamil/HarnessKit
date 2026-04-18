@@ -1,12 +1,4 @@
-//
-//  DeviceDescriptor+BezelIndex.swift
-//  HarnessKitTransform
-//
-//  Bezel filename index caches for iPad (processor-set) and TV (generation-set) bezels.
-//
-
 import Foundation
-import AppKit
 
 // MARK: - Shared bezel index builder
 
@@ -79,6 +71,49 @@ private let padIndexCache = GenerationCache {
     buildBezelIndex(prefix: RemotePath.padBezelPrefix, parse: ParsedPadBezelName.parse, resolveURL: defaultBezelURL)
 }
 
+// MARK: - O(1) lookup tables (Pad)
+
+/// Hashable lookup key. `processor` is left empty on the no-processor path
+/// (`byDeviceColor`) so the same struct can back both dicts.
+struct PadBezelKey: Hashable {
+    let device: String
+    let processor: String
+    let color: String
+}
+
+/// Precomputed dicts layered on top of `padIndexCache`. Replaces the
+/// `.first { ... }` linear scans in `DeviceDescriptor.bezelImage` with
+/// O(1) probes. `first-wins` matches the scan's iteration semantics.
+struct PadBezelTables: Sendable {
+    let byProcessor: [PadBezelKey: URL]
+    let byDeviceColor: [PadBezelKey: URL]
+
+    init(from index: [(parsed: ParsedPadBezelName, url: URL)]) {
+        var byProc: [PadBezelKey: URL] = [:]
+        var byDev: [PadBezelKey: URL] = [:]
+        for entry in index {
+            for proc in entry.parsed.processors {
+                let key = PadBezelKey(device: entry.parsed.device, processor: proc, color: entry.parsed.color)
+                if byProc[key] == nil { byProc[key] = entry.url }
+            }
+            let noProcKey = PadBezelKey(device: entry.parsed.device, processor: "", color: entry.parsed.color)
+            if byDev[noProcKey] == nil { byDev[noProcKey] = entry.url }
+        }
+        self.byProcessor = byProc
+        self.byDeviceColor = byDev
+    }
+}
+
+private let padTablesCache = GenerationCache<PadBezelTables> {
+    [PadBezelTables(from: padIndexCache.current())]
+}
+
+extension ParsedPadBezelName {
+    static var tables: PadBezelTables {
+        padTablesCache.current().first ?? PadBezelTables(from: [])
+    }
+}
+
 // MARK: - Parsed TV bezel filename (generation-set convention)
 
 /// A TV bezel filename parsed from `device*{id}^gens*{g1+g2+...}^color*{color}.png`.
@@ -110,4 +145,34 @@ struct ParsedTVBezelName {
 
 private let tvIndexCache = GenerationCache {
     buildBezelIndex(prefix: RemotePath.tvBezelPrefix, parse: ParsedTVBezelName.parse, resolveURL: defaultBezelURL)
+}
+
+// MARK: - O(1) lookup tables (TV)
+
+struct TVBezelKey: Hashable {
+    let device: String
+    let color: String
+}
+
+struct TVBezelTables: Sendable {
+    let byDeviceColor: [TVBezelKey: URL]
+
+    init(from index: [(parsed: ParsedTVBezelName, url: URL)]) {
+        var out: [TVBezelKey: URL] = [:]
+        for entry in index {
+            let key = TVBezelKey(device: entry.parsed.device, color: entry.parsed.color)
+            if out[key] == nil { out[key] = entry.url }
+        }
+        self.byDeviceColor = out
+    }
+}
+
+private let tvTablesCache = GenerationCache<TVBezelTables> {
+    [TVBezelTables(from: tvIndexCache.current())]
+}
+
+extension ParsedTVBezelName {
+    static var tables: TVBezelTables {
+        tvTablesCache.current().first ?? TVBezelTables(from: [])
+    }
 }

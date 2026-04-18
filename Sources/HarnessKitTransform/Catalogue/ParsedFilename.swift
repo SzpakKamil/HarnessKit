@@ -1,8 +1,3 @@
-//
-//  ParsedFilename.swift
-//  HarnessKitTransform
-//
-
 import Foundation
 
 /// Parses a keyed filename in `key*value^key*value.ext` format into a dictionary.
@@ -13,7 +8,22 @@ import Foundation
 /// The file extension is stripped before parsing. Each `^`-separated component
 /// is split on the first `*` to produce a key-value pair.
 func parseKeyedFilename(_ name: String) -> [String: String] {
-    let base = (name as NSString).deletingPathExtension
+    parseKeyedFilename(Substring(name))
+}
+
+/// Substring-accepting overload. Lets callers iterating over a `Dictionary.Keys`
+/// collection of full paths pass `path[prefixEnd...]` directly instead of
+/// materializing a fresh `String` per path (saves one alloc per bezel-match
+/// iteration; ~200–500 iterations per prefetch).
+func parseKeyedFilename(_ name: Substring) -> [String: String] {
+    // Strip `.png` / `.jpg` / any trailing extension by finding the last `.`
+    // within the substring's own range — avoids NSString bridge + its copy.
+    let base: Substring
+    if let dot = name.lastIndex(of: ".") {
+        base = name[..<dot]
+    } else {
+        base = name
+    }
     var fields: [String: String] = [:]
     for component in base.split(separator: "^") {
         let pair = component.split(separator: "*", maxSplits: 1)

@@ -1,8 +1,3 @@
-//
-//  ExportPath.swift
-//  HarnessKitScreenshots
-//
-
 import Foundation
 
 #if os(macOS)

@@ -31,7 +31,7 @@ The default initializer produces a thin, wide contact shadow positioned just bel
 ```swift
 ShapeShadow()
 // color: "000000", opacity: 0.3, blur: 0.06
-// x: 0, y: -1.1, width: 1.7, height: 0.025, cornerRadius: 1
+// x: 0, y: -1.03, width: 1.1, height: 0.025, cornerRadius: 1
 ```
 
 ### Custom Shape Shadow
@@ -61,8 +61,8 @@ ShapeShadow(
 | `opacity` | `Double` | `0.3` | Shadow opacity from 0 (invisible) to 1 (fully opaque). |
 | `blur` | `Double` | `0.06` | Blur radius as a fraction of the composition short side. |
 | `x` | `Double` | `0` | Horizontal center offset (0 = centered). |
-| `y` | `Double` | `-1.1` | Vertical center offset. Negative values move the shadow below the device center. |
-| `width` | `Double` | `1.7` | Width as a fraction of the composition width. |
+| `y` | `Double` | `-1.03` | Vertical center offset. Negative values move the shadow below the device center. |
+| `width` | `Double` | `1.1` | Width as a fraction of the composition width. |
 | `height` | `Double` | `0.025` | Height as a fraction of the composition height. |
 | `cornerRadius` | `Double` | `1` | Corner radius factor: 0 = rectangle, 1 = full ellipse. |
 

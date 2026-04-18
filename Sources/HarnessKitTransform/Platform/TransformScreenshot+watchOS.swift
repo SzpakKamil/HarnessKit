@@ -1,12 +1,6 @@
-//
-//  TransformScreenshot+watchOS.swift
-//  HarnessKitTransform
-//
-
-import AppKit
 import HarnessKitScreenshots
 
-nonisolated func processScreenshotWatchOS(image: NSImage, config: ScreenshotConfig, screenshot: Screenshot) throws -> NSImage {
+nonisolated func processScreenshotWatchOS(image: PlatformImage, config: ScreenshotConfig, screenshot: Screenshot) throws -> PlatformImage {
     guard let matched = config.matchedBezel(for: screenshot) else {
         throw TransformError.bezelNotFound(screenshotID: screenshot.id)
     }
@@ -18,14 +12,13 @@ nonisolated func processScreenshotWatchOS(image: NSImage, config: ScreenshotConf
         throw TransformError.bezelNotFound(screenshotID: screenshot.id)
     }
 
-    let bezelImage: NSImage
-    do {
-        bezelImage = try descriptor.bezelImage(color: matched.color, band: matched.band)
-    } catch {
-        throw TransformError.bezelImageMissing(bezelID: matched.deviceID)
-    }
-
     if screenshot.addBezel {
+        let bezelImage: PlatformImage
+        do {
+            bezelImage = try descriptor.bezelImage(color: matched.color, band: matched.band)
+        } catch {
+            throw TransformError.bezelImageMissing(bezelID: matched.deviceID)
+        }
         let params = BezelPipelineParams(
             os: screenshot.os,
             bezelImage: bezelImage,
@@ -33,13 +26,16 @@ nonisolated func processScreenshotWatchOS(image: NSImage, config: ScreenshotConf
             verticalOffset: descriptor.verticalOffset,
             horizontalOffset: descriptor.horizontalOffset,
             cornerRadius: descriptor.screenCornerRadius,
-            screenshotOnTop: false,
+            screenshotOnTop: false
+        )
+        let deviceImage = applyBezelPipeline(image: image, params: params)
+        return renderDeviceOnCanvas(
+            deviceImage: deviceImage,
+            canvasSize: config.resolution.size,
             background: screenshot.background,
             shadows: screenshot.shadows,
-            crop: screenshot.crop,
-            resolution: config.resolution
+            crop: screenshot.crop
         )
-        return applyBezelPipeline(image: image, params: params)
     }
 
     return applyNoBezelPipeline(

@@ -1,8 +1,3 @@
-//
-//  TargetOS.swift
-//  HarnessKitScreenshots
-//
-
 import SwiftUI
 import Foundation
 

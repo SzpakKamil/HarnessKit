@@ -1,10 +1,3 @@
-//
-//  DeviceDescriptor+Catalogue.swift
-//  HarnessKitTransform
-//
-//  Static device catalogue loaders with generation-keyed caching.
-//
-
 import Foundation
 
 // MARK: - JSON catalogue
@@ -15,12 +8,12 @@ private struct DeviceCatalogue: Codable {
 
 // MARK: - Static loaders
 
-private let phoneCache  = GenerationCache { _loadDevices("phone_devices") }
-private let padCache    = GenerationCache { _loadDevices("pad_devices") }
-private let tvCache     = GenerationCache { _loadDevices("tv_devices") }
-private let visionCache = GenerationCache { _loadDevices("vision_devices") }
+private let phoneCache  = GenerationCache { loadDevices("phone_devices") }
+private let padCache    = GenerationCache { loadDevices("pad_devices") }
+private let tvCache     = GenerationCache { loadDevices("tv_devices") }
+private let visionCache = GenerationCache { loadDevices("vision_devices") }
 
-private func _loadDevices(_ filename: String) -> [DeviceDescriptor] {
+private func loadDevices(_ filename: String) -> [DeviceDescriptor] {
     guard
         let data = CatalogueStore.shared.json(forCatalogueName: filename),
         let catalogue = try? JSONDecoder().decode(DeviceCatalogue.self, from: data)

@@ -1,8 +1,3 @@
-//
-//  CropRect.swift
-//  HarnessKitScreenshots
-//
-
 import Foundation
 
 public struct CropRect: Codable, Hashable, Sendable {
