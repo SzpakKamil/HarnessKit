@@ -25,14 +25,57 @@ public typealias PlatformBezierPath = UIBezierPath
 
 // MARK: - Image Creation
 
-/// Creates an image by drawing into a CGContext.
+/// Creates an image by drawing into a CGContext at 1× pixel density —
+/// the returned `PlatformImage`'s pixel dimensions equal the requested
+/// `size` in pixels.
+///
+/// On macOS the prior `NSImage(size:flipped:drawing:)` approach leaked
+/// the display's backing scale into every rendered intermediate: a 320-pt
+/// canvas on a Retina Mac produced a 640-pixel PNG. Authored-pixel
+/// dimensions (`CanvasComposition.width`, `ScreenshotResolution`) would
+/// not match the output. This path forces a 1× `CGContext` so
+/// `composition.width = 320` produces exactly 320 output pixels on every
+/// display.
+///
+/// The iOS path already forced 1× via `format.scale = 1.0`.
 nonisolated func createImage(size: CGSize, flipped: Bool = false, drawing: @Sendable @escaping (CGContext) -> Void) -> PlatformImage {
     #if canImport(AppKit)
-    let image = NSImage(size: size, flipped: flipped) { _ in
-        guard let ctx = NSGraphicsContext.current?.cgContext else { return false }
-        drawing(ctx)
-        return true
+    let w = max(1, Int(size.width.rounded()))
+    let h = max(1, Int(size.height.rounded()))
+    guard let cgCtx = CGContext(
+        data: nil,
+        width: w,
+        height: h,
+        bitsPerComponent: 8,
+        bytesPerRow: 0,
+        space: CGColorSpaceCreateDeviceRGB(),
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    ) else {
+        return NSImage(size: size)
     }
+    // NSAttributedString.draw(in:) and NSImage.draw(in:from:operation:fraction:)
+    // both query `NSGraphicsContext.current?.isFlipped` — the explicit
+    // `flipped:` in the initializer is what lets text render right-side-up
+    // in top-down coords.
+    let nsctx = NSGraphicsContext(cgContext: cgCtx, flipped: flipped)
+    NSGraphicsContext.saveGraphicsState()
+    NSGraphicsContext.current = nsctx
+    if flipped {
+        cgCtx.translateBy(x: 0, y: CGFloat(h))
+        cgCtx.scaleBy(x: 1, y: -1)
+    }
+    drawing(cgCtx)
+    NSGraphicsContext.restoreGraphicsState()
+    guard let cg = cgCtx.makeImage() else {
+        return NSImage(size: size)
+    }
+    // Wrap in NSImage with `rep.size == pixel size` so `image.size`
+    // (points) equals pixel dimensions — keeps the 1× contract intact
+    // when this image is subsequently drawn into another context.
+    let rep = NSBitmapImageRep(cgImage: cg)
+    rep.size = NSSize(width: w, height: h)
+    let image = NSImage(size: NSSize(width: w, height: h))
+    image.addRepresentation(rep)
     return image
     #else
     let format = UIGraphicsImageRendererFormat()
