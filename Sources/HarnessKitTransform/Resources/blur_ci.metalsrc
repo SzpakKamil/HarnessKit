@@ -52,16 +52,22 @@ float mapRadius(float2 position,
     float mapped = 0.0;
 
     if (direction == 0) {
-        mapped = max((contentPos.y/size.y-offset)/interpolation, 0.0);
+        mapped = clamp((contentPos.y/size.y-offset)/interpolation, 0.0, 1.0);
     } else if (direction == 1) {
-        mapped = max(0.5-(contentPos.y/size.y-offset)/interpolation, 0.0);
+        mapped = clamp(1.0-(contentPos.y/size.y-offset)/interpolation, 0.0, 1.0);
     } else if (direction == 2) {
-        mapped = max((contentPos.x/size.x-offset)/interpolation, 0.0);
+        mapped = clamp((contentPos.x/size.x-offset)/interpolation, 0.0, 1.0);
     } else if (direction == 3) {
-        mapped = max(0.5-(contentPos.x/size.x-offset)/interpolation, 0.0);
+        mapped = clamp(1.0-(contentPos.x/size.x-offset)/interpolation, 0.0, 1.0);
     }
 
-    return min(mapped*radius, radius);
+    // Smoothstep shape on the ramp — matches `blur.metal`. Cubic
+    // Hermite (3t² − 2t³) with zero derivative at the endpoints
+    // removes the visible band separable-Gaussian progressive blur
+    // produces when the radius field has a sharp linear kink.
+    mapped = mapped * mapped * (3.0 - 2.0 * mapped);
+
+    return mapped * radius;
 }
 
 float sampleStep(float radius) {
@@ -101,6 +107,50 @@ void calculateGaussianWeights(float radius,
 // `CIKernel.kernels(withMetalString:)` recognizes — the legacy
 // wrapper ships in a compiled .metallib but can't be discovered
 // from a Metal source string at runtime.
+// Alpha-weighted (normalised) Gaussian accumulator, shared by both
+// axis passes. Transparent samples past the source's opaque
+// silhouette contribute 0 to the RGB numerator AND to the RGB
+// weight, so silhouette edges no longer get pulled toward black
+// (fixing the dark-fringe / ghost-smear seen when progressive-
+// blurring a bezel PNG). Alpha still blurs normally.
+//
+// Accumulators:
+//   rgbAcc = Σ s.rgb · w     (premultiplied RGB)
+//   aAcc   = Σ s.a   · w     (alpha numerator + RGB normaliser)
+//   wsum   = Σ w             (alpha denominator)
+//
+// Output (premultiplied, matching CI's downstream convention):
+//   rgbOut = rgbAcc / aAcc         (guarded against aAcc == 0)
+//   aOut   = aAcc   / wsum
+//   final  = (rgbOut · aOut, aOut)
+half4 blurAxis_ci(coreimage::sampler src,
+                  float2 position,
+                  float r,
+                  float2 axis) {
+    float weights[kernelSize];
+    calculateGaussianWeights(r, weights);
+    float step = sampleStep(r);
+    int center = centerIndex();
+
+    float3 rgbAcc = float3(0.0);
+    float  aAcc   = 0.0;
+    float  wsum   = 0.0;
+
+    for (int i = 0; i < kernelSize; ++i) {
+        float sampleOffset = float(i - center) * step;
+        float2 samplePixel = position + axis * sampleOffset;
+        float4 s = float4(src.sample(src.transform(samplePixel)));
+        float w = weights[i];
+        rgbAcc += s.rgb * w;
+        aAcc   += s.a   * w;
+        wsum   += w;
+    }
+
+    float3 rgbOut = (aAcc > 0.0) ? (rgbAcc / aAcc) : float3(0.0);
+    float  aOut   = aAcc / wsum;
+    return half4(half3(rgbOut) * half(aOut), half(aOut));
+}
+
 [[stitchable]] half4 blurX_ci(coreimage::sampler src,
                               float radius,
                               float offset,
@@ -121,19 +171,7 @@ void calculateGaussianWeights(float radius,
         return half4(src.sample(src.transform(position)));
     }
 
-    float weights[kernelSize];
-    calculateGaussianWeights(r, weights);
-    float step = sampleStep(r);
-    int center = centerIndex();
-
-    float4 result = float4(0.0);
-    for (int i = 0; i < kernelSize; ++i) {
-        float sampleOffset = float(i - center) * step;
-        float2 samplePixel = float2(position.x + sampleOffset, position.y);
-        result+= float4(src.sample(src.transform(samplePixel))) * weights[i];
-    }
-
-    return half4(result);
+    return blurAxis_ci(src, position, r, float2(1.0, 0.0));
 }
 
 // Y-axis pass — same math, samples along the vertical axis.
@@ -157,17 +195,5 @@ void calculateGaussianWeights(float radius,
         return half4(src.sample(src.transform(position)));
     }
 
-    float weights[kernelSize];
-    calculateGaussianWeights(r, weights);
-    float step = sampleStep(r);
-    int center = centerIndex();
-
-    float4 result = float4(0.0);
-    for (int i = 0; i < kernelSize; ++i) {
-        float sampleOffset = float(i - center) * step;
-        float2 samplePixel = float2(position.x, position.y + sampleOffset);
-        result+= float4(src.sample(src.transform(samplePixel))) * weights[i];
-    }
-
-    return half4(result);
+    return blurAxis_ci(src, position, r, float2(0.0, 1.0));
 }

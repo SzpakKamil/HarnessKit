@@ -63,16 +63,26 @@ float mapRadius(float2 position,
     float mapped = 0.0;
 
     if (direction == 0) {
-        mapped = max((position.y/size.y-offset)/interpolation, 0.0);
+        mapped = clamp((position.y/size.y-offset)/interpolation, 0.0, 1.0);
     } else if (direction == 1) {
-        mapped = max(0.5-(position.y/size.y-offset)/interpolation, 0.0);
+        mapped = clamp(1.0-(position.y/size.y-offset)/interpolation, 0.0, 1.0);
     } else if (direction == 2) {
-        mapped = max((position.x/size.x-offset)/interpolation, 0.0);
+        mapped = clamp((position.x/size.x-offset)/interpolation, 0.0, 1.0);
     } else if (direction == 3) {
-        mapped = max(0.5-(position.x/size.x-offset)/interpolation, 0.0);
+        mapped = clamp(1.0-(position.x/size.x-offset)/interpolation, 0.0, 1.0);
     }
 
-    return min(mapped*radius, radius);
+    // Smoothstep shape on the ramp so the sharp→blurred transition
+    // eases in/out instead of starting and ending with visible linear
+    // kinks. Separable-Gaussian progressive blur amplifies any
+    // discontinuity in the radius field (neighbouring pixels with
+    // noticeably different radii produce asymmetric taps), so a linear
+    // ramp reads as a banded / striped transition — especially at
+    // large radius. Cubic Hermite (3t² − 2t³) zero-derivative at the
+    // endpoints removes that band.
+    mapped = mapped * mapped * (3.0 - 2.0 * mapped);
+
+    return mapped * radius;
 }
 
 /// Per-sample distance in pixels. With `maxHalfTaps = 31` each side,
@@ -110,54 +120,53 @@ half4 blurAxis(float2 position,
     float halfSupport = 3.0 * r / step;
     int   halfTaps    = min(maxHalfTaps, int(ceil(halfSupport)));
 
-    // Center sample, weight = exp(0) = 1.
-    float4 result = float4(layer.sample(position));
+    // Alpha-weighted (normalised) Gaussian accumulator. Straight
+    // premultiplied accumulation averages transparent extension pixels
+    // into the result at silhouette edges, which erodes both alpha AND
+    // RGB — for a bezel PNG, that produced a dark fringe below the
+    // device plus a washed-out fade at the bottom of the ramp region.
+    //
+    // Split accumulation:
+    //   rgbAcc = Σ s.rgb · w         (premultiplied RGB; transparent
+    //                                  samples contribute 0 so they
+    //                                  don't pull colour toward black)
+    //   aAcc   = Σ s.a   · w         (blurred alpha numerator AND the
+    //                                  RGB normalisation weight — a
+    //                                  transparent tap has no say in
+    //                                  RGB, only in alpha)
+    //   wsum   = Σ w                 (alpha denominator)
+    //
+    // rgbOut = rgbAcc / aAcc         (true unpremultiplied colour,
+    //                                  protected against div-by-zero)
+    // aOut   = aAcc   / wsum         (softly blurred alpha)
+    // return premultiplied (rgbOut · aOut, aOut) to match SwiftUI's
+    // layerEffect output convention.
+    //
+    // Linear-pair midpoint folding (used previously at step == 1) does
+    // not generalise to alpha-weighted sampling — the per-tap effective
+    // weight becomes `s.a · w`, not `w`, so the midpoint-bilinear trick
+    // no longer reconstructs the intended pair. Always use single-tap.
+
+    float4 center = float4(layer.sample(position));
+    float3 rgbAcc = center.rgb;       // weight = 1 at the centre
+    float  aAcc   = center.a;
     float  wsum   = 1.0;
 
-    if (step > 1.0) {
-        // Single-tap path. Linear-pair midpoint trick is only exact
-        // when paired taps are within 1 px of each other (bilinear
-        // blends the same two source pixels we'd manually weight).
-        // Above step = 1 the midpoint bilinear samples drift off the
-        // intended positions, producing visible echo bands of the
-        // source content in the fade region.
-        for (int i = 1; i <= halfTaps; ++i) {
-            float xi   = float(i) * step;
-            float fade = clamp(halfSupport - float(i) + 1.0, 0.0, 1.0);
-            float w    = metal::fast::exp(-(xi*xi) / twoRSq) * fade;
-            float2 dp  = axis * xi;
-            result += (float4(layer.sample(position + dp))
-                     + float4(layer.sample(position - dp))) * w;
-            wsum   += 2.0 * w;
-        }
-    } else {
-        // Linear-pair path. step == 1 → adjacent tap positions are
-        // exactly 1 px apart; bilinear sample at the weighted midpoint
-        // exactly reconstructs `w1·sample(i) + w2·sample(i+1)`.
-        for (int i = 1; i <= halfTaps; i += 2) {
-            float xi    = float(i)     * step;
-            float xj    = float(i + 1) * step;
-            float fadeI = clamp(halfSupport - float(i)     + 1.0, 0.0, 1.0);
-            float fadeJ = clamp(halfSupport - float(i + 1) + 1.0, 0.0, 1.0);
-            float w1    = metal::fast::exp(-(xi*xi) / twoRSq) * fadeI;
-            float w2    = (i + 1 <= halfTaps)
-                          ? metal::fast::exp(-(xj*xj) / twoRSq) * fadeJ
-                          : 0.0;
-            float W     = w1 + w2;
-            // Guard against W = 0 (both fades zeroed out at the very
-            // tail) so the midpoint formula doesn't divide by zero.
-            float O     = (W > 0.0) ? (xi * w1 + xj * w2) / W : xi;
-
-            float2 dp = axis * O;
-            result += (float4(layer.sample(position + dp))
-                     + float4(layer.sample(position - dp))) * W;
-            wsum   += 2.0 * W;
-        }
+    for (int i = 1; i <= halfTaps; ++i) {
+        float xi   = float(i) * step;
+        float fade = clamp(halfSupport - float(i) + 1.0, 0.0, 1.0);
+        float w    = metal::fast::exp(-(xi*xi) / twoRSq) * fade;
+        float2 dp  = axis * xi;
+        float4 sp  = float4(layer.sample(position + dp));
+        float4 sn  = float4(layer.sample(position - dp));
+        rgbAcc += (sp.rgb + sn.rgb) * w;
+        aAcc   += (sp.a   + sn.a)   * w;
+        wsum   += 2.0 * w;
     }
 
-    // Single-shot normalization — divide once per pixel rather than
-    // dividing every weight before sampling.
-    return half4(result / wsum);
+    float3 rgbOut = (aAcc > 0.0) ? (rgbAcc / aAcc) : float3(0.0);
+    float  aOut   = aAcc / wsum;
+    return half4(half3(rgbOut) * half(aOut), half(aOut));
 }
 
 [[ stitchable ]] half4 blurX(float2 position,
