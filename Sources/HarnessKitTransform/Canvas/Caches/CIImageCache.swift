@@ -43,10 +43,10 @@ public enum CIImageCache {
     // MARK: - Public API
 
     /// Returns a cached gradient mask `CIImage` for the given parameters,
-    /// rendering and inserting on miss. `start`/`end` are currently
-    /// unused by the renderer (the gradient always spans the full rect)
-    /// but are in the key so future callers can use non-default stops
-    /// without silent cache collisions.
+    /// rendering and inserting on miss. `start`/`end` are the
+    /// gradient-stop locations along the fade path (matching the
+    /// SwiftUI preview's `Gradient.Stop.location` values) so export and
+    /// preview produce the same fade intensity.
     public static func linearGradientMask(
         size: CGSize,
         direction: ProgressiveBlurDirection,
@@ -68,7 +68,7 @@ public enum CIImageCache {
             return hit
         }
 
-        guard let rendered = renderGradientCI(size: size, direction: direction) else {
+        guard let rendered = renderGradientCI(size: size, direction: direction, start: start, end: end) else {
             withLock { storage.misses += 1 }
             return nil
         }
@@ -132,8 +132,8 @@ public enum CIImageCache {
 /// Renders a gradient mask as a `CIImage`. Uses the CG-based
 /// `createGradientMask` so pixel output matches pre-S3.4 behavior
 /// bit-for-bit, then wraps the resulting `CGImage` as a `CIImage`.
-private func renderGradientCI(size: CGSize, direction: ProgressiveBlurDirection) -> CIImage? {
-    guard let cg = cgImage(from: createGradientMask(size: size, direction: direction)) else {
+private func renderGradientCI(size: CGSize, direction: ProgressiveBlurDirection, start: Double, end: Double) -> CIImage? {
+    guard let cg = cgImage(from: createGradientMask(size: size, direction: direction, start: start, end: end)) else {
         return nil
     }
     return CIImage(cgImage: cg)

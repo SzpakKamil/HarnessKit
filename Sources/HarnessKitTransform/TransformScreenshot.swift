@@ -5,7 +5,7 @@ import HarnessKitScreenshots
 /// the resulting image. Does not save — call `saveResults(image:name:to:)` afterwards.
 ///
 /// - Throws: `TransformError` if a required bezel is missing.
-nonisolated func processScreenshot(image: PlatformImage, screenshot: Screenshot, config: ScreenshotConfig) throws -> PlatformImage {
+public nonisolated func processScreenshot(image: PlatformImage, screenshot: Screenshot, config: ScreenshotConfig) throws -> PlatformImage {
     try autoreleasepool {
         switch screenshot.os {
         case .macOS:
@@ -32,7 +32,7 @@ nonisolated func processScreenshot(image: PlatformImage, screenshot: Screenshot,
 ///   - config: Versioned bezel and resolution config.
 ///   - outputDirectory: Directory where the resulting PNG will be written.
 /// - Throws: `TransformError` if a required bezel is missing or saving fails.
-nonisolated func transformScreenshot(
+public nonisolated func transformScreenshot(
     image: PlatformImage,
     screenshot: Screenshot,
     config: ScreenshotConfig,

@@ -1,7 +1,0 @@
-scenario,iterations,elapsedMs,peakDeltaMB
-CanvasBackgroundOnly-4K,5,943.990,514.92
-ApplyShadowsStress-4K-3groups,3,8380.371,1431.19
-CanvasShadowStress-4K-3groups,3,8139.298,2155.50
-CanvasEffectsStress-4K-4effects,3,2061.204,1159.42
-CanvasLayerChain-4K-6layers,3,2741.957,1881.05
-NoBezelPipelineStress-iPhone-4K,5,2804.749,936.33

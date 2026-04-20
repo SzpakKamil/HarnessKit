@@ -88,17 +88,59 @@ nonisolated func renderCanvas(
                 contentImage = applyCanvasCornerRadius(to: contentImage, radius: layer.cornerRadius)
             }
 
-            var processed = applyCanvasEffects(to: contentImage, effects: layer.effects)
+            // Pad the content bitmap before the effect chain so
+            // (progressive) blur halos have room to extend past the
+            // layer's authored rect. Without this the GPU samples only
+            // pixels inside `frame.size` and the blurred edge is hard-
+            // clipped — matches the SwiftUI preview's pre-blur
+            // `.frame(w + 2·r, h + 2·r)` expansion.
+            let halo = blurHaloPadding(for: layer.effects)
+            let paddedContent = padImageWithHalo(contentImage, frameSize: frame.size, halo: halo)
+
+            // Where the authored frame sits INSIDE the padded bitmap.
+            // For progressive blur this is what the Metal shader
+            // needs so its gradient runs over the frame (matching
+            // preview) instead of the padded extent.
+            let contentRect = halo > 0
+                ? CGRect(x: halo, y: halo, width: frame.width, height: frame.height)
+                : CGRect(origin: .zero, size: frame.size)
+
+            var processed = applyCanvasEffects(
+                to: paddedContent,
+                effects: layer.effects,
+                contentRect: contentRect
+            )
 
             // Composite background color behind the (possibly clipped)
             // content. Runs after effects so the background sits under
-            // blur/fade layers.
+            // blur/fade layers. When halo padding is active the fill
+            // stays confined to the authored frame rect (centered in
+            // the padded bitmap), so the blur halo remains outside
+            // the filled background.
             if !layer.backgroundColor.isEmpty {
-                processed = applyBackgroundColor(behind: processed, hex: layer.backgroundColor, cornerRadius: layer.cornerRadius, size: frame.size)
+                let processedSize = imageSize(processed)
+                let bgRect: CGRect? = halo > 0
+                    ? CGRect(x: halo, y: halo, width: frame.width, height: frame.height)
+                    : nil
+                processed = applyBackgroundColor(
+                    behind: processed,
+                    hex: layer.backgroundColor,
+                    cornerRadius: layer.cornerRadius,
+                    size: processedSize,
+                    bgRect: bgRect
+                )
             }
 
             let dropShadows = layer.shadows.filter { $0.type == .drop }
-            return compositeLayer(content: processed, onto: layerResult, frame: frame, rotation: layer.frame.rotation, opacity: layer.opacity, dropShadows: dropShadows)
+            return compositeLayer(
+                content: processed,
+                onto: layerResult,
+                frame: frame,
+                rotation: layer.frame.rotation,
+                opacity: layer.opacity,
+                dropShadows: dropShadows,
+                halo: halo
+            )
         }
     }
 

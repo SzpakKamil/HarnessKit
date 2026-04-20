@@ -5,7 +5,14 @@ import PackageDescription
 let package = Package(
     name: "HarnessKit",
     platforms: [
-        .iOS(.v14), .tvOS(.v14), .visionOS(.v1), .macOS(.v11), .watchOS(.v10)
+        // `[[stitchable]]` Metal functions in `Resources/blur.metal`
+        // need Metal 2.4, which ships with macOS 12 / iOS 15. Older
+        // OS targets fall back to the `ProgressiveBlurCompatModifier`
+        // SwiftUI path (native `.blur(radius:) + .mask(gradient)`)
+        // and, on the export side, the pre-Metal `gaussianBlur +
+        // blendWithMaskCI` path gated by the `#available` check in
+        // `Renderer+Effects.swift`.
+        .iOS(.v15), .tvOS(.v15), .visionOS(.v1), .macOS(.v12), .watchOS(.v10)
     ],
     products: [
         .library(
@@ -60,6 +67,16 @@ let package = Package(
             name: "HarnessKitTransform",
             dependencies: ["HarnessKitScreenshots"],
             path: "Sources/HarnessKitTransform",
+            // `blur_ci.metalsrc` is extension-swapped (not `.metal`)
+            // so Xcode's SPM resource pipeline doesn't try to compile
+            // it as a stitchable Metal shader. `.process("Resources")`
+            // picks up both the device JSON files and this raw source
+            // and ships them as bundle resources; the CoreImage kernel
+            // it defines is compiled at runtime via
+            // `CIKernel.kernels(withMetalString:)` inside
+            // `MetalProgressiveBlur.swift`, which is where the
+            // `-fcikernel` flag `coreimage::sampler` needs gets
+            // applied.
             resources: [.process("Resources")]
         ),
         .testTarget(
@@ -72,16 +89,6 @@ let package = Package(
                 "HarnessKitTransform",
                 .target(name: "HarnessKitScreenshotTesting", condition: .when(platforms: [.macOS])),
             ]
-        ),
-        .executableTarget(
-            name: "HarnessKitBenchmarks",
-            dependencies: [
-                .target(
-                    name: "HarnessKitTransform",
-                    condition: .when(platforms: [.macOS])
-                )
-            ],
-            path: "Benchmarks/HarnessKitBenchmarks"
         )
     ]
 )
