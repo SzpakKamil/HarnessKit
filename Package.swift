@@ -31,10 +31,6 @@ let package = Package(
             name: "HarnessKitScreenshotTesting",
             targets: ["HarnessKitScreenshotTesting"]
         ),
-        .library(
-            name: "HarnessKitTransform",
-            targets: ["HarnessKitTransformTarget"]
-        ),
     ],
     targets: [
         .target(
@@ -53,42 +49,9 @@ let package = Package(
             dependencies: ["HarnessKitScreenshots"],
             path: "Sources/HarnessKitScreenshotTesting"
         ),
-        .target(
-            name: "HarnessKitTransformTarget",
-            dependencies: [
-                .target(
-                    name: "HarnessKitTransform",
-                    condition: .when(platforms: [.macOS, .iOS, .visionOS])
-                )
-            ],
-            path: "SwiftPM-PlatformExclude/HarnessKitTransformWrap"
-        ),
-        .target(
-            name: "HarnessKitTransform",
-            dependencies: ["HarnessKitScreenshots"],
-            path: "Sources/HarnessKitTransform",
-            // `blur_ci.metalsrc` is extension-swapped (not `.metal`)
-            // so Xcode's SPM resource pipeline doesn't try to compile
-            // it as a stitchable Metal shader. `.process("Resources")`
-            // picks up both the device JSON files and this raw source
-            // and ships them as bundle resources; the CoreImage kernel
-            // it defines is compiled at runtime via
-            // `CIKernel.kernels(withMetalString:)` inside
-            // `MetalProgressiveBlur.swift`, which is where the
-            // `-fcikernel` flag `coreimage::sampler` needs gets
-            // applied.
-            resources: [.process("Resources")]
-        ),
         .testTarget(
             name: "HarnessKitTests",
             dependencies: ["HarnessKit", "HarnessKitTesting"]
         ),
-        .testTarget(
-            name: "HarnessKitTransformTests",
-            dependencies: [
-                "HarnessKitTransform",
-                .target(name: "HarnessKitScreenshotTesting", condition: .when(platforms: [.macOS])),
-            ]
-        )
     ]
 )
