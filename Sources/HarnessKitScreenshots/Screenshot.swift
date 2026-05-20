@@ -5,59 +5,23 @@ public struct Screenshot: Identifiable, Hashable, Equatable, Sendable {
     public let appearance: ScreenshotAppearance
     public let os: TargetOS
     public let orientation: ScreenOrientation?
-    public let crop: CropRect
-    public let background: ScreenshotBackground?
-    public let shadows: [ScreenshotShadow]
     public let addBezel: Bool
     /// Target OS version string (e.g. "17.0", "18.2", "26.0").
     /// Set automatically by the testing infrastructure from the real running OS.
     /// Not exposed in the public init — use `captureScreenshot` to capture with the correct version.
     public let osVersion: String?
 
-    /// Backward-compat: extract solid hex color if background is `.solid`.
-    public var backgroundHex: String? {
-        if case .solid(let hex) = background { return hex }
-        return nil
-    }
-
     public init(
         id: String,
         appearance: ScreenshotAppearance,
         os: TargetOS = .currentOS,
         orientation: ScreenOrientation? = nil,
-        crop: CropRect = .init(x: 0, y: 0, width: 1, height: 1),
-        backgroundHex: String? = nil,
-        shadows: [ScreenshotShadow] = [],
         addBezel: Bool = true
     ) {
         self.id = id
         self.appearance = appearance
         self.os = os
         self.orientation = orientation
-        self.crop = crop
-        self.background = backgroundHex.map { .solid(hex: $0) }
-        self.shadows = shadows
-        self.addBezel = addBezel
-        self.osVersion = nil
-    }
-
-    public init(
-        id: String,
-        appearance: ScreenshotAppearance,
-        os: TargetOS = .currentOS,
-        orientation: ScreenOrientation? = nil,
-        crop: CropRect = .init(x: 0, y: 0, width: 1, height: 1),
-        background: ScreenshotBackground?,
-        shadows: [ScreenshotShadow] = [],
-        addBezel: Bool = true
-    ) {
-        self.id = id
-        self.appearance = appearance
-        self.os = os
-        self.orientation = orientation
-        self.crop = crop
-        self.background = background
-        self.shadows = shadows
         self.addBezel = addBezel
         self.osVersion = nil
     }
@@ -68,9 +32,6 @@ public struct Screenshot: Identifiable, Hashable, Equatable, Sendable {
         appearance: ScreenshotAppearance,
         os: TargetOS,
         orientation: ScreenOrientation?,
-        crop: CropRect,
-        background: ScreenshotBackground?,
-        shadows: [ScreenshotShadow],
         addBezel: Bool,
         osVersion: String?
     ) {
@@ -78,9 +39,6 @@ public struct Screenshot: Identifiable, Hashable, Equatable, Sendable {
         self.appearance = appearance
         self.os = os
         self.orientation = orientation
-        self.crop = crop
-        self.background = background
-        self.shadows = shadows
         self.addBezel = addBezel
         self.osVersion = osVersion
     }
@@ -93,9 +51,6 @@ public struct Screenshot: Identifiable, Hashable, Equatable, Sendable {
             appearance: appearance,
             os: os,
             orientation: orientation,
-            crop: crop,
-            background: background,
-            shadows: shadows,
             addBezel: addBezel,
             osVersion: version
         )
@@ -103,35 +58,15 @@ public struct Screenshot: Identifiable, Hashable, Equatable, Sendable {
 
     /// Serializes all screenshot metadata into a single stable filename string.
     /// Format:
-    /// id*value^os*value^orientation*value^appearance*value^crop*x,y,w,h^backgroundHex*value[^osVersion*value][^addBezel*false].png
+    /// id*value^os*value^orientation*value^appearance*value[^osVersion*value][^addBezel*false].png
     public func screenshotName() -> String {
         var s = ""
-        // Most names land in 100-180 chars; pre-reserving avoids the 2-3
-        // doublings the COW string would otherwise pay during incremental
-        // appends. Eliminates the components-Array + joined(separator:)
-        // path's intermediate allocations.
-        s.reserveCapacity(192)
+        s.reserveCapacity(128)
 
         s += "id*\(id)"
         s += "^os*\(os)"
         s += "^orientation*\(orientation?.rawValue ?? "nil")"
         s += "^appearance*\(appearance)"
-        s += "^crop*\(crop.x),\(crop.y),\(crop.width),\(crop.height)"
-        s += "^background*"
-        switch background {
-        case .solid(let hex):
-            s += "solid:\(hex)"
-        case .gradient(let start, let end, let angle):
-            s += "gradient:\(start),\(end),\(angle)"
-        case .image(let name, let directory, let scale, let offsetX, let offsetY):
-            s += "image:\(name)"
-            if let directory { s += ",dir:\(directory)" }
-            if scale != 1.0 { s += ",s:\(scale)" }
-            if offsetX != 0 { s += ",ox:\(offsetX)" }
-            if offsetY != 0 { s += ",oy:\(offsetY)" }
-        case .none:
-            s += "nil"
-        }
 
         if let osVersion {
             s += "^osVersion*\(osVersion)"
@@ -166,8 +101,6 @@ public struct Screenshot: Identifiable, Hashable, Equatable, Sendable {
         var os: TargetOS?
         var orientation: ScreenOrientation?
         var appearance: ScreenshotAppearance?
-        var crop: CropRect?
-        var background: ScreenshotBackground?
         var addBezel: Bool = true
         var osVersion: String?
 
@@ -191,46 +124,6 @@ public struct Screenshot: Identifiable, Hashable, Equatable, Sendable {
             case "appearance":
                 appearance = ScreenshotAppearance(rawValue: value.capitalized)
 
-            case "crop":
-                let numbers = value.split(separator: ",").compactMap { Double($0) }
-                guard numbers.count == 4 else { return nil }
-                crop = CropRect(
-                    x: numbers[0],
-                    y: numbers[1],
-                    width: numbers[2],
-                    height: numbers[3]
-                )
-
-            case "backgroundHex":
-                // Backward compat: old format stored plain hex
-                background = value == "nil" ? nil : .solid(hex: value)
-
-            case "background":
-                if value == "nil" {
-                    background = nil
-                } else if value.hasPrefix("solid:") {
-                    background = .solid(hex: String(value.dropFirst(6)))
-                } else if value.hasPrefix("gradient:") {
-                    let parts = value.dropFirst(9).split(separator: ",")
-                    if parts.count == 3, let angle = Double(parts[2]) {
-                        background = .gradient(startHex: String(parts[0]), endHex: String(parts[1]), angle: angle)
-                    }
-                } else if value.hasPrefix("image:") {
-                    let imgParts = value.dropFirst(6).split(separator: ",", omittingEmptySubsequences: false)
-                    let name = String(imgParts[0])
-                    var directory: String?
-                    var scale = 1.0
-                    var offsetX = 0.0
-                    var offsetY = 0.0
-                    for part in imgParts.dropFirst() {
-                        if part.hasPrefix("dir:") { directory = String(part.dropFirst(4)) }
-                        else if part.hasPrefix("s:"), let v = Double(part.dropFirst(2)) { scale = v }
-                        else if part.hasPrefix("ox:"), let v = Double(part.dropFirst(3)) { offsetX = v }
-                        else if part.hasPrefix("oy:"), let v = Double(part.dropFirst(3)) { offsetY = v }
-                    }
-                    background = .image(name: name, directory: directory, scale: scale, offsetX: offsetX, offsetY: offsetY)
-                }
-
             case "osVersion":
                 osVersion = value
 
@@ -245,8 +138,7 @@ public struct Screenshot: Identifiable, Hashable, Equatable, Sendable {
         guard
             let finalId = id,
             let finalOs = os,
-            let finalAppearance = appearance,
-            let finalCrop = crop
+            let finalAppearance = appearance
         else {
             return nil
         }
@@ -256,20 +148,17 @@ public struct Screenshot: Identifiable, Hashable, Equatable, Sendable {
             appearance: finalAppearance,
             os: finalOs,
             orientation: orientation,
-            crop: finalCrop,
-            background: background,
-            shadows: [],
             addBezel: addBezel,
             osVersion: osVersion
         )
     }
 }
 
-// MARK: - Codable (backward-compat: reads old "backgroundHex" key, writes new "background" key)
+// MARK: - Codable
 
 extension Screenshot: Codable {
     private enum CodingKeys: String, CodingKey {
-        case id, appearance, os, orientation, crop, background, backgroundHex, shadows, addBezel, osVersion
+        case id, appearance, os, orientation, addBezel, osVersion
     }
 
     public init(from decoder: Decoder) throws {
@@ -278,19 +167,8 @@ extension Screenshot: Codable {
         appearance = try c.decode(ScreenshotAppearance.self, forKey: .appearance)
         os = try c.decode(TargetOS.self, forKey: .os)
         orientation = try c.decodeIfPresent(ScreenOrientation.self, forKey: .orientation)
-        crop = try c.decode(CropRect.self, forKey: .crop)
         addBezel = (try? c.decode(Bool.self, forKey: .addBezel)) ?? true
         osVersion = try c.decodeIfPresent(String.self, forKey: .osVersion)
-
-        // Try new "background" key first, fall back to old "backgroundHex"
-        if let bg = try? c.decodeIfPresent(ScreenshotBackground.self, forKey: .background) {
-            background = bg
-        } else if let hex = try? c.decodeIfPresent(String.self, forKey: .backgroundHex) {
-            background = .solid(hex: hex)
-        } else {
-            background = nil
-        }
-        shadows = (try? c.decodeIfPresent([ScreenshotShadow].self, forKey: .shadows)) ?? []
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -299,11 +177,6 @@ extension Screenshot: Codable {
         try c.encode(appearance, forKey: .appearance)
         try c.encode(os, forKey: .os)
         try c.encodeIfPresent(orientation, forKey: .orientation)
-        try c.encode(crop, forKey: .crop)
-        try c.encodeIfPresent(background, forKey: .background)
-        if !shadows.isEmpty {
-            try c.encode(shadows, forKey: .shadows)
-        }
         try c.encode(addBezel, forKey: .addBezel)
         try c.encodeIfPresent(osVersion, forKey: .osVersion)
     }

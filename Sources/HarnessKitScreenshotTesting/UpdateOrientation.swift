@@ -3,16 +3,20 @@ import HarnessKitScreenshots
 #if canImport(XCTest)
 import XCTest
 
-/// Sets the device orientation for iOS UI tests based on the given config.
+/// Sets the device orientation for iOS UI tests.
 ///
-/// - Parameter config: The screenshot config to read orientation from.
-///   Defaults to `.defaults` if not provided.
+/// - Parameters:
+///   - phone: Orientation for iPhone idiom. Defaults to `.portrait`.
+///   - pad: Orientation for iPad idiom. Defaults to `.landscape`.
 @MainActor
-public func updateOrientation(config: ScreenshotConfig = .defaults) {
+public func updateOrientation(
+    phone: ScreenOrientation = .portrait,
+    pad: ScreenOrientation = .landscape
+) {
     #if os(iOS)
     XCUIDevice.shared.orientation = UIDevice.current.userInterfaceIdiom == .phone
-        ? config.phoneOrientation.uiKitValue
-        : config.padOrientation.uiKitValue
+        ? phone.uiKitValue
+        : pad.uiKitValue
     sleep(2)
     #endif
 }
