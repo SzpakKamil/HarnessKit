@@ -1,6 +1,6 @@
 # ``HarnessKitScreenshotTesting/captureScreenshot(screenshot:app:sleepSeconds:customActions:add:)``
 
-Captures a screenshot during a UI test and attaches it with metadata-encoded name.
+Captures one frame during a UI test and attaches it with a metadata-encoded filename.
 
 @Metadata {
     @SupportedLanguage(swift)
@@ -20,25 +20,23 @@ Captures a screenshot during a UI test and attaches it with metadata-encoded nam
 
 ## Overview
 
-This is the primary entry point for screenshot capture. Call it inside an `XCTestCase` method to capture a single frame and attach it to the test run.
+`captureScreenshot` is the primary entry point of the capture pipeline. Call it from inside an `XCTestCase` method and the function handles every step: stamp the OS version, set the device appearance, capture the screen, attach the PNG.
 
 ### Capture Flow
 
-1. Stamps `Screenshot/osVersion` from the running device (`major.0` format).
-2. On iOS, applies `Screenshot/orientation` if set.
-3. Sets `XCUIDevice.shared.appearance` to match `Screenshot/appearance` (skipped on watchOS and visionOS).
-4. Sleeps for `sleepSeconds` (default 2) to let the UI settle.
-5. Runs `customActions` closure for any additional setup.
-6. Captures the screen:
-   - **macOS**: Captures the app window with 35pt rounded corners.
-   - **watchOS**: Captures only if appearance is not `.dark` (watchOS does not support appearance switching).
-   - **All others**: Full-screen capture via `XCUIScreen.main.screenshot()`.
-7. Attaches the PNG to the test with `Screenshot/screenshotName()` as the attachment name.
+1. Reads the running simulator's version and writes it back through `Screenshot.withOSVersion(_:)` as a `major.0` string.
+2. On iOS, applies `Screenshot.orientation` if you set one.
+3. Sets `XCUIDevice.shared.appearance` to match `Screenshot.appearance`. Skipped on watchOS and visionOS, which do not support appearance switching.
+4. Sleeps for `sleepSeconds` (default `2`) so the UI can settle.
+5. Runs `customActions` for any extra setup.
+6. Captures the screen. macOS captures the app window and rounds the corners at 35 points. watchOS captures only when appearance is not `.dark`. Every other platform calls `XCUIScreen.main.screenshot()`.
+7. Attaches the PNG with `Screenshot.screenshotName()` as the filename.
 
 ### Example
 
 ```swift
 import XCTest
+import HarnessKitScreenshots
 import HarnessKitScreenshotTesting
 
 final class HomeTests: XCTestCase {
@@ -63,7 +61,7 @@ final class HomeTests: XCTestCase {
 
 ### Custom Actions
 
-Pass a `customActions` closure to perform setup before capture — for example, tapping a button or scrolling to a specific position:
+Pass a `customActions` closure when you need extra setup between the appearance change and the capture. The closure runs after the sleep, so any animations triggered by your appearance change have already finished:
 
 ```swift
 captureScreenshot(
@@ -79,13 +77,13 @@ captureScreenshot(
 
 | Name | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `screenshot` | `Screenshot` | — | Metadata describing the frame to capture. |
-| `app` | `XCUIApplication` | — | The running application under test. |
+| `screenshot` | `Screenshot` | required | Metadata describing the frame to capture. |
+| `app` | `XCUIApplication` | required | The running application under test. |
 | `sleepSeconds` | `UInt32` | `2` | Seconds to wait after setting appearance before capturing. |
-| `customActions` | `() -> Void` | `{ }` | Additional setup to run before capturing. |
-| `add` | `(XCTAttachment) -> Void` | — | Closure that attaches the result to the test (typically `self.add`). |
+| `customActions` | `() -> Void` | `{ }` | Extra setup to run before the capture. |
+| `add` | `(XCTAttachment) -> Void` | required | Closure that attaches the PNG to the test, typically `self.add`. |
 
 ## See Also
 
-- ``updateOrientation(config:)``
+- ``updateOrientation(phone:pad:)``
 - ``resetTheme(to:)``

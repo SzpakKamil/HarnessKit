@@ -1,6 +1,6 @@
 # ``HarnessKitScreenshotTesting``
 
-XCTest functions for capturing annotated screenshots during UI tests.
+XCTest functions that capture annotated screenshots during UI tests.
 
 @Metadata {
     @SupportedLanguage(swift)
@@ -23,23 +23,23 @@ XCTest functions for capturing annotated screenshots during UI tests.
 
 ## Overview
 
-`HarnessKitScreenshotTesting` provides the **capture** side of the HarnessKit screenshot pipeline. It sets the device appearance, captures the screen, and attaches the result as a PNG to the test run with all `Screenshot` metadata embedded.
+`HarnessKitScreenshotTesting` is the capture side of the screenshot pipeline. Five top-level functions handle device appearance, simulator rotation, screen capture, and PNG attachment. The library imports `XCTest`, so it belongs in your UI test bundle and nowhere else.
 
-This library depends on `HarnessKitScreenshots` for the shared model types and requires `XCTest` — link it to your **UI test target only**.
+It depends on `HarnessKitScreenshots` for the `Screenshot` model type.
 
 ### What It Does
 
-- Sets `XCUIDevice.shared.appearance` from `Screenshot/appearance`
-- Stamps `Screenshot/osVersion` from the running simulator
-- Captures the screen (window-level on macOS with rounded corners, full-screen elsewhere)
-- Encodes the `Screenshot` into the attachment filename via `Screenshot/screenshotName()`
-- On macOS, rounds window corners at 35pt radius
+- Sets `XCUIDevice.shared.appearance` from `Screenshot.appearance`.
+- Stamps `Screenshot.osVersion` with the running simulator's version.
+- Captures the screen, rounded to 35 points on macOS, full-bleed elsewhere.
+- Attaches the PNG to the test with `Screenshot.screenshotName()` as its name.
+- Rotates the iOS simulator with `updateOrientation(phone:pad:)` or `setOrientation(to:)`.
 
 ### What It Does Not Do
 
-- No image transformation (bezels, shadows, backgrounds) — that's `HarnessKitTransform`
-- No navigation — that's `HarnessKitTesting`
-- No model types — those are in `HarnessKitScreenshots`
+- No image compositing. No bezels, shadows, or backgrounds.
+- No navigation. That is `HarnessKitTesting`.
+- No model types. Those live in `HarnessKitScreenshots`.
 
 ## Getting Started
 
@@ -61,7 +61,7 @@ This library depends on `HarnessKitScreenshots` for the shared model types and r
 
 ### Orientation
 
-- ``updateOrientation(config:)``
+- ``updateOrientation(phone:pad:)``
 - ``setOrientation(to:)``
 
 ### Appearance

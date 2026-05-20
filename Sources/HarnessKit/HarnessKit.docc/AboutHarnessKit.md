@@ -19,21 +19,21 @@
     @AutomaticSeeAlso(disabled)
 }
 
-A structured navigation harness for SwiftUI demo apps and component previews. 
+A structured navigation harness for SwiftUI demo apps and component previews.
 
 ## Overview
 
-``HarnessKit`` is a lightweight, protocol-oriented framework designed to solve the "demo app boilerplate" problem. Instead of manually building navigation lists and detail views for every component in your design system, you define a structured tree of your views using ``PathProject`` and ``PathFolder``. ``HarnessKit`` then generates the entire navigation UI and provides automated testing hooks.
+``HarnessKit`` is a protocol-oriented framework for the boilerplate that comes with every design system app. Instead of writing the same navigation list and detail screens for each new component, you describe your hierarchy as types. ``PathProject`` is the root, ``PathFolder`` is everything below it. ``HarnessView`` renders the whole tree, and `HarnessKitTesting` lets a UI test jump to any leaf in one call.
 
-All members of HarnessKit must be accessed on the **main actor**.
+Every member of HarnessKit is isolated to the main actor.
 
 ## Building the Hierarchy
 
-To use HarnessKit, you build a tree structure consisting of a single project root, one or more folders, and individual cases for each view.
+A harness has three parts: one project root, any number of folders, and a leaf view per folder case.
 
-### 1. Define the Project Root
+### 1. The Project Root
 
-The root of your harness is a type that conforms to ``PathProject``. This defines the top-level name and the initial set of folders.
+The root is a caseless enum conforming to ``PathProject``. It carries the navigation title and the list of top-level folders.
 
 ```swift
 import HarnessKit
@@ -46,9 +46,9 @@ enum MyDesignSystem: PathProject {
 }
 ```
 
-### 2. Create Navigation Folders
+### 2. Navigation Folders
 
-Folders are enums conforming to ``PathFolder``. Each folder specifies its `ParentSection` (either the project or another folder) and a list of navigable `options` (its enum cases).
+Folders are enums conforming to ``PathFolder``. Each one points at its parent through `ParentSection` and lists its own subfolders.
 
 ```swift
 import HarnessKit
@@ -57,26 +57,26 @@ import SwiftUI
 enum ComponentsFolder: Int, PathFolder {
     typealias ParentSection = MyDesignSystem
     static let name = "Components"
-    
+
     case buttons
     case labels
-    
+
     var description: String {
         switch self {
         case .buttons: return "Buttons"
         case .labels: return "Labels"
         }
     }
-    
+
     static var folders: [any PathFolder.Type] {
         [ButtonsFolder.self]
     }
 }
 ```
 
-### 3. Define Leaf Views
+### 3. Leaf Views
 
-A leaf folder contains the actual SwiftUI views you want to preview. Each enum case maps to a specific view via the `view` property.
+A leaf folder maps each enum case to a SwiftUI view through the `view` property.
 
 ```swift
 import HarnessKit
@@ -85,17 +85,17 @@ import SwiftUI
 enum ButtonsFolder: Int, PathFolder {
     typealias ParentSection = ComponentsFolder
     static let name = "Buttons"
-    
+
     case primary
     case secondary
-    
+
     var description: String {
         switch self {
         case .primary: return "Primary Button"
         case .secondary: return "Secondary Button"
         }
     }
-    
+
     @ViewBuilder
     var view: some View {
         switch self {
@@ -108,7 +108,7 @@ enum ButtonsFolder: Int, PathFolder {
 }
 ```
 
-When a case needs to show multiple states of a component, wrap the `view` body in ``HarnessPreview``. It cycles through variants on tap, so no `@State` is needed in the folder:
+When a case wants to demo several states of a component, wrap the body in ``HarnessPreview``. It owns the variant index internally, so the folder stays a plain enum:
 
 ```swift
 @ViewBuilder
@@ -121,7 +121,7 @@ var view: some View {
 
 ## Rendering the Harness
 
-The ``HarnessView`` is the entry point for your SwiftUI app. It takes your project type as a generic parameter and renders the entire navigation tree automatically.
+``HarnessView`` is the entry point. Pass your project type as the generic parameter.
 
 ```swift
 import SwiftUI
@@ -139,11 +139,11 @@ struct DesignSystemApp: App {
 
 ## Automated UI Testing
 
-HarnessKit provides a powerful testing module, `HarnessKitTesting`, which allows you to navigate to any screen in a UI test with a single line of code. This bypasses the need for fragile, manual navigation logic in your tests.
+`HarnessKitTesting` adds `navigate(app:)` to every folder case. The library handles the taps, clicks, scrolls, or remote presses your platform needs.
 
 ### Path-Based Navigation
 
-For types conforming to `RawRepresentable` with `Int` raw values (like the enums above), you can navigate directly to a case.
+For folders backed by `Int` raw values, navigate straight to a case from a test.
 
 ```swift
 import XCTest
@@ -154,7 +154,7 @@ final class DesignSystemUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        // Full hierarchy: Project -> ComponentsFolder -> ButtonsFolder -> .primary
+        // Walks MyDesignSystem -> ComponentsFolder -> ButtonsFolder -> .primary
         ButtonsFolder.primary.navigate(app: app)
 
         XCTAssertTrue(app.buttons["Primary"].exists)
@@ -164,7 +164,7 @@ final class DesignSystemUITests: XCTestCase {
 
 ### Variant Testing
 
-When a case uses ``HarnessPreview``, `HarnessKitTesting` provides `advancePreview(app:)` to step forward one variant and `iteratePreview(app:variantCount:action:)` to visit all variants in sequence:
+For cases backed by ``HarnessPreview``, call `advancePreview(app:)` to step one variant or `iteratePreview(app:variantCount:action:)` to visit every variant in order:
 
 ```swift
 func testAllButtonStyles() {
@@ -182,18 +182,17 @@ func testAllButtonStyles() {
 
 ### Cross-Platform Support
 
-- **iOS/macOS/watchOS**: Uses label-based matching and automatic scrolling to find and interact with navigation links.
-- **tvOS**: Uses `XCUIRemote` to perform precise directional presses based on the integer path IDs, ensuring reliable navigation on a platform where label matching is often limited.
+On iOS, iPadOS, macOS, and watchOS, the library matches buttons by label and scrolls until they are hittable. On tvOS, it sends `XCUIRemote` directional presses calculated from each folder's integer path id.
 
 ## Deep Linking and Resolution
 
-Every node in the harness has a unique path identified by integers and strings. You can use the `PathResolver` (via extensions on ``PathFolder``) to retrieve these paths for debugging or custom deep-linking implementations.
+Every node carries a unique path of integers and strings. Use the static resolver methods on ``PathFolder`` to read them.
 
-- ``PathFolder/ids(for:)``: Returns the sequence of integer indices from the root to a specific case.
-- ``PathFolder/namePath(for:)``: Returns a slash-separated string representation (e.g., `"Components/Buttons/primary"`).
+- ``PathFolder/ids(for:)`` returns the integer path to a specific case.
+- ``PathFolder/namePath(for:)`` returns a slash-joined string like `"Components/Buttons/primary"`.
 
 ## Why Use HarnessKit?
 
-- **Efficiency**: Adding a new component preview is as simple as adding an enum case.
-- **Consistency**: Provides a unified, searchable structure for all previews across your project.
-- **Reliability**: Decouples UI tests from the underlying navigation implementation, making them more resilient to UI changes.
+- Adding a preview is one new enum case.
+- Every preview lives in the same searchable tree.
+- UI tests stop breaking when you rearrange screens.

@@ -18,105 +18,65 @@
     @AutomaticSeeAlso(disabled)
 }
 
-Screenshot metadata and configuration types shared across the HarnessKit pipeline.
+The metadata types you build before a screenshot is captured and read after it lands on disk.
 
 ## Overview
 
-`HarnessKitScreenshots` is the **data layer** of the screenshot pipeline. It defines the types that flow between the UI test target (via `HarnessKitScreenshotTesting`) and the macOS transform tool (via `HarnessKitTransform`). It contains **no XCTest code** — it is a pure model library that compiles on all Apple platforms.
+`HarnessKitScreenshots` carries four public types: ``Screenshot``, ``ScreenshotAppearance``, ``ScreenOrientation``, and ``TargetOS``. None of them touch `XCTest`. None of them render an image. They describe what a screenshot is so other tools can capture it, attach it, or look it up later.
 
-### Where It Fits
-
-| Library | Role | Depends On |
-| :--- | :--- | :--- |
-| **HarnessKitScreenshots** | Model types: ``Screenshot``, ``ScreenshotConfig``, ``VersionedBezel``, ``ScreenshotShadow``, ``ScreenshotBackground``, ``ScreenshotMetadata`` | — (standalone) |
-| `HarnessKitScreenshotTesting` | XCTest capture: `captureScreenshot`, `updateOrientation`, `resetTheme` | HarnessKitScreenshots |
-| `HarnessKitTransform` | macOS image pipeline: `processScreenshot`, `applyBezelPipeline`, `HarnessKitCatalogue` | HarnessKitScreenshots |
-
-### Pipeline Flow
-
-1. A UI test (using `HarnessKitScreenshotTesting`) creates a ``Screenshot`` value and calls `captureScreenshot(screenshot:app:add:)`.
-2. The capture function sets the device appearance, captures the screen, and attaches a PNG. The attachment name encodes key metadata via ``Screenshot/screenshotName()``. The full ``Screenshot`` is also JSON-embedded inside the PNG via ``ScreenshotMetadata``.
-3. The macOS transformer app reads the embedded metadata with ``ScreenshotMetadata/read(from:)`` to reconstruct the full ``Screenshot`` — including ``Screenshot/shadows``.
-4. `HarnessKitTransform` uses all ``Screenshot`` properties to produce the final App Store image.
+If you want to capture a screenshot from a UI test, you reach for `HarnessKitScreenshotTesting`. If you want to read the screenshot back, you reconstruct a ``Screenshot`` from its filename through ``Screenshot/fromScreenshotName(_:)`` or from JSON through `Codable`.
 
 ## The Screenshot Value
 
-``Screenshot`` is the single source of truth for one captured frame. Every property feeds either the capture step or the transform step:
+``Screenshot`` is the single value the pipeline passes around. Each property maps to a capture-time decision.
 
-| Property | Capture | Transform |
+| Property | Type | What It Drives |
 | :--- | :--- | :--- |
-| ``Screenshot/id`` | Output filename | — |
-| ``Screenshot/appearance`` | Sets device theme | Picks macOS bezel art (light/dark) |
-| ``Screenshot/os`` | — | Selects platform pipeline branch |
-| ``Screenshot/osVersion`` | Stamped automatically | Picks versioned bezel via ``ScreenshotConfig/matchedBezel(for:)`` |
-| ``Screenshot/orientation`` | Rotates simulator (iOS) | Rotates composed image |
-| ``Screenshot/crop`` | — | Pan-and-zoom crop on final output |
-| ``Screenshot/background`` | — | Canvas fill (solid, gradient, or image) |
-| ``Screenshot/shadows`` | — | Drop and shape shadows on device |
-| ``Screenshot/addBezel`` | — | Toggles bezel compositing |
+| ``Screenshot/id`` | `String` | The filename stem you use to find this shot later. |
+| ``Screenshot/appearance`` | ``ScreenshotAppearance`` | The system theme set on the device before capture. |
+| ``Screenshot/os`` | ``TargetOS`` | The Apple platform this shot belongs to. |
+| ``Screenshot/orientation`` | ``ScreenOrientation``? | An optional rotation applied before capture (iOS only). |
+| ``Screenshot/addBezel`` | `Bool` | Whether a downstream tool should composite a device bezel. |
+| ``Screenshot/osVersion`` | `String?` | The OS version the capture infrastructure stamps in. |
+
+Construct one in your test file:
 
 ```swift
 import HarnessKitScreenshots
 
-let screenshot = Screenshot(
+let home = Screenshot(
     id: "home",
     appearance: .light,
-    background: .gradient(startHex: "E0E7FF", endHex: "FFFFFF", angle: 180),
-    shadows: [.drop(DropShadow(opacity: 0.4, blur: 0.02))],
+    os: .iOS,
     addBezel: true
 )
 ```
 
+`os` defaults to ``TargetOS/currentOS``, which inspects the running platform at runtime. `appearance` is required. `osVersion` you do not set yourself: `captureScreenshot` writes it from the live simulator before attaching the PNG.
+
 ## Two Serialization Formats
 
-``Screenshot`` is encoded in two ways depending on context:
+You can move a `Screenshot` between processes in two ways.
 
 ### Filename String
 
-``Screenshot/screenshotName()`` produces a flat `key*value^key*value.png` string used as the XCTest attachment name. It encodes: `id`, `os`, `orientation`, `appearance`, `crop`, `background`, `osVersion`, and `addBezel`. It does **not** include `shadows` (too complex for a filename).
+``Screenshot/screenshotName()`` flattens the value into a deterministic `key*value^key*value.png` string. It is human-readable and filesystem-safe, which is what makes it useful as an XCTest attachment name:
 
 ```
-id*home^os*iOS^orientation*nil^appearance*Light^crop*0.0,0.0,1.0,1.0^background*solid:F2F2F7^osVersion*26.0.png
+id*home^os*iOS^orientation*nil^appearance*Light^osVersion*26.0.png
 ```
 
-Parse back with ``Screenshot/fromScreenshotName(_:)``.
+The encoded keys are `id`, `os`, `orientation`, `appearance`, `osVersion` (when present), and `addBezel` (only when `false`). Parse the string back with ``Screenshot/fromScreenshotName(_:)``.
 
-### PNG Metadata (Full JSON)
+### Codable JSON
 
-``ScreenshotMetadata`` embeds the **complete** ``Screenshot`` struct — including ``Screenshot/shadows`` — as JSON in the PNG file's `tEXt` `Description` chunk. This is the authoritative format used by the transform pipeline.
-
-```json
-{
-  "id": "home",
-  "appearance": "Light",
-  "os": "iOS",
-  "osVersion": "26.0",
-  "background": { "gradient": { "startHex": "E0E7FF", "endHex": "FFFFFF", "angle": 180 } },
-  "shadows": [{ "drop": { "color": "000000", "opacity": 0.4, "blur": 0.02, "offsetX": 0, "offsetY": 0.01 } }],
-  "addBezel": true
-}
-```
-
-## Versioned Bezels
-
-Different OS versions ship on different hardware. ``ScreenshotConfig`` stores `[VersionedBezel]` arrays — one per platform — so the transform tool picks the right device art automatically:
+`Screenshot` conforms to `Codable`. Encode it through `JSONEncoder` if you want to embed the full value in PNG `tEXt` metadata, in a sidecar JSON file, or in any other channel that prefers structured data over filename strings.
 
 ```swift
-let config = ScreenshotConfig(
-    phoneBezel: [
-        VersionedBezel(minVersion: "16.0", maxVersion: "26.0", deviceID: "iPhone16", color: "Black"),
-        VersionedBezel(minVersion: "26.0", deviceID: "iPhone17", color: "Black")
-    ],
-    phoneOrientation: .portrait,
-    padBezel: [], padOrientation: .landscape,
-    watchBezel: [], macBezel: [], tvBezel: [],
-    resolution: .default
-)
+let json = try JSONEncoder().encode(home)
 ```
 
-A screenshot with `osVersion: "18.2"` picks `iPhone16`; one with `osVersion: "26.0"` picks `iPhone17`.
-
-The config is owned by your project — load it from Application Support with ``ScreenshotConfig/load(from:)`` or build it programmatically from ``ScreenshotConfig/defaults``.
+Both round-trips stay in sync because they encode the same property set.
 
 ## Next Steps
 

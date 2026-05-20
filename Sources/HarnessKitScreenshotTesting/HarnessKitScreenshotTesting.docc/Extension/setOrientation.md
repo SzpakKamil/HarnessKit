@@ -16,9 +16,9 @@ Sets the iOS simulator to a specific orientation.
 
 ## Overview
 
-Sets `XCUIDevice.shared.orientation` to the UIKit value for the given `ScreenOrientation` and sleeps for 2 seconds to let the simulator settle. Use this when you need to force a specific orientation mid-test rather than reading from `ScreenshotConfig`.
+Sets `XCUIDevice.shared.orientation` to the UIKit value for the given `ScreenOrientation` and sleeps for 2 seconds so the simulator can finish rotating. Reach for this when a single test needs a specific rotation, separate from the idiom-driven default that ``updateOrientation(phone:pad:)`` applies in `setUp()`.
 
-This function is a **no-op on all platforms except iOS**.
+The function is a no-op on every platform except iOS.
 
 ```swift
 setOrientation(to: .landscape)
@@ -33,4 +33,5 @@ setOrientation(to: .landscape)
 
 ## See Also
 
-- ``updateOrientation(config:)``
+- ``updateOrientation(phone:pad:)``
+- ``captureScreenshot(screenshot:app:sleepSeconds:customActions:add:)``

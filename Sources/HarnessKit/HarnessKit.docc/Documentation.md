@@ -23,21 +23,18 @@ A structured navigation harness for SwiftUI demo apps and component previews.
 
 ## Overview
 
-`HarnessKit` organizes SwiftUI component previews into a type-safe, navigable tree. Conform a root type to `PathProject`, group related views into `PathFolder` enums, and render everything with `HarnessView`. Pair with `HarnessKitTesting` to navigate to any screen in a UI test with one method call.
+`HarnessKit` organizes SwiftUI component previews into a type-safe, navigable tree. Conform a root type to ``PathProject``, group related views into ``PathFolder`` enums, and render the lot with ``HarnessView``. Pair it with `HarnessKitTesting` to drive any screen from a UI test in one call.
 
-@Image(source: "HarnessKit-Banner", alt: "HarnessKit banner showing a structured list navigation.")
-
-The full package ships six libraries that compose into a complete screenshot pipeline:
+The package ships four libraries you mix into your project:
 
 | Library | Role |
 |---|---|
-| `HarnessKit` | Navigation harness — `PathProject`, `PathFolder`, `HarnessView`, `HarnessPreview` |
-| `HarnessKitTesting` | UI-test helpers — `navigate(app:)`, `iteratePreview(app:variantCount:action:)` |
-| `HarnessKitScreenshots` | Screenshot metadata types — `Screenshot`, `ScreenshotConfig`, `VersionedBezel` |
-| `HarnessKitScreenshotTesting` | Screenshot capture — `captureScreenshot(...)`, `resetTheme(to:)` |
-| `HarnessKitTransform` | macOS image pipeline — `transformScreenshot(...)`, `HarnessKitCatalogue` |
+| `HarnessKit` | Navigation harness: ``PathProject``, ``PathFolder``, ``HarnessView``, ``HarnessPreview`` |
+| `HarnessKitTesting` | UI test helpers: `navigate(app:)`, `iteratePreview(app:variantCount:action:)` |
+| `HarnessKitScreenshots` | Screenshot metadata: `Screenshot`, `ScreenOrientation`, `TargetOS`, `ScreenshotAppearance` |
+| `HarnessKitScreenshotTesting` | Screenshot capture: `captureScreenshot(...)`, `updateOrientation(phone:pad:)`, `resetTheme(to:)` |
 
-Add `HarnessKit` to the app target, `HarnessKitTesting` and `HarnessKitScreenshotTesting` to the UI test target, and `HarnessKitTransform` to the macOS transformer app.
+Link `HarnessKit` against the app target. Link `HarnessKitTesting` and `HarnessKitScreenshotTesting` against the UI test target.
 
 ## Getting Started
 

@@ -1,6 +1,6 @@
 # ``HarnessKitScreenshots``
 
-Screenshot metadata and configuration models shared across the HarnessKit pipeline.
+Screenshot metadata shared between the capture step and any consumer that reads the resulting PNGs.
 
 @Metadata {
     @SupportedLanguage(swift)
@@ -23,9 +23,9 @@ Screenshot metadata and configuration models shared across the HarnessKit pipeli
 
 ## Overview
 
-`HarnessKitScreenshots` is the **data layer** shared between UI test targets (via `HarnessKitScreenshotTesting`) and the macOS transform tool (via `HarnessKitTransform`). It defines ``Screenshot``, ``ScreenshotConfig``, and all supporting types.
+`HarnessKitScreenshots` is the data layer of the screenshot pipeline. It defines ``Screenshot`` and its supporting enums. The library has no `XCTest` dependency and compiles on every Apple platform, so you can link it from either an app target or a UI test bundle.
 
-This module contains **no XCTest code** — it is a pure model library with no external dependencies. It compiles for iOS, iPadOS, macOS, tvOS, watchOS, and visionOS. The capture functions (`captureScreenshot`, `updateOrientation`, `resetTheme`) live in `HarnessKitScreenshotTesting`.
+The capture functions live next door in `HarnessKitScreenshotTesting`. This package only knows how to describe a screenshot and how to round-trip that description through a filename string or `Codable` JSON.
 
 ## Getting Started
 
@@ -44,28 +44,9 @@ This module contains **no XCTest code** — it is a pure model library with no e
 ### Screenshot Metadata
 
 - ``Screenshot``
-- ``ScreenshotConfig``
-- ``VersionedBezel``
 
-### Appearance and Orientation
+### Appearance, Orientation, and Platform
 
 - ``ScreenshotAppearance``
 - ``ScreenOrientation``
 - ``TargetOS``
-
-### Background and Shadows
-
-- ``ScreenshotBackground``
-- ``ScreenshotShadow``
-- ``DropShadow``
-- ``ShapeShadow``
-
-### Layout and Cropping
-
-- ``CropRect``
-- ``FillMode``
-- ``ScreenshotResolution``
-
-### Metadata Embedding
-
-- ``ScreenshotMetadata``

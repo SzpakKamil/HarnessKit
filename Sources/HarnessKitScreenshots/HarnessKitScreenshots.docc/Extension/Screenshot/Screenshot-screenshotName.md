@@ -15,11 +15,17 @@
     @AutomaticArticleSubheading(disabled)
 }
 
-Serializes all screenshot metadata into a stable flat-string filename.
+Serializes the screenshot into a stable filename string.
 
 ## Overview
 
-`screenshotName()` encodes every property of the screenshot into a single caret-separated string ending in `.png`. The format uses `key*value` pairs joined by `^`, for example `id*home^os*iOS^appearance*Light^crop*0.0,0.0,1.0,1.0^background*solid:F2F2F7.png`. This string is used as the XCTest attachment name so that the transform tool can reconstruct the full `Screenshot` value without needing a side-channel configuration file. Parse it back with ``fromScreenshotName(_:)``.
+`screenshotName()` flattens every property of the screenshot into a single caret-separated string ending in `.png`. The format uses `key*value` pairs joined by `^`, for example:
+
+```
+id*home^os*iOS^orientation*nil^appearance*Light^osVersion*26.0.png
+```
+
+Keys appear in a fixed order: `id`, `os`, `orientation`, `appearance`, then `osVersion` and `addBezel` when they carry non-default values. `captureScreenshot` uses the result as the XCTest attachment name so any tool that reads the PNGs back can reconstruct the original `Screenshot` without a sidecar file. Parse the string back with ``fromScreenshotName(_:)``.
 
 ## See Also
 - ``HarnessKitScreenshots/Screenshot``

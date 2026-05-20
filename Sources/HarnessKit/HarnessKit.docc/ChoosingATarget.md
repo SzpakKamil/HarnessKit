@@ -18,108 +18,68 @@
     @AutomaticSeeAlso(disabled)
 }
 
-Understand which HarnessKit libraries to add to each target in your project.
+Pick the right library for each Xcode target.
 
 ## Overview
 
-The HarnessKit package ships **five libraries** that compose into a complete screenshot pipeline. Each library has a specific role and belongs in a specific Xcode target. Adding the wrong library to the wrong target will cause build errors or include unnecessary dependencies.
+HarnessKit ships four libraries. Two run inside your app, two run inside a UI test bundle. Add the wrong one to the wrong target and you get link errors at best, an `XCTest` import dragged into a shipping binary at worst.
 
 ## Library Reference
 
 | Library | Role | Link To | Platforms |
 | :--- | :--- | :--- | :--- |
-| `HarnessKit` | Navigation harness UI — ``PathProject``, ``PathFolder``, ``HarnessView``, ``HarnessPreview`` | **App target** (harness app) | All |
-| `HarnessKitTesting` | UI test navigation — `navigate(app:)`, `advancePreview(app:)`, `iteratePreview(app:...)` | **UI test target** | All |
-| `HarnessKitScreenshots` | Screenshot metadata types — `Screenshot`, `ScreenshotConfig`, `VersionedBezel`, `ScreenshotShadow`, `ScreenshotBackground`, `ScreenshotMetadata` | **App target** + **macOS transformer** (any target that needs the types) | All |
-| `HarnessKitScreenshotTesting` | Screenshot capture — `captureScreenshot(...)`, `updateOrientation(config:)`, `resetTheme(to:)` | **UI test target** | All |
-| `HarnessKitTransform` | macOS image pipeline — `processScreenshot(...)`, `applyBezelPipeline(...)`, `HarnessKitCatalogue`, `composeCanvas(...)` | **macOS transformer app** only | macOS only |
+| `HarnessKit` | Navigation UI: ``PathProject``, ``PathFolder``, ``HarnessView``, ``HarnessPreview`` | App target | All |
+| `HarnessKitTesting` | UI test navigation: `navigate(app:)`, `advancePreview(app:)`, `iteratePreview(app:…)` | UI test target | All |
+| `HarnessKitScreenshots` | Screenshot metadata: `Screenshot`, `ScreenOrientation`, `TargetOS`, `ScreenshotAppearance` | App target, UI test target | All |
+| `HarnessKitScreenshotTesting` | Screenshot capture: `captureScreenshot(…)`, `updateOrientation(phone:pad:)`, `resetTheme(to:)` | UI test target | All |
 
-## Typical Project Setup
+## Typical Project Layout
 
-A typical project has three Xcode targets that use HarnessKit:
+You will usually have two Xcode targets that consume HarnessKit.
 
-### 1. Harness App (iOS / macOS / tvOS / watchOS)
+### 1. The Harness App
 
-The app that displays your component previews in a navigable list.
-
-```
-Dependencies:
-  ✅ HarnessKit
-  ✅ HarnessKitScreenshots (if screenshots share types with the app)
-  ❌ HarnessKitTesting (XCTest — cannot link to app)
-  ❌ HarnessKitScreenshotTesting (XCTest — cannot link to app)
-  ❌ HarnessKitTransform (macOS only)
-```
-
-### 2. UI Test Target
-
-Runs automated tests that navigate to screens and capture screenshots.
+The app that renders your component previews.
 
 ```
 Dependencies:
-  ❌ HarnessKit (not needed — test target references folder types directly)
-  ✅ HarnessKitTesting (navigate to screens)
-  ✅ HarnessKitScreenshots (Screenshot types, imported transitively)
-  ✅ HarnessKitScreenshotTesting (captureScreenshot, updateOrientation)
-  ❌ HarnessKitTransform (macOS only, not for tests)
+  HarnessKit                       (required)
+  HarnessKitScreenshots            (only if you build Screenshot values in app code)
+  HarnessKitTesting                (must not link, pulls in XCTest)
+  HarnessKitScreenshotTesting      (must not link, pulls in XCTest)
 ```
 
-### 3. macOS Transformer App
+### 2. The UI Test Target
 
-A macOS app that transforms raw screenshots into finished App Store images with device bezels, shadows, and backgrounds. This is not a test target — it does not run tests, it processes the PNG attachments exported from test runs.
+The XCUITest bundle that drives the app and captures screenshots.
 
 ```
 Dependencies:
-  ✅ HarnessKit (if it also serves as a harness app)
-  ✅ HarnessKitScreenshots (Screenshot and config types)
-  ❌ HarnessKitTesting (not a test target)
-  ❌ HarnessKitScreenshotTesting (not a test target)
-  ✅ HarnessKitTransform (image pipeline)
+  HarnessKit                       (not needed, tests reference folder types directly)
+  HarnessKitTesting                (navigate to screens)
+  HarnessKitScreenshots            (the Screenshot type)
+  HarnessKitScreenshotTesting      (capture and orientation helpers)
 ```
+
+`HarnessKitScreenshots` carries no `XCTest` dependency, so you can also link it from the app target if you want to construct `Screenshot` values in shared code.
 
 ## What Each Library Contains
 
 ### HarnessKit
 
-- Protocol tree: ``PathProject`` → ``PathFolder`` → ``PathComponent``
-- SwiftUI views: ``HarnessView``, ``HarnessPreview``
-- Window sizing: `WindowSizeMode`, `windowSize(_:)`
-- No screenshot or transform logic
+Protocol tree (``PathProject``, ``PathFolder``, ``PathComponent``), the two SwiftUI entry points (``HarnessView``, ``HarnessPreview``), and a macOS-only window helper (``WindowSizeMode``, `View.windowSize(_:)`). No XCTest, no image work.
 
 ### HarnessKitTesting
 
-- `navigate(app:)` — programmatic UI test navigation to any ``PathFolder`` case
-- `advancePreview(app:)` / `iteratePreview(app:...)` — variant cycling
-- Platform-aware: taps on iOS, clicks on macOS, remote presses on tvOS, Digital Crown on watchOS
-- Requires `XCTest` — test target only
+`navigate(app:)` on every ``PathFolder`` case. `advancePreview(app:)` and `iteratePreview(app:…)` for variant cycling. Taps on iOS, clicks on macOS, swipes with the Digital Crown on watchOS, sends remote presses on tvOS. Imports `XCTest`, so it must stay on the test side.
 
 ### HarnessKitScreenshots
 
-- `Screenshot` — describes what to capture and how to transform it
-- `ScreenshotConfig` / `VersionedBezel` — per-platform bezel selection
-- `ScreenshotShadow` / `DropShadow` / `ShapeShadow` — shadow effects
-- `ScreenshotBackground` — solid, gradient, or image canvas fills
-- `ScreenshotMetadata` — embeds/reads `Screenshot` JSON in PNG files
-- `CropRect`, `ScreenshotResolution`, `ScreenOrientation`, `TargetOS`
-- **No XCTest dependency** — safe for any target on any platform
+`Screenshot`, `ScreenshotAppearance`, `ScreenOrientation`, `TargetOS`. The data layer. Safe to link from any target on any platform.
 
 ### HarnessKitScreenshotTesting
 
-- `captureScreenshot(screenshot:app:add:)` — sets appearance, captures, attaches PNG
-- `updateOrientation(config:)` — rotates iOS simulator from config
-- `resetTheme(to:)` / `currentTheme()` — appearance management
-- Embeds full `Screenshot` (including shadows) as JSON in PNG metadata
-- Requires `XCTest` — test target only
-
-### HarnessKitTransform
-
-- `processScreenshot(...)` / `transformScreenshot(...)` — full platform pipeline
-- `applyBezelPipeline(...)` — bezel compositing with shadows and backgrounds
-- `composeCanvas(...)` — multi-device canvas composition
-- `HarnessKitCatalogue` — downloads bezels from R2, manages local cache
-- Device descriptors for iPhone, iPad, Mac, Apple TV, Apple Watch, Vision Pro
-- Decoration-only assets (`allowsScreenshot: false`)
-- **macOS only**
+Five top-level functions: `captureScreenshot`, `updateOrientation`, `setOrientation`, `resetTheme`, `currentTheme`. Sets device appearance, rotates the iOS simulator, captures the screen, attaches a PNG with metadata encoded in the filename. Requires `XCTest`.
 
 ## Next Steps
 

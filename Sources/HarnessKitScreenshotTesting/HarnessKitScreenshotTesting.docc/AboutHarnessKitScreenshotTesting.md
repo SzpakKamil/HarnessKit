@@ -22,41 +22,34 @@ Capture annotated screenshots in UI tests with one function call.
 
 ## Overview
 
-`HarnessKitScreenshotTesting` is the **capture** side of the HarnessKit screenshot pipeline. It provides XCTest functions that set the device appearance, capture the screen, and attach the result as a metadata-rich PNG to the test run.
+`HarnessKitScreenshotTesting` is the capture side of the screenshot pipeline. Five XCTest functions set device appearance, rotate the iOS simulator, capture the screen, and attach the result to the test run with a parseable filename.
 
-This library depends on `HarnessKitScreenshots` for the shared model types (`Screenshot`, `ScreenshotConfig`, etc.) and requires `XCTest` — link it to your **UI test target only**.
-
-### Where It Fits
-
-| Step | Library | What Happens |
-| :--- | :--- | :--- |
-| 1. Define | `HarnessKitScreenshots` | Create `Screenshot` values describing each frame |
-| **2. Capture** | **`HarnessKitScreenshotTesting`** | **Set appearance, capture screen, attach PNG** |
-| 3. Transform | `HarnessKitTransform` | Composite bezels, shadows, backgrounds on macOS |
+The library depends on `HarnessKitScreenshots` for the `Screenshot` model type and imports `XCTest`. Link it to your UI test target only.
 
 ### What Gets Captured
 
-Each call to ``captureScreenshot(screenshot:app:sleepSeconds:customActions:add:)`` produces a PNG attachment with:
+A call to ``captureScreenshot(screenshot:app:sleepSeconds:customActions:add:)`` produces a PNG attachment:
 
-- **Filename**: `Screenshot/screenshotName()` — a flat `key*value^key*value.png` string encoding `id`, `os`, `appearance`, `crop`, `background`, `osVersion`, and `addBezel`
-- **OS version**: Stamped automatically from the running simulator as `major.0`
-- **macOS**: Window captured with 35pt rounded corners
-- **watchOS**: Dark-mode screenshots are skipped (appearance switching unsupported)
+- The filename comes from `Screenshot.screenshotName()`. It encodes `id`, `os`, `orientation`, `appearance`, and, when present, `osVersion` and `addBezel`.
+- `Screenshot.osVersion` is stamped from the simulator as a `major.0` string.
+- On macOS the capture is the app window, clipped to a 35-point corner radius.
+- On watchOS, dark-mode captures are skipped because watchOS does not expose appearance switching.
 
 ### Five Functions
 
 | Function | Purpose |
 | :--- | :--- |
-| ``captureScreenshot(screenshot:app:sleepSeconds:customActions:add:)`` | Capture and attach a screenshot |
-| ``updateOrientation(config:)`` | Set simulator orientation from config (iOS only) |
-| ``setOrientation(to:)`` | Set simulator to a specific orientation (iOS only) |
-| ``resetTheme(to:)`` | Switch device appearance mid-test |
-| ``currentTheme()`` | Read the current device appearance |
+| ``captureScreenshot(screenshot:app:sleepSeconds:customActions:add:)`` | Set appearance, capture screen, attach PNG. |
+| ``updateOrientation(phone:pad:)`` | Pick a phone or iPad orientation from the running idiom. iOS only. |
+| ``setOrientation(to:)`` | Force a specific orientation. iOS only. |
+| ``resetTheme(to:)`` | Switch the device appearance mid-test. |
+| ``currentTheme()`` | Read the current device appearance. |
 
 ### Example
 
 ```swift
 import XCTest
+import HarnessKitScreenshots
 import HarnessKitScreenshotTesting
 
 final class HomeTests: XCTestCase {
@@ -87,6 +80,8 @@ final class HomeTests: XCTestCase {
     }
 }
 ```
+
+`updateOrientation()` reads the running idiom: phones go portrait, iPads go landscape unless you override the defaults. `captureScreenshot` waits two seconds after each appearance change by default, then writes the PNG with the encoded filename.
 
 ## Next Steps
 
